@@ -78,9 +78,12 @@ export default function SignIn() {
     <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
+        <div className="text-center">
+          <h1 className="inline-block text-3xl sm:text-4xl md:text-5xl font-bold uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
             Manifex
           </h1>
+        </div>
+
           <p className="text-center text-lg text-gray-300">
             Welcome to MANIFEX! Let’s start your language journey today.
           </p>
@@ -152,7 +155,10 @@ export default function SignIn() {
               <input type="radio" className="accent-[#3797CD]" />
               <span>Remember me</span>
             </label>
-            <Link href="/forgot-password" className="text-blue-300 underline">
+            <Link
+              href="/forgot-password"
+              className="text-blue-300 underline decoration-blue-300 underline-offset-4 px-1 tracking-tight"
+            >
               Forgot Password?
             </Link>
           </div>
@@ -172,7 +178,7 @@ export default function SignIn() {
 
         <p className="text-center text-sm text-gray-100">
           New here?{" "}
-          <Link href="/signup" className="text-blue-300 underline">
+          <Link href="/signup" className="text-blue-300 underline decoration-blue-300 underline-offset-4 px-1 tracking-tight">
             Create new account
           </Link>{" "}
           to get started
