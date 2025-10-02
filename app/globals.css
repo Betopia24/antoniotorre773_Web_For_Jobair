@@ -3,24 +3,25 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --input-bg: #24253A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom Input Utility Class */
+@layer utilities {
+  .input-style {
+    @apply w-full px-4 py-2.5 rounded-xl text-white focus:outline-none;
+    background-color: var(--input-bg);
+  }
+
+  /* Focus ring color */
+  .input-style:focus {
+    @apply focus:ring-2 focus:ring-[#FFBC6F];
+  }
 }
