@@ -1,3 +1,4 @@
+import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/shared/Navbar";
 import type { Metadata } from "next";
 
@@ -15,6 +16,7 @@ export default function Layout({
     <div>
         <Navbar/>
         <main>{children}</main>
+        <Footer/>
     </div>
   );
 }
