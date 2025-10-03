@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <>
       {/* Desktop + Mobile Navbar */}
-      <div className="fixed top-0 inset-x-0 z-50 backdrop-blur-md">
+      <div className="fixed top-0 inset-x-0 z-50 backdrop-blur-md py-4">
         <div className="app-container flex items-center justify-between py-4 md:py-5 xl:py-4">
           {/* Branding */}
           <div className="text-center">
