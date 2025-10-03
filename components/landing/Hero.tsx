@@ -67,7 +67,7 @@ const Hero = () => {
         </div>
 
         {/* Right Part (40%) */}
-        <div className="w-full md:w-2/5 flex flex-col items-center mt-10 md:mt-0">
+        <div className="w-full md:w-2/5 flex flex-col items-center mt-10 md:mt-0 pb-16">
           {/* Image with Blur Background */}
           <div className="flex justify-center mb-4 sm:mb-6 relative">
             {/* Background Blur */}
@@ -85,7 +85,7 @@ const Hero = () => {
           </div>
 
             {/* Name styled like button with dual diagonal border */}
-            <h1 className="relative inline-block mt-8 px-6 sm:px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 xl:py-5 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center">
+            <h1 className="relative inline-block mt-8 px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 xl:py-5 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center">
             Mercury
 
             {/* Top-left triangle (lighter border) */}
