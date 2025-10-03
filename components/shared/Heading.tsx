@@ -1,44 +1,54 @@
-import React from 'react'
+import React from "react";
 
 interface HeadingProps {
-  heading: string
-  subheading?: string
-  align?: 'center' | 'left' | 'right'
-  specialText?: string
+  heading: string;
+  subheading?: string;
+  align?: "center" | "left" | "right";
+  specialText?: string;
 }
 
 const Heading: React.FC<HeadingProps> = ({
   heading,
   subheading,
-  align = 'center',
+  align = "center",
   specialText,
 }) => {
-  // Alignment classes
-  const alignClass = align === 'center' ? 'text-center' : align === 'left' ? 'text-left' : 'text-right'
+  // Alignment classes for text
+  const textAlignClass =
+    align === "center"
+      ? "text-center"
+      : align === "left"
+      ? "text-left"
+      : "text-right";
+
+  // Center container if align=center
+  const containerClass = align === "center" ? "mx-auto" : "";
 
   return (
-    <div className={`flex flex-col w-full ${alignClass} gap-2`}>
-      {/* Heading */}
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-snug">
-        {specialText && heading.includes(specialText) ? (
+    <div className={`flex flex-col w-full gap-2`}>
+      {/* Heading container */}
+      <div className={`max-w-4xl ${containerClass}`}>
+        <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-semibold leading-none ${textAlignClass}`}>
+          {specialText && heading.includes(specialText) ? (
             <>
-            {heading.split(specialText)[0]}
-            <span className="text-gradient">{specialText}</span>
-            {heading.split(specialText)[1]}
+              {heading.split(specialText)[0]}
+              <span className="text-gradient">{specialText}</span>
+              {heading.split(specialText)[1]}
             </>
-            ) : (
-                heading
-            )}
+          ) : (
+            heading
+          )}
         </h1>
 
-      {/* Subheading */}
-      {subheading && (
-        <p className="text-base sm:text-lg md:text-xl font-semibold text-gray-300 max-w-3xl mx-auto">
-          {subheading}
-        </p>
-      )}
+        {/* Subheading */}
+        {subheading && (
+          <p className={`mt-2 text-base sm:text-lg md:text-xl font-semibold text-gray-300 ${textAlignClass}`}>
+            {subheading}
+          </p>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Heading
+export default Heading;

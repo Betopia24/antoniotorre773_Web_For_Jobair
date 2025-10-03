@@ -47,7 +47,7 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 className={clsx(
-                  'text-base md:text-lg xl:text-xl font-semibold transition-colors hover:text-white',
+                  'text-base md:text-lg font-semibold transition-colors hover:text-white',
                   pathname === link.href ? 'text-gradient' : 'text-gray-300'
                 )}
               >
@@ -60,13 +60,13 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-10">
             <Link
               href="/signin"
-              className="text-gray-300 text-base md:text-lg xl:text-xl font-semibold hover:text-white"
+              className="text-gray-300 text-base md:text-lg font-semibold hover:text-white"
             >
               Login
             </Link>
             <Link
               href="/somewhere"
-              className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg xl:text-xl font-semibold text-white bg-transparent rounded-2xl"
+              className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
             >
               <span className="z-10">Get Started</span>
               <ChevronRight className="w-5 h-5 z-10" />
