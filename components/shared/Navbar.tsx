@@ -56,14 +56,14 @@ const Navbar = () => {
           </Link>
         <Link
         href="/somewhere"
-        className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg xl:text-xl font-semibold text-white bg-transparent rounded-md"
+        className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg xl:text-xl font-semibold text-white bg-transparent rounded-2xl"
         >
         <span className="z-10">Get Started</span>
         <ChevronRight className="w-5 h-5 z-10" />
 
         {/* Top-left triangle (lighter border) */}
         <div
-            className="absolute inset-0 rounded-md pointer-events-none border-[2px]"
+            className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
             style={{
             clipPath: 'polygon(0 0, 100% 0, 0 100%)',
             borderColor: '#9CA3AF',
@@ -72,7 +72,7 @@ const Navbar = () => {
 
         {/* Bottom-right triangle (darker border) */}
         <div
-            className="absolute inset-0 rounded-md pointer-events-none border-[2px]"
+            className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
             style={{
             clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
             borderColor: '#4B5563', // Tailwind gray-700

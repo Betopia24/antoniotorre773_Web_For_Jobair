@@ -56,6 +56,11 @@ body {
     @apply bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to text-transparent bg-clip-text;
   }
 
+  /* Gradient Text */
+  .text-gradient-minor {
+    @apply bg-gradient-to-r from-gradient-from to-gradient-via text-transparent bg-clip-text;
+  }
+
   /* Gradient Background */
   .bg-gradient-brand {
     @apply bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to;
