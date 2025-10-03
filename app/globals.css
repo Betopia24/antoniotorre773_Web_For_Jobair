@@ -9,6 +9,7 @@
   /* Brand theme colors */
   --brand-dark: #1C1849;
   --brand-darker: #05051E;
+  --section-dark: #101231;
 
   /* Gradient brand colors */
   --gradient-from: #FFBC6F;
@@ -27,6 +28,7 @@ body {
 @theme {
   --color-brand-dark: var(--brand-dark);
   --color-brand-darker: var(--brand-darker);
+  --color-section-dark: var(--section-dark);
 
   --color-gradient-from: var(--gradient-from);
   --color-gradient-via: var(--gradient-via);
