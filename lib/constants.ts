@@ -20,3 +20,11 @@ export const features = [
     paragraph: "Phoneme recognition and word games with visual cues designed for dyslexic learners"
   }
 ];
+
+
+export const activities = [
+    { name: "Daily Reading Practice", done: true },
+    { name: "Daily Speaking Practice", done: true },
+    { name: "Daily Writing Practice", done: false },
+    { name: "Daily Vocabulary Practice", done: false },
+  ];

@@ -13,7 +13,6 @@ const Heading: React.FC<HeadingProps> = ({
   align = "center",
   specialText,
 }) => {
-  // Alignment classes for text
   const textAlignClass =
     align === "center"
       ? "text-center"
@@ -42,7 +41,7 @@ const Heading: React.FC<HeadingProps> = ({
 
         {/* Subheading */}
         {subheading && (
-          <p className={`mt-2 text-base sm:text-lg md:text-xl font-semibold text-gray-300 ${textAlignClass}`}>
+          <p className={`mt-3 text-base sm:text-lg md:text-xl font-semibold text-gray-300 ${textAlignClass}`}>
             {subheading}
           </p>
         )}
