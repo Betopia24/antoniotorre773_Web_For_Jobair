@@ -25,12 +25,12 @@ const Hero = () => {
 
           {/* Buttons */}
           <div className="mt-4 lg:mt-8 flex flex-wrap gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 justify-center md:justify-start">
-            <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 xl:px-10 gap-2 rounded-3xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-bold text-white text-sm sm:text-base md:text-lg xl:text-xl shadow-lg transition">
+            <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 gap-2 rounded-3xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-bold text-white text-sm sm:text-base md:text-lg xl:text-xl shadow-lg transition">
               <Rocket className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" /> Start
               Free Today
             </button>
 
-            <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 xl:px-10 gap-2 rounded-3xl border border-gray-500 text-white hover:bg-white/10 transition font-semibold text-sm sm:text-base md:text-lg xl:text-xl">
+            <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 gap-2 rounded-3xl border border-gray-500 text-white hover:bg-white/10 transition font-semibold text-sm sm:text-base md:text-lg xl:text-xl">
               <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" /> Watch
               Mercury in Action
             </button>
@@ -92,7 +92,7 @@ const Hero = () => {
           </div>
 
           {/* Name styled like button with dual diagonal border */}
-          <h1 className="relative inline-block mt-8 px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 xl:py-5 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center">
+          <h1 className="relative inline-block mt-8 px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center">
             Mercury
             {/* Top-left triangle (lighter border) */}
             <div

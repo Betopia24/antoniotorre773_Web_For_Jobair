@@ -27,4 +27,32 @@ export const activities = [
     { name: "Daily Speaking Practice", done: true },
     { name: "Daily Writing Practice", done: false },
     { name: "Daily Vocabulary Practice", done: false },
-  ];
+];
+
+
+export const faq = [
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  },
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  },
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  },
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  },
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  },
+  {
+    question: "How does MANIFEX help with dyslexia?",
+    answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
+  }
+];
