@@ -1,27 +1,68 @@
 @import "tailwindcss";
 
+/* Root-level custom variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #171717;
+  --foreground: #ffffff;
   --input-bg: #24253A;
+
+  /* Brand theme colors */
+  --brand-dark: #1C1849;
+  --brand-darker: #05051E;
+
+  /* Gradient brand colors */
+  --gradient-from: #FFBC6F;
+  --gradient-via: #F176B7;
+  --gradient-to: #3797CD;
 }
 
-
+/* Base styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Custom Input Utility Class */
+/* Extend Tailwind theme colors with CSS vars */
+@theme {
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-darker: var(--brand-darker);
+
+  --color-gradient-from: var(--gradient-from);
+  --color-gradient-via: var(--gradient-via);
+  --color-gradient-to: var(--gradient-to);
+}
+
+/* Base layer (resets / global tweaks) */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Utilities */
 @layer utilities {
+  /* Input Style */
   .input-style {
     @apply w-full px-4 py-2.5 rounded-xl text-white focus:outline-none;
     background-color: var(--input-bg);
   }
-
-  /* Focus ring color */
   .input-style:focus {
     @apply focus:ring-2 focus:ring-[#FFBC6F];
+  }
+
+  /* Gradient Text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to text-transparent bg-clip-text;
+  }
+
+  /* Gradient Background */
+  .bg-gradient-brand {
+    @apply bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to;
+  }
+
+  /* App Container */
+  .app-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
