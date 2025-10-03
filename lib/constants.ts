@@ -56,3 +56,50 @@ export const faq = [
     answer: "MANIFEX uses research-backed methods specifically designed for dyslexic learners, including multi-sensory approaches, visual cues, phonics-based learning, and personalized pacing. Our AI adapts to each learner's unique needs and learning style."
   }
 ];
+
+
+export const plans = [
+  {
+    title: "Free Trial",
+    price: "$0",
+    duration: "7 Days",
+    features: [
+      "5 Lessons per day",
+      "Basic progress tracking",
+      "Limited reward content",
+      "Mercury AI guidance",
+    ],
+    buttonText: "Start Free Trial",
+    highlight: false,
+  },
+  {
+    title: "Premium",
+    price: "$19",
+    duration: "per month",
+    features: [
+      "Unlimited lessons",
+      "Advanced progress analytics",
+      "Full reward library access",
+      "Priority AI support",
+      "Parent dashboard",
+      "Offline mode",
+    ],
+    buttonText: "Start With Premium Plan",
+    highlight: true,
+  },
+  {
+    title: "Family",
+    price: "$39",
+    duration: "per month",
+    features: [
+      "Up to 5 learner profiles",
+      "All Premium features",
+      "Family progress reports",
+      "Shared reward library",
+      "Priority support",
+      "Educational resources",
+    ],
+    buttonText: "Start With Family Plan",
+    highlight: false,
+  },
+];
