@@ -4,7 +4,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <div className="pt-32 sm:pt-36 md:pt-40 xl:pt-48 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker">
+    <div className="pt-32 sm:pt-36 md:pt-40 xl:pt-56 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker">
       <div className="app-container flex flex-col md:flex-row items-center gap-10 lg:gap-16 xl:gap-20">
         
         {/* Left Part (60%) */}
@@ -16,13 +16,13 @@ const Hero = () => {
             <span className="text-gradient-minor italic">Rewarding.</span>
         </h1>
 
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-6 sm:mb-8 text-gray-300 max-w-full md:max-w-3xl text-center md:text-left">
+        <p className="mt-2 lg:mt-4 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-6 sm:mb-8 text-gray-300 max-w-full md:max-w-3xl text-center md:text-left">
             Daily 10-minute practice tailored to your age & interests, guided by
             Mercury your AI tutor with progress tracking & rewards you’ll love.
         </p>
 
         {/* Buttons */}
-        <div className="mt-4 flex flex-wrap gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 justify-center md:justify-start">
+        <div className="mt-4 lg:mt-8 flex flex-wrap gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 justify-center md:justify-start">
             <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 xl:px-10 xl:py-5 gap-2 rounded-3xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-bold text-white text-sm sm:text-base md:text-lg xl:text-xl shadow-lg transition">
             <Rocket className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" /> Start Free Today
             </button>
@@ -33,7 +33,7 @@ const Hero = () => {
         </div>
 
             {/* Learners + Rating */}
-            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 lg:gap-8 justify-center md:justify-start">
+            <div className="mt-4 lg:mt-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 lg:gap-8 justify-center md:justify-start">
             {/* Overlapping Avatars (center only on small screens) */}
             <div className="flex -space-x-3 sm:-space-x-4 self-center sm:self-auto">
                 {[1,2,3].map((i) => (
