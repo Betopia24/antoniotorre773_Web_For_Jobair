@@ -1,3 +1,5 @@
+import { BookOpenCheck, Flame, Gift, Medal, Mic, PenLine, Sparkles, Timer, Volume2 } from "lucide-react";
+
 export const features = [
   {
     icon: "/icon-01.png",
@@ -102,4 +104,91 @@ export const plans = [
     buttonText: "Start With Family Plan",
     highlight: false,
   },
+];
+
+
+export const aboutUsInfo = {
+  sections: [
+    {
+      title: "Neuroplasticity",
+      description:
+        "The brain has an incredible ability to reorganize itself by forming new neural connections throughout life. This process supports learning, problem-solving, and adaptation to new challenges. Activities designed to activate neuroplasticity can make practice more impactful over time.",
+      imageUrl: "about-01.png"
+    },
+    {
+      title: "Rhythmic Therapy",
+      description:
+        "Humans are naturally responsive to rhythm. By using rhythmic and repetitive patterns, the brain and nervous system can be regulated. Rhythmic therapy utilizes music to influence neural pathways, facilitating new learning behaviors through cognitive processing. This approach can reduce stress, improve focus, and enhance reading, writing, and speaking skills.",
+      imageUrl: "about-02.png"
+    },
+    {
+      title: "Dysgraphia Support",
+      description:
+        "Dysgraphia is a neurological condition that affects writing. Our tools offer structured practice to strengthen handwriting, written expression, and the motor skills that support the writing process.",
+      imageUrl: "about-03.png"
+    },
+    {
+      title: "Dyslexia Support",
+      description:
+        "Dyslexia, a neurobiological learning difference, can make reading, writing, and spelling difficult. We provide engaging activities that build fluency, comprehension, and language skills—helping learners overcome barriers with confidence.",
+      imageUrl: "about-04.png"
+    },
+  ]
+};
+
+export const achievements = [
+  {
+    title: "Daily Streak Hero",
+    description: "Practiced 7 days in a row without missing.",
+    status: "Unlocked",
+    icon: Flame
+  },
+  {
+    title: "Sentence Starter",
+    description: "Wrote your first 3-line story successfully.",
+    status: "Unlocked",
+    icon: PenLine
+  },
+  {
+    title: "Speaking Star",
+    description: "Learned 100 new words with perfect recall.",
+    status: "Unlocked",
+    icon: Mic
+  },
+  {
+    title: "Word Wizard",
+    description: "Learned 100 new words with perfect recall.",
+    status: "Unlocked",
+    icon: Sparkles
+  },
+  {
+    title: "Quick Learner",
+    description: "Finished all daily tasks in under 10 minutes.",
+    status: "Locked",
+    icon: Timer
+  },
+  {
+    title: "Phonics Pro",
+    description: "Complete 50 phoneme flashcards.",
+    status: "Locked",
+    icon: Volume2
+  },
+  {
+    title: "Comprehension Champ",
+    description: "Unlocked 20 comprehension exercises.",
+    status: "Locked",
+    icon: BookOpenCheck
+  },
+  {
+    title: "Reward Hunter",
+    description: "Unlocked 20 reward videos.",
+    status: "Locked",
+    icon: Gift
+  },
+  {
+    title: "Milestone Master",
+    description: "Unlocked 5 achievements in one month.",
+    status: "Locked",
+    icon: Medal
+  }
 ];

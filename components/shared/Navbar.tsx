@@ -34,11 +34,11 @@ const Navbar = () => {
       <div className="fixed top-0 inset-x-0 z-50 backdrop-blur-md py-2">
         <div className="app-container flex items-center justify-between py-4 md:py-5 xl:py-4">
           {/* Branding */}
-          <div className="text-center">
+          <Link href="/" className="text-center">
             <h1 className="inline-block text-3xl sm:text-4xl font-bold uppercase text-gradient tracking-tight">
               Manifex
             </h1>
-          </div>
+          </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex gap-8">
