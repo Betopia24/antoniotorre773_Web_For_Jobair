@@ -78,22 +78,22 @@ export default function Page() {
                 <ProgressBar
                   label="Reading Comprehension"
                   value={67}
-                  gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                  gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
                 />
                 <ProgressBar
                   label="Listening Skills"
                   value={54}
-                  gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                  gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
                 />
                 <ProgressBar
                   label="Speaking Confidence"
                   value={73}
-                  gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                  gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
                 />
                 <ProgressBar
                   label="Grammar Accuracy"
                   value={82}
-                  gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                  gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
                 />
               </div>
 
@@ -106,7 +106,7 @@ export default function Page() {
                   label="Reading Comprehension"
                   value={4}
                   max={5}
-                  gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                  gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
                 />
               </div>
             </div>
@@ -230,7 +230,7 @@ export default function Page() {
                         </span>
                       ) : (
                         <span className="text-sm rounded-lg px-4 py-1.5 text-gray-800 font-semibold bg-[#91919C]">
-                          Keep practicing to unlock
+                          Keep Practicing to Unlock
                         </span>
                       )}
                     </div>

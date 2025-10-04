@@ -234,7 +234,7 @@ const Tasks = () => {
                   key={pic.id}
                   onDrop={(e) => handleDrop(e, pic.id)}
                   onDragOver={handleDragOver}
-                  className={`relative p-2 h-24 sm:h-28 border-2 border-dashed rounded-xl flex items-center justify-center transition-colors duration-200 ${
+                  className={`relative p-2 h-24 sm:h-28 border-2 border-dashed border-gray-500 rounded-xl flex items-center justify-center transition-colors duration-200 ${
                     pic.matched
                       ? "bg-green-500"
                       : pic.word
