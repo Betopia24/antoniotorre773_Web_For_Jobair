@@ -48,10 +48,10 @@ const Footer = () => {
         <div className="w-full border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm gap-4">
           <p>© 2025 - All rights Reserved</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:underline">
+            <a href="/terms" className="hover:underline">
               Terms of Use
             </a>
-            <a href="#" className="hover:underline">
+            <a href="/policy" className="hover:underline">
               Privacy Policy
             </a>
           </div>
