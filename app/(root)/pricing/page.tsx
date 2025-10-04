@@ -1,10 +1,11 @@
 "use client";
 import Heading from "@/components/shared/Heading";
 import { plans } from "@/lib/constants";
+import { ArrowBigRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaArrowRightLong, FaCircleCheck } from "react-icons/fa6";
 
 export default function Page() {
   const [step, setStep] = useState<
@@ -88,7 +89,9 @@ export default function Page() {
                   </div>
 
                   <button className="inline-block mt-8 py-2.5 px-4 w-full rounded-xl font-semibold border border-gray-500 text-gradient hover:opacity-90 transition">
-                    <h1 className="text-gradient">Select Plan</h1>
+                    <h1 className="text-gradient">
+                      Start With {plan.title} Plan
+                    </h1>
                   </button>
                 </div>
               ))}
@@ -98,68 +101,105 @@ export default function Page() {
 
         {/* Step 2: Confirm Plan */}
         {step === "confirm" && selectedPlan && (
-          <div className="w-full flex flex-col lg:flex-row gap-8 items-start">
-            {/* Selected Plan Card */}
-            <div className="flex-1 p-6 rounded-xl border-[2px] border-gradient-to-br from-purple-500 via-pink-500 to-blue-500">
-              <h3 className="text-xl font-semibold mb-2">
-                {selectedPlan.title}
-              </h3>
-              <p className="text-3xl font-bold mb-1">{selectedPlan.price}</p>
-              <span className="text-gray-300 text-sm mb-4">
-                {selectedPlan.duration}
-              </span>
-              <ul className="flex flex-col gap-2">
-                {selectedPlan.features.map((f, i) => (
-                  <li key={i} className="flex items-center gap-2 text-gray-200">
-                    <FaCheck className="text-green-500" /> {f}
-                  </li>
-                ))}
-              </ul>
+          <div className="flex flex-col gap-6 w-full justify-center max-w-4xl">
+            <div className="w-full max-w-7xl mx-auto flex flex-col gap-3 mb-10 text-center md:text-start">
+              <h1 className="text-3xl sm:text-4xl font-semibold">
+                Confirm Your Plan
+              </h1>
+              <p className="text-base sm:text-lg">
+                Start your journey with our free trial, then choose the plan
+                that fits your learning goals
+              </p>
             </div>
 
-            {/* Plan Summary */}
-            <div className="flex-1 bg-[#1f1f36] rounded-xl p-6 flex flex-col gap-4">
-              <h3 className="text-xl font-semibold mb-4">Plan Summary</h3>
-              <div className="flex justify-between text-gray-300">
-                <span>Plan Selected</span>
-                <span>{selectedPlan.title}</span>
+            <div className="w-full flex flex-col md:flex-row gap-8 items-center justify-center">
+              {/* Left Section (40% width) */}
+              <div className="lg:w-[40%] flex justify-between flex-col">
+                <div className="w-full flex items-center justify-center mb-6">
+                  <h1 className="text-xl md:text-2xl font-semibold text-gradient">
+                    Selected Plan
+                  </h1>
+                </div>
+                <div className="p-6 rounded-xl border-[2px] border-gradient-to-br from-purple-500 via-pink-500 to-blue-500">
+                  <h3 className="text-xl font-semibold mb-3">
+                    {selectedPlan.title}
+                  </h3>
+                  <p className="text-3xl font-bold mb-2">
+                    {selectedPlan.price}
+                  </p>
+                  <p className="text-gray-300 text-sm mb-6">
+                    {selectedPlan.duration}
+                  </p>
+                  <ul className="flex flex-col gap-3">
+                    {selectedPlan.features.map((f, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-2 text-gray-200"
+                      >
+                        <FaCheck className="text-green-500" /> {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div className="flex justify-between text-gray-300">
-                <span>Billing Frequency</span>
-                <span>Monthly</span>
-              </div>
-              <div className="flex justify-between text-gray-300">
-                <span>Price</span>
-                <span>{selectedPlan.price}</span>
-              </div>
-              <div className="flex justify-between text-gray-300">
-                <span>Next Payment</span>
-                <span>
-                  {new Date().toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              <div className="flex justify-between font-semibold text-white text-lg mt-2">
-                <span>Total</span>
-                <span>{selectedPlan.price}</span>
-              </div>
+              {/* Right Section (60% width) */}
+              <div className="lg:w-[60%] bg-gradient-to-br from-[#2B2E4E] via-[#12132F] to-[#12132F] rounded-xl p-8 flex flex-col gap-4">
+                <h3 className="text-xl md:text-2xl font-semibold mb-2">
+                  Plan Summary
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-gray-300">
+                    <span>Plan Selected</span>
+                    <span className="text-white/80 font-semibold">
+                      {selectedPlan.title}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-gray-300">
+                    <span>Billing Frequency</span>
+                    <span className="text-white/80 font-semibold">Monthly</span>
+                  </div>
+                  <div className="flex justify-between text-gray-300">
+                    <span>Price</span>
+                    <span className="text-white/80 font-semibold">
+                      {selectedPlan.price}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-gray-300">
+                    <span>Next Payment</span>
+                    <span className="text-white/80 font-semibold">
+                      {new Date().toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                </div>
+                <div className="border border-gray-500" />
+                <div className="flex justify-between font-semibold text-white text-lg mt-2">
+                  <span>Total</span>
+                  <span className="text-white/80 font-semibold">
+                    {selectedPlan.price}
+                  </span>
+                </div>
 
-              {/* Buttons */}
-              <button
-                className="mt-4 py-2.5 w-full rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 font-semibold hover:opacity-90 transition"
-                onClick={handleNextConfirm}
-              >
-                Next
-              </button>
-              <button
-                className="mt-2 py-2.5 w-full rounded-xl border border-gray-500 text-gray-200 hover:opacity-90 transition"
-                onClick={() => setStep("pricing")}
-              >
-                Go Back
-              </button>
+                {/* Buttons */}
+                <button
+                  className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
+                  onClick={handleNextConfirm}
+                >
+                  Next
+                  <FaArrowRightLong className="w-5 h-5" />
+                </button>
+                <button
+                  className="relative mt-2 py-2.5 w-full rounded-xl bg-gradient-brand h-10 cursor-pointer"
+                  onClick={() => setStep("pricing")}
+                >
+                  <div className="absolute inset-[1px] bg-[#0B0C23] rounded-xl p-2 flex justify-center items-center">
+                    <h1 className="text-gradient font-semibold">Go Back</h1>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -225,7 +265,8 @@ export default function Page() {
                 Thank you, your MANIFEX subscription is now active.
               </p>
             </div>
-            <Link href='/'
+            <Link
+              href="/"
               className="py-2.5 px-4 w-full rounded-xl font-semibold bg-gradient-brand hover:opacity-90 transition"
             >
               Go to Home
