@@ -31,7 +31,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         </span>
       </div>
       <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-        <div className={`h-2 ${gradient}`} style={{ width: `${percent}%` }} />
+        <div className={`h-2 rounded-full ${gradient}`} style={{ width: `${percent}%` }} />
       </div>
     </div>
   );
@@ -77,22 +77,22 @@ const LearningProgress = () => {
               <ProgressBar
                 label="Reading Comprehension"
                 value={67}
-                gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
               />
               <ProgressBar
                 label="Listening Skills"
                 value={54}
-                gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
               />
               <ProgressBar
                 label="Speaking Confidence"
                 value={73}
-                gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
               />
               <ProgressBar
                 label="Grammar Accuracy"
                 value={82}
-                gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
               />
             </div>
 
@@ -105,7 +105,7 @@ const LearningProgress = () => {
                 label="Reading Comprehension"
                 value={4}
                 max={5}
-                gradient="bg-gradient-to-r from-black via-pink-600 to-orange-500"
+                gradient="bg-gradient-to-r from-[#001925] via-[#F27CB1] to-[#FBAAB1]"
               />
             </div>
           </div>

@@ -34,7 +34,7 @@ const Pricing = () => {
             >
               {/* Gradient border for highlighted card */}
               {plan.highlight && (
-                <div className="absolute inset-0 rounded-2xl p-[2px] bg-gradient-to-b from-pink-500 via-purple-500 to-blue-500 z-[-1]">
+                <div className="absolute inset-0 rounded-2xl p-[2px] bg-gradient-to-b from-gradient-from via-gradient-via to-gradient-to z-[-1]">
                   <div className="bg-[#171045] rounded-2xl h-full w-full"></div>
                 </div>
               )}
