@@ -4,8 +4,9 @@ import Heading from "../shared/Heading";
 import { BiVolumeFull } from "react-icons/bi";
 import { PiCheckFill } from "react-icons/pi";
 import { FaCheckCircle } from "react-icons/fa";
+import TaskHeader from "../shared/TaskHeader";
 
-const Tasks = () => {
+const ReadingTask = () => {
   // Task 01 state
   const [assembledWord, setAssembledWord] = useState("");
   const letters = ["A", "B", "C"];
@@ -98,19 +99,11 @@ const Tasks = () => {
 
         {/* Task 01 */}
         <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-8 rounded-xl shadow-lg flex flex-col gap-6">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-0">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">
-                Phoneme Flashcards
-              </h1>
-              <p className="text-sm sm:text-base text-gray-300">
-                Click the cards to hear the sound
-              </p>
-            </div>
-            <span className="flex items-center justify-center text-sm border border-gray-500 bg-gray-700 rounded-full px-4 py-1.5">
-              Task 01
-            </span>
-          </div>
+          <TaskHeader
+            title="Phoneme Flashcards"
+            description="Click the cards to hear the sound"
+            taskNumber={1}
+          />
 
           <div className="flex gap-6">
             {letters.map((letter, idx) => {
@@ -150,20 +143,11 @@ const Tasks = () => {
 
         {/* Task 02 */}
         <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-8 rounded-xl shadow-lg flex flex-col gap-6">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-0">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">
-                Sight Word Practice
-              </h1>
-              <p className="text-sm sm:text-base text-gray-300">
-                Click on all the sight words you see. Some words may appear more
-                than once.
-              </p>
-            </div>
-            <span className="flex items-center justify-center text-sm border border-gray-500 bg-gray-700 rounded-full px-4 py-1.5">
-              Task 02
-            </span>
-          </div>
+          <TaskHeader
+            title="Sight Word Practice"
+            description="Click on all the sight words you see. Some words may appear more than once."
+            taskNumber={2}
+          />
 
           <div className="flex flex-wrap items-center justify-center gap-2">
             {sentence.split(" ").map((word, idx) => {
@@ -196,19 +180,11 @@ const Tasks = () => {
 
         {/* Task 03 */}
         <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-8 rounded-xl shadow-lg flex flex-col gap-6">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-0">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">
-                Drag & Match Words
-              </h1>
-              <p className="text-sm sm:text-base text-gray-300">
-                Drag the word onto the correct picture
-              </p>
-            </div>
-            <span className="flex items-center justify-center text-sm border border-gray-500 bg-gray-700 rounded-full px-4 py-1.5">
-              Task 03
-            </span>
-          </div>
+          <TaskHeader
+            title="Drag & Match Words"
+            description="Drag the word onto the correct picture"
+            taskNumber={3}
+          />
 
           <div className="grid grid-cols-2 gap-4 w-full">
             {/* Word Cards */}
@@ -265,19 +241,11 @@ const Tasks = () => {
 
         {/* Task 04 */}
         <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-8 rounded-xl shadow-lg flex flex-col gap-6">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-0">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-semibold">
-                Reading Comprehension
-              </h1>
-              <p className="text-sm sm:text-base text-gray-300">
-                Read the passage and answer the questions
-              </p>
-            </div>
-            <span className="flex items-center justify-center text-sm border border-gray-500 bg-gray-700 rounded-full px-4 py-1.5">
-              Task 04
-            </span>
-          </div>
+          <TaskHeader
+            title="Reading Comprehension"
+            description="Read the passage and answer the questions"
+            taskNumber={4}
+          />
 
           {/* Responsive 2-column layout */}
           <div className="flex flex-col lg:flex-row gap-6 w-full">
@@ -368,4 +336,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default ReadingTask;
