@@ -80,19 +80,25 @@ const WritingTask = () => {
         />
 
         <div className="w-full flex flex-col gap-8">
-          <div className="flex flex-wrap gap-4">
-            {words.map((word, idx) => (
-              <button
-                key={idx}
-                className={`px-4 py-2 rounded-lg bg-gradient-to-r from-[#2D2F4A] to-[#2D2F4A] via-[#2D2F4A] hover:from-gradient-from hover:via-gradient-via hover:to-gradient-to border-gray-500 font-semibold cursor-pointer ${
-                  selectedWords.includes(word) ? "bg-blue-500" : ""
-                }`}
-                onClick={() => handleWordSelect(word)}
-              >
-                {word}
-              </button>
-            ))}
-          </div>
+{/* Word Selection */}
+<div className="flex flex-wrap gap-4">
+  {words.map((word, idx) => (
+    <button
+      key={idx}
+      className={`px-4 py-2 rounded-lg 
+        border-gray-500 font-semibold cursor-pointer 
+        transition duration-300 ease-in-out
+        ${selectedWords.includes(word) 
+          ? 'bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD]' // Selected word gradient
+          : 'bg-[#2D2F4A] hover:bg-gradient-to-r hover:from-[#FFBC6F] hover:via-[#F176B7] hover:to-[#3797CD]'} // Default non-selected hover
+      `}
+      onClick={() => handleWordSelect(word)}
+    >
+      {word}
+    </button>
+  ))}
+</div>
+
 
           {/* Task */}
           <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-6 rounded-xl shadow-lg flex flex-col gap-6">
