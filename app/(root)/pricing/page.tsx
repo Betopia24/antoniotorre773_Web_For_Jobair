@@ -206,13 +206,13 @@ export default function Page() {
 
         {/* Step 3: Billing */}
         {step === "billing" && selectedPlan && (
-          <div className="w-full max-w-7xl mx-auto flex gap-8">
+          <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
             {/* Left Form - Personal Info */}
             <div className="flex-1 bg-[#232339] p-8 rounded-xl">
               <h2 className="text-xl sm:text-2xl font-semibold mb-8">
                 Personal Information
               </h2>
-              <div className="flex gap-4">
+              <div className="flex flex-col lg:flex-row gap-4">
                 <input
                   type="text"
                   placeholder="First Name"
@@ -235,7 +235,7 @@ export default function Page() {
                   }
                 />
               </div>
-              <div className="flex gap-4 mt-4">
+              <div className="flex flex-col lg:flex-row gap-4 mt-4">
                 <input
                   type="text"
                   placeholder="Phone"
@@ -276,7 +276,7 @@ export default function Page() {
                   }
                 />
               </div>
-              <div className="flex gap-4 mt-4">
+              <div className="flex flex-col lg:flex-row gap-4 mt-4">
                 <input
                   type="text"
                   placeholder="City"
@@ -325,7 +325,7 @@ export default function Page() {
                     })
                   }
                 />
-                <div className="flex gap-4 mt-2">
+                <div className="flex flex-col lg:flex-row gap-4 mt-2">
                   <input
                     type="text"
                     placeholder="MM/YY"
@@ -373,7 +373,7 @@ export default function Page() {
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-4 flex flex-col gap-2">
+                <div className="mt-4 flex flex-col gap-4">
                   <button
                     className="w-full py-2.5 rounded-xl bg-gradient-brand text-white font-semibold hover:opacity-90 transition"
                     onClick={handlePayNow}
