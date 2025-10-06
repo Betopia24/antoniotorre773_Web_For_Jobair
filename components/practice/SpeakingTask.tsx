@@ -2,8 +2,6 @@ import React from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import Heading from "../shared/Heading";
 import TaskHeader from "../shared/TaskHeader";
-import { BiMicrophone } from "react-icons/bi";
-import { HeadphoneOff } from "lucide-react";
 import { FaCheck, FaHeadphones, FaMicrophone } from "react-icons/fa";
 import { FiRefreshCcw } from "react-icons/fi";
 import { GiSpeaker } from "react-icons/gi";
@@ -20,7 +18,7 @@ const SpeakingTask = () => {
           align="left"
         />
 
-        <div className="w-full grid grid-cols-2 gap-6">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Task 01 */}
           <div className="w-full bg-[#2D2F4A] text-white p-6 rounded-xl shadow-lg flex flex-col gap-6">
             <TaskHeader
@@ -222,7 +220,7 @@ const SpeakingTask = () => {
             <FaCircleCheck className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg text-green-500 font-semibold">
-            Well done Jobair! You've finished today's reading session
+            Well done Jobair! You've finished today's speaking session
           </span>
         </div>
       </div>
