@@ -2,11 +2,23 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-const RegisterStepFour: React.FC = () => {
-  // Set the default hobbies selection as an empty array
-  const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
+interface RegisterStepFourProps {
+  data: {
+    selectedHobbies: string[];
+  };
+  updateData: (data: { selectedHobbies: string[] }) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+}
 
-  // Array of hobbies to populate the buttons
+const RegisterStepFour: React.FC<RegisterStepFourProps> = ({ 
+  data, 
+  updateData, 
+  nextStep, 
+  prevStep 
+}) => {
+  const [selectedHobbies, setSelectedHobbies] = useState<string[]>(data.selectedHobbies);
+
   const hobbies: string[] = [
     "Reading",
     "Traveling",
@@ -19,14 +31,18 @@ const RegisterStepFour: React.FC = () => {
     "Fitness",
   ];
 
-  // Handle hobby selection (toggle button selection)
   const handleHobbySelect = (hobby: string): void => {
-    setSelectedHobbies(
-      (prevHobbies) =>
-        prevHobbies.includes(hobby)
-          ? prevHobbies.filter((item) => item !== hobby) // Unselect hobby if already selected
-          : [...prevHobbies, hobby] // Select hobby
-    );
+    const newHobbies = selectedHobbies.includes(hobby)
+      ? selectedHobbies.filter((item) => item !== hobby)
+      : [...selectedHobbies, hobby];
+    
+    setSelectedHobbies(newHobbies);
+    updateData({ selectedHobbies: newHobbies });
+  };
+
+  const handleNext = () => {
+    // You can add validation here if needed, e.g., minimum number of hobbies
+    nextStep();
   };
 
   return (
@@ -67,33 +83,42 @@ const RegisterStepFour: React.FC = () => {
             <h1 className="text-white text-xl mb-2 font-semibold">Select Hobbies & Interests</h1>
 
             {/* Word Selection */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 justify-center">
               {hobbies.map((hobby, idx) => (
                 <button
                   key={idx}
-                  className={`px-4 py-2 rounded-lg text-sm
-                    border-gray-500 font-semibold cursor-pointer 
-                    transition duration-300 ease-in-out
-                    ${
-                      selectedHobbies.includes(hobby)
-                        ? "bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD]" // Selected hobby gradient
-                        : "bg-[#2D2F4A] hover:bg-gradient-to-r hover:from-[#FFBC6F] hover:via-[#F176B7] hover:to-[#3797CD]" // Default non-selected hover
-                    }`}
+                  type="button"
+                  className={`px-4 py-2 rounded-lg text-sm border-gray-500 font-semibold cursor-pointer transition duration-300 ease-in-out ${
+                    selectedHobbies.includes(hobby)
+                      ? "bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white"
+                      : "bg-[#2D2F4A] text-gray-300 hover:bg-gradient-to-r hover:from-[#FFBC6F] hover:via-[#F176B7] hover:to-[#3797CD] hover:text-white"
+                  }`}
                   onClick={() => handleHobbySelect(hobby)}
                 >
                   {hobby}
                 </button>
               ))}
             </div>
+            <p className="text-gray-400 text-sm mt-2">
+              Selected: {selectedHobbies.length} {selectedHobbies.length === 1 ? 'hobby' : 'hobbies'}
+            </p>
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full mt-10 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
-        >
-          Next
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={prevStep}
+            className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          >
+            Back
+          </button>
+          <button
+            onClick={handleNext}
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

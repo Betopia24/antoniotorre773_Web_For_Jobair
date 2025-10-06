@@ -2,11 +2,23 @@
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
 
-const RegisterStepThree: React.FC = () => {
-  // Set the default age group to "18-24"
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>("18-24");
+interface RegisterStepThreeProps {
+  data: {
+    selectedAgeGroup: string;
+  };
+  updateData: (data: { selectedAgeGroup: string }) => void;
+  nextStep: () => void;
+  prevStep: () => void;
+}
 
-  // Array of age groups to populate the dropdown
+const RegisterStepThree: React.FC<RegisterStepThreeProps> = ({ 
+  data, 
+  updateData, 
+  nextStep, 
+  prevStep 
+}) => {
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(data.selectedAgeGroup);
+
   const ageGroups: string[] = [
     "Under 18",
     "18-24",
@@ -15,9 +27,16 @@ const RegisterStepThree: React.FC = () => {
     "45+",
   ];
 
-  // Handle age group selection
   const handleAgeGroupChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    setSelectedAgeGroup(e.target.value);
+    const newAgeGroup = e.target.value;
+    setSelectedAgeGroup(newAgeGroup);
+    updateData({ selectedAgeGroup: newAgeGroup });
+  };
+
+  const handleNext = () => {
+    if (selectedAgeGroup) {
+      nextStep();
+    }
   };
 
   return (
@@ -77,12 +96,21 @@ const RegisterStepThree: React.FC = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full mt-10 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
-        >
-          Next
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={prevStep}
+            className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          >
+            Back
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={!selectedAgeGroup}
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );

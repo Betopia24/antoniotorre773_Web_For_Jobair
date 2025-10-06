@@ -3,8 +3,22 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 
-const RegisterStepFive: React.FC = () => {
-  // Array of avatars
+interface RegisterStepFiveProps {
+  data: {
+    selectedAvatarIndex: number;
+    selectedAvatar: string;
+  };
+  updateData: (data: { selectedAvatarIndex: number; selectedAvatar: string }) => void;
+  prevStep: () => void;
+  onSubmit: () => void;
+}
+
+const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({ 
+  data, 
+  updateData, 
+  prevStep, 
+  onSubmit 
+}) => {
   const avatars: string[] = [
     "/avatar.png",
     "/about-01.png",
@@ -12,18 +26,33 @@ const RegisterStepFive: React.FC = () => {
     "/avatar.png",
   ];
 
-  // State to manage the selected avatar
-  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number>(0);
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number>(data.selectedAvatarIndex);
 
-  // Handle Avatar Navigation (Left/Right buttons)
   const goToNextAvatar = () => {
-    setSelectedAvatarIndex((prevIndex) => (prevIndex + 1) % avatars.length);
+    const newIndex = (selectedAvatarIndex + 1) % avatars.length;
+    setSelectedAvatarIndex(newIndex);
+    updateData({ 
+      selectedAvatarIndex: newIndex, 
+      selectedAvatar: avatars[newIndex] 
+    });
   };
 
   const goToPreviousAvatar = () => {
-    setSelectedAvatarIndex(
-      (prevIndex) => (prevIndex - 1 + avatars.length) % avatars.length
-    );
+    const newIndex = (selectedAvatarIndex - 1 + avatars.length) % avatars.length;
+    setSelectedAvatarIndex(newIndex);
+    updateData({ 
+      selectedAvatarIndex: newIndex, 
+      selectedAvatar: avatars[newIndex] 
+    });
+  };
+
+  const handleSubmit = () => {
+    // Final update before submission
+    updateData({ 
+      selectedAvatarIndex, 
+      selectedAvatar: avatars[selectedAvatarIndex] 
+    });
+    onSubmit();
   };
 
   return (
@@ -45,34 +74,32 @@ const RegisterStepFive: React.FC = () => {
           {/* Left Button */}
           <button
             onClick={goToPreviousAvatar}
-            className="absolute left-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition"
+            className="absolute left-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10"
           >
             <ChevronLeft className="w-6 h-6"/>
           </button>
 
           {/* Avatar Image */}
-          <div
-            className="w-[350px] h-[350px] relative overflow-hidden rounded-lg"
-          >
+          <div className="w-[350px] h-[350px] relative overflow-hidden rounded-lg">
             <Image
               src={avatars[selectedAvatarIndex]}
               alt={`Avatar ${selectedAvatarIndex + 1}`}
-              layout="fill"
-              objectFit="cover"
-              className="w-full h-full"
+              fill
+              className="object-cover w-full h-full"
+              priority
             />
           </div>
 
           {/* Right Button */}
           <button
             onClick={goToNextAvatar}
-            className="absolute right-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition"
+            className="absolute right-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10"
           >
             <ChevronRight className="w-6 h-6"/>
           </button>
         </div>
 
-        {/* Avatar Selection Indicator
+        {/* Avatar Selection Indicator */}
         <div className="mt-4 flex justify-center gap-2">
           {avatars.map((_, index) => (
             <div
@@ -82,15 +109,22 @@ const RegisterStepFive: React.FC = () => {
               }`}
             ></div>
           ))}
-        </div> */}
+        </div>
 
-        {/* Create Profile Button */}
-        <button
-          type="submit"
-          className="w-full mt-10 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
-        >
-          Create my profile
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={prevStep}
+            className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          >
+            Back
+          </button>
+          <button
+            onClick={handleSubmit}
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          >
+            Create my profile
+          </button>
+        </div>
       </div>
     </div>
   );

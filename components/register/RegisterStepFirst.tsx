@@ -2,11 +2,17 @@
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
 
-const RegisterStepFirst = () => {
-  // Set the default language to "English"
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("English");
+interface RegisterStepFirstProps {
+  data: {
+    selectedLanguage: string;
+  };
+  updateData: (data: { selectedLanguage: string }) => void;
+  nextStep: () => void;
+}
 
-  // Array of languages to populate the dropdown (you can add more languages)
+const RegisterStepFirst = ({ data, updateData, nextStep }: RegisterStepFirstProps) => {
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(data.selectedLanguage);
+
   const languages: string[] = [
     "English",
     "Spanish",
@@ -15,9 +21,16 @@ const RegisterStepFirst = () => {
     "Italian",
   ];
 
-  // Handle language selection
   const handleLanguageChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    setSelectedLanguage(e.target.value);
+    const newLanguage = e.target.value;
+    setSelectedLanguage(newLanguage);
+    updateData({ selectedLanguage: newLanguage });
+  };
+
+  const handleNext = () => {
+    if (selectedLanguage) {
+      nextStep();
+    }
   };
 
   return (
@@ -31,7 +44,7 @@ const RegisterStepFirst = () => {
           </div>
 
           <p className="text-center text-lg text-gray-300">
-            Welcome to MANIFEX! Let’s start your language journey today.
+            Welcome to MANIFEX! Let's start your language journey today.
           </p>
         </div>
 
@@ -78,8 +91,9 @@ const RegisterStepFirst = () => {
         </div>
 
         <button
-          type="submit"
-          className="w-full mt-10 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+          onClick={handleNext}
+          disabled={!selectedLanguage}
+          className="w-full mt-10 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>
