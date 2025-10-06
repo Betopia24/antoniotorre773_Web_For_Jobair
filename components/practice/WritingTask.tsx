@@ -68,6 +68,9 @@ const WritingTask = () => {
     ? circleCircumference - (score / 10) * circleCircumference
     : 0;
 
+  // Both word selection and writing are required to enable the button
+  const isButtonDisabled = selectedWords.length === 0 || writing.trim() === "";
+
   return (
     <div className="py-20 bg-section-dark">
       <div className="app-container flex flex-col items-start gap-12 w-full">
@@ -80,25 +83,26 @@ const WritingTask = () => {
         />
 
         <div className="w-full flex flex-col gap-8">
-{/* Word Selection */}
-<div className="flex flex-wrap gap-4">
-  {words.map((word, idx) => (
-    <button
-      key={idx}
-      className={`px-4 py-2 rounded-lg 
+          {/* Word Selection */}
+          <div className="flex flex-wrap gap-4">
+            {words.map((word, idx) => (
+              <button
+                key={idx}
+                className={`px-4 py-2 rounded-lg 
         border-gray-500 font-semibold cursor-pointer 
         transition duration-300 ease-in-out
-        ${selectedWords.includes(word) 
-          ? 'bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD]' // Selected word gradient
-          : 'bg-[#2D2F4A] hover:bg-gradient-to-r hover:from-[#FFBC6F] hover:via-[#F176B7] hover:to-[#3797CD]'} // Default non-selected hover
+        ${
+          selectedWords.includes(word)
+            ? "bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD]" // Selected word gradient
+            : "bg-[#2D2F4A] hover:bg-gradient-to-r hover:from-[#FFBC6F] hover:via-[#F176B7] hover:to-[#3797CD]"
+        } // Default non-selected hover
       `}
-      onClick={() => handleWordSelect(word)}
-    >
-      {word}
-    </button>
-  ))}
-</div>
-
+                onClick={() => handleWordSelect(word)}
+              >
+                {word}
+              </button>
+            ))}
+          </div>
 
           {/* Task */}
           <div className="w-full bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-6 rounded-xl shadow-lg flex flex-col gap-6">
@@ -125,7 +129,13 @@ const WritingTask = () => {
             <div className="w-full flex items-center justify-center">
               <button
                 onClick={handleCheckWriting}
-                className="flex items-center justify-center px-6 py-2 gap-2 rounded-xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-bold text-white text-sm sm:text-base md:text-lg cursor-pointer shadow-lg transition"
+                className={`flex items-center justify-center px-6 py-2 gap-2 rounded-xl font-bold text-sm sm:text-base md:text-lg cursor-pointer shadow-lg transition duration-300 ease-in-out
+                  ${
+                    isButtonDisabled
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to text-white"
+                  }`}
+                disabled={isButtonDisabled}
               >
                 Check My Writing with AI
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
