@@ -18,9 +18,6 @@ export const metadata: Metadata = {
     "MAINFEX is a personalized, AI-powered language learning platform that helps users improve their English skills through guided, fun, and rewarding practice.",
   keywords:
     "AI language learning, English tutor, dyslexia support, interactive reading, phoneme recognition, pronunciation coaching, learn English with AI, progress tracking, personalized English tutor",
-  viewport: "width=device-width, initial-scale=1.0",
-  themeColor: "#4C8BF5", // Set the theme color based on your brand colors
-  robots: "index, follow", // Helps search engines know how to crawl your site
   openGraph: {
     title: "MAINFEX - AI-Powered English Learning Platform",
     description:
@@ -29,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "MAINFEX",
     images: [
       {
-        url: "https://mainfex.com/avatar.jpg",
+        url: "https://mainfex.com/avatar.png",
         width: 1200,
         height: 630,
         alt: "MAINFEX Logo",
@@ -52,6 +49,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+};
+
+// Move viewport to the special generateViewport export
+export const generateViewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({
