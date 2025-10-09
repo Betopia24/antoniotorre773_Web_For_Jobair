@@ -46,7 +46,7 @@ const Hero = () => {
               {/* Button */}
               <a
                 href="#"
-                className="mt-10 inline-block w-full text-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 rounded-2xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-semibold text-white text-sm sm:text-base md:text-lg shadow-lg transition hover:opacity-90"
+                className="mt-10 inline-block w-full text-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3 xl:px-10 rounded-2xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-semibold text-white text-sm sm:text-base md:text-lg shadow-lg transition hover:opacity-90"
               >
                 Start {feature.title.split(" ")[0]}
               </a>

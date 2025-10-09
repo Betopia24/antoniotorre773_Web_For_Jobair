@@ -8,16 +8,19 @@ interface RegisterStepFiveProps {
     selectedAvatarIndex: number;
     selectedAvatar: string;
   };
-  updateData: (data: { selectedAvatarIndex: number; selectedAvatar: string }) => void;
+  updateData: (data: {
+    selectedAvatarIndex: number;
+    selectedAvatar: string;
+  }) => void;
   prevStep: () => void;
   onSubmit: () => void;
 }
 
-const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({ 
-  data, 
-  updateData, 
-  prevStep, 
-  onSubmit 
+const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
+  data,
+  updateData,
+  prevStep,
+  onSubmit,
 }) => {
   const avatars: string[] = [
     "/avatar.png",
@@ -26,31 +29,34 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
     "/avatar.png",
   ];
 
-  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number>(data.selectedAvatarIndex);
+  const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number>(
+    data.selectedAvatarIndex
+  );
 
   const goToNextAvatar = () => {
     const newIndex = (selectedAvatarIndex + 1) % avatars.length;
     setSelectedAvatarIndex(newIndex);
-    updateData({ 
-      selectedAvatarIndex: newIndex, 
-      selectedAvatar: avatars[newIndex] 
+    updateData({
+      selectedAvatarIndex: newIndex,
+      selectedAvatar: avatars[newIndex],
     });
   };
 
   const goToPreviousAvatar = () => {
-    const newIndex = (selectedAvatarIndex - 1 + avatars.length) % avatars.length;
+    const newIndex =
+      (selectedAvatarIndex - 1 + avatars.length) % avatars.length;
     setSelectedAvatarIndex(newIndex);
-    updateData({ 
-      selectedAvatarIndex: newIndex, 
-      selectedAvatar: avatars[newIndex] 
+    updateData({
+      selectedAvatarIndex: newIndex,
+      selectedAvatar: avatars[newIndex],
     });
   };
 
   const handleSubmit = () => {
     // Final update before submission
-    updateData({ 
-      selectedAvatarIndex, 
-      selectedAvatar: avatars[selectedAvatarIndex] 
+    updateData({
+      selectedAvatarIndex,
+      selectedAvatar: avatars[selectedAvatarIndex],
     });
     onSubmit();
   };
@@ -74,9 +80,9 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
           {/* Left Button */}
           <button
             onClick={goToPreviousAvatar}
-            className="absolute left-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10"
+            className="absolute left-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10 cursor-pointer"
           >
-            <ChevronLeft className="w-6 h-6"/>
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
           {/* Avatar Image */}
@@ -93,9 +99,9 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
           {/* Right Button */}
           <button
             onClick={goToNextAvatar}
-            className="absolute right-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10"
+            className="absolute right-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10 cursor-pointer"
           >
-            <ChevronRight className="w-6 h-6"/>
+            <ChevronRight className="w-6 h-6" />
           </button>
         </div>
 
@@ -105,7 +111,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
             <div
               key={index}
               className={`w-3 h-3 rounded-full ${
-                selectedAvatarIndex === index ? 'bg-[#F176B7]' : 'bg-gray-400'
+                selectedAvatarIndex === index ? "bg-gradient-brand" : "bg-gray-400"
               }`}
             ></div>
           ))}
@@ -114,13 +120,13 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
         <div className="flex gap-3">
           <button
             onClick={prevStep}
-            className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+            className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
           >
             Back
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
           >
             Create my profile
           </button>

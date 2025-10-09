@@ -119,7 +119,7 @@ export default function SignIn() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
               placeholder="you@example.com"
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
@@ -135,7 +135,7 @@ export default function SignIn() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
               placeholder="••••••••"
             />
             {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
