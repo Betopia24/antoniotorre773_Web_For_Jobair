@@ -8,6 +8,8 @@ import LearningProgress from "@/components/landing/LearningProgress";
 import Pricing from "@/components/landing/Pricing";
 import Image from "next/image";
 import IntroVideo from "@/components/landing/IntroVideo";
+import Review from "@/components/landing/Review";
+import About from "@/components/landing/About";
 
 export default function Home() {
   const [isVideoFinished, setIsVideoFinished] = useState(false);
@@ -24,6 +26,8 @@ export default function Home() {
           <Hero />
           <Features />
           <LearningProgress />
+          <About />
+          <Review />
           <Pricing />
           <FAQ />
         </>

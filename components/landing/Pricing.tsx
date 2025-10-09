@@ -8,6 +8,7 @@ import {
   FaUndo,
 } from "react-icons/fa";
 import { plans } from "@/lib/constants";
+import Link from "next/link";
 
 const Pricing = () => {
   return (
@@ -58,15 +59,28 @@ const Pricing = () => {
                 </ul>
               </div>
 
-              <button
-                className={`inline-block mt-8 py-2.5 px-4 w-full rounded-xl font-semibold ${
-                  plan.highlight
-                    ? "bg-gradient-brand text-white"
-                    : "border border-gray-500 text-gradient"
-                } hover:opacity-90 transition`}
-              >
-                {plan.buttonText}
-              </button>
+              {/* Buttons */}
+              {idx === 1 ? (
+                <Link
+                  href="/pricing"
+                  className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
+                >
+                  Start With {plan.title} Plan
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/pricing"
+                    className="relative mt-2 py-2.5 w-full rounded-xl bg-gradient-brand h-[44px] cursor-pointer"
+                  >
+                    <div className="absolute inset-[1px] bg-gradient-to-br from-[#2E2E43] via-[#2C2C41] to-[#27273B] rounded-xl p-2 flex justify-center items-center">
+                      <h1 className="text-gradient font-semibold">
+                        Start With {plan.title} Plan
+                      </h1>
+                    </div>
+                  </Link>
+                </>
+              )}
             </div>
           ))}
         </div>
