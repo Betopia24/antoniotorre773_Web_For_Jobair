@@ -27,14 +27,14 @@ export default function Page() {
   ) => {
     const value = e.target.value;
 
-    // Allow only one character at a time, and make sure it's a digit
-    if (value.length <= 1 && /^[0-9]$/.test(value)) {
+    // Allow only numbers
+    if (/^\d?$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Automatically move focus to the next input if the current one is filled
-      if (index < 5 && value) {
+      // Move focus to next field only if a number was entered
+      if (value && index < 5) {
         inputRefs.current[index + 1]?.focus();
       }
     }
@@ -76,6 +76,10 @@ export default function Page() {
       setLoading(false);
       setSuccess(true); // Set success to true when OTP is verified
     }, 2000); // Simulate delay in OTP verification (2 seconds)
+  };
+
+  const handleResend = () => {
+    console.log("Resend OTP");
   };
 
   const handleSignInRedirect = () => {
@@ -131,15 +135,16 @@ export default function Page() {
                 {otp.map((digit, index) => (
                   <input
                     key={index}
-                    ref={(el) => (inputRefs.current[index] = el!)} // Set a ref for each input
-                    id={`otp-input-${index}`} // Set an id to focus the next input
+                    ref={(el) => {
+                      inputRefs.current[index] = el!;
+                    }}
+                    id={`otp-input-${index}`}
                     type="text"
                     maxLength={1}
                     value={digit}
                     onChange={(e) => handleInputChange(e, index)}
-                    onKeyDown={(e) => handleBackspace(e, index)} // Handle backspace for removing
+                    onKeyDown={(e) => handleBackspace(e, index)}
                     className="w-12 h-12 text-center bg-[#333450] text-white rounded-xl border border-gray-500 focus:outline-none"
-                    placeholder="-"
                   />
                 ))}
               </div>
@@ -150,7 +155,7 @@ export default function Page() {
                 <h1>
                   Didn't receive the code?{" "}
                   <button
-                    onClick={() => console.log("Write a dummy function")}
+                    onClick={handleResend}
                     className="text-gradient font-semibold"
                   >
                     Resend
