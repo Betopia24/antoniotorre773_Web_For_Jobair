@@ -4,6 +4,7 @@ import RegisterStepSecond from "@/components/register/RegisterStepSecond";
 import RegisterStepThree from "@/components/register/RegisterStepThree";
 import RegisterStepFour from "@/components/register/RegisterStepFour";
 import RegisterStepFive from "@/components/register/RegisterStepFive";
+import RegisterStepOTP from "@/components/register/RegisterStepOTP";
 import React, { useState } from "react";
 
 // Define the complete data structure for all steps
@@ -27,6 +28,10 @@ export interface RegisterData {
   step5: {
     selectedAvatarIndex: number;
     selectedAvatar: string;
+  };
+  stepOTP: {
+    otp: string[];
+    verified: boolean;
   };
 }
 
@@ -53,27 +58,31 @@ export default function SignUp() {
       selectedAvatarIndex: 0,
       selectedAvatar: "/avatar.png",
     },
+    stepOTP: {
+      otp: ["", "", "", "", "", ""],
+      verified: false,
+    },
   });
 
   const updateFormData = (step: keyof RegisterData, data: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [step]: { ...prev[step], ...data }
+      [step]: { ...prev[step], ...data },
     }));
   };
 
   const nextStep = () => {
-    setCurrentStep(prev => prev + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
-    setCurrentStep(prev => prev - 1);
+    setCurrentStep((prev) => prev - 1);
   };
 
   const handleSubmit = () => {
     console.log("Final form data:", formData);
-    // Here you would typically send the data to your backend
-    alert("Registration completed! Check console for form data.");
+    // Move to OTP verification step
+    nextStep();
   };
 
   const renderCurrentStep = () => {
@@ -120,6 +129,15 @@ export default function SignUp() {
             updateData={(data) => updateFormData("step5", data)}
             prevStep={prevStep}
             onSubmit={handleSubmit}
+          />
+        );
+      case 6:
+        return (
+          <RegisterStepOTP
+            data={formData.stepOTP}
+            userData={formData}
+            updateData={(data) => updateFormData("stepOTP", data)}
+            prevStep={prevStep}
           />
         );
       default:
