@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { z } from "zod";
-import axios from "axios";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { authApi } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/authStore";
 
 // Zod schema for form validation
 const signInSchema = z.object({
@@ -14,6 +16,9 @@ const signInSchema = z.object({
 });
 
 export default function SignIn() {
+  const router = useRouter();
+  const { login, setUser, setLoading: setStoreLoading } = useAuthStore();
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -46,23 +51,45 @@ export default function SignIn() {
     }
 
     setLoading(true);
+    setStoreLoading(true);
 
     try {
-      console.log("Login Data: ", formData)
-      // const response = await axios.post("/api/auth/signin", formData, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-
-      // setSuccessMessage("Successfully logged in!");
-      // console.log("API Response:", response.data);
-      // e.g. redirect: window.location.href = "/dashboard";
-    } catch (error) {
-      setApiError("An error occurred. Please try again later.");
-      console.error(error);
+      console.log("Login Data: ", formData);
+      
+      // Call login API
+      const loginResponse = await authApi.login(formData.email, formData.password);
+      
+      if (loginResponse.success) {
+        // Store the access token
+        login(loginResponse.data.accessToken);
+        
+        // Get user profile
+        const profileResponse = await authApi.getProfile();
+        
+        if (profileResponse.success) {
+          setUser(profileResponse.data);
+          setSuccessMessage("Successfully logged in!");
+          console.log("User Profile:", profileResponse.data);
+          
+          // Redirect to dashboard after successful login
+          setTimeout(() => {
+            router.push("/profile");
+          }, 1000);
+        } else {
+          setApiError("Failed to fetch user profile");
+        }
+      } else {
+        setApiError(loginResponse.message || "Login failed");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setApiError(
+        error.response?.data?.message || 
+        "An error occurred. Please try again later."
+      );
     } finally {
       setLoading(false);
+      setStoreLoading(false);
     }
   };
 
@@ -75,17 +102,17 @@ export default function SignIn() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2">
-        <div className="text-center">
-          <h1 className="inline-block text-3xl sm:text-4xl md:text-5xl font-bold uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
-            Manifex
-          </h1>
-        </div>
+          <div className="text-center">
+            <h1 className="inline-block text-3xl sm:text-4xl md:text-5xl font-bold uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
+              Manifex
+            </h1>
+          </div>
 
           <p className="text-center text-lg text-gray-300">
-            Welcome to MANIFEX! Let’s start your language journey today.
+            Welcome to MANIFEX! Let's start your language journey today.
           </p>
         </div>
 
