@@ -30,6 +30,7 @@ export default function Page() {
   const [hobby, setHobby] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Function to simulate API call
   const handleSaveProfile = () => {
@@ -108,7 +109,7 @@ export default function Page() {
                   placeholder="John"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -121,7 +122,7 @@ export default function Page() {
                   placeholder="Doe"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
             </div>
@@ -137,7 +138,7 @@ export default function Page() {
                   placeholder="English"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -150,7 +151,7 @@ export default function Page() {
                   placeholder="Photography"
                   value={hobby}
                   onChange={(e) => setHobby(e.target.value)}
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
             </div>
@@ -189,8 +190,8 @@ export default function Page() {
               <h1 className="text-xl sm:text-2xl font-semibold">Security</h1>
               <p className="text-gray-300 mt-2">Change your password from here.</p>
             </div>
-            <div className="mt-4 flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
+            <div className="mt-4 flex flex-col gap-2">
+              <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="currentPassword"
                   className="text-sm text-gray-300"
@@ -203,10 +204,10 @@ export default function Page() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter your current password"
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1.5">
                 <label htmlFor="newPassword" className="text-sm text-gray-300">
                   New Password
                 </label>
@@ -216,7 +217,20 @@ export default function Page() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter your new password"
-                  className="p-3 border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="confirmPassword" className="text-sm text-gray-300">
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Enter your new password"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
                 />
               </div>
               <button
