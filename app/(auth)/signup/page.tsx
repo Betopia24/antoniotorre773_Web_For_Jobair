@@ -6,6 +6,7 @@ import RegisterStepFour from "@/components/register/RegisterStepFour";
 import RegisterStepFive from "@/components/register/RegisterStepFive";
 import RegisterStepOTP from "@/components/register/RegisterStepOTP";
 import React, { useState } from "react";
+import { ProtectedAuthRoute } from "@/components/shared/ProtectedAuthRoute";
 
 // Define the complete data structure for all steps
 export interface RegisterData {
@@ -35,7 +36,7 @@ export interface RegisterData {
   };
 }
 
-export default function SignUp() {
+function SignUp() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<RegisterData>({
     step1: {
@@ -147,3 +148,5 @@ export default function SignUp() {
 
   return <>{renderCurrentStep()}</>;
 }
+
+export default ProtectedAuthRoute(SignUp);

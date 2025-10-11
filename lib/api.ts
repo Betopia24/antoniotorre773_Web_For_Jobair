@@ -69,4 +69,26 @@ export const authApi = {
         const response = await api.put('/auth/change-password', passwordData);
         return response.data;
     },
+
+    forgotPassword: async (email: string) => {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+    },
+
+    verifyResetPasswordOtp: async (email: string, otp: string) => {
+        const response = await api.post('/auth/verify-reset-password-otp', {
+            email,
+            otp
+        });
+        return response.data;
+    },
+
+    resetPassword: async (email: string, newPassword: string, confirmPassword: string) => {
+        const response = await api.post('/auth/reset-password', {
+            email,
+            newPassword,
+            confirmPassword
+        });
+        return response.data;
+    },
 };
