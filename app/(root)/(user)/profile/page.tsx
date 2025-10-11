@@ -28,7 +28,7 @@ const myPlan = [
 
 export default function Page() {
   const router = useRouter();
-  const { user, accessToken, logout: storeLogout, setUser } = useAuthStore();
+  const { user, accessToken, logout: storeLogout, setUser, isAuthenticated } = useAuthStore();
 
   // Local state for user info and password
   const [firstName, setFirstName] = useState("");
@@ -40,17 +40,32 @@ export default function Page() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = () => {
+      // If not authenticated, redirect to login
+      if (!isAuthenticated || !accessToken) {
+        router.push("/signin");
+        return;
+      }
+      setIsCheckingAuth(false);
+    };
+
+    checkAuth();
+  }, [isAuthenticated, accessToken, router]);
 
   // Initialize form with user data
   useEffect(() => {
-    if (user) {
+    if (user && isAuthenticated) {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setHobby(user.hobbies || "");
       // Language preference might need to come from a different API endpoint
       setLanguage("English"); // Default or from user data if available
     }
-  }, [user]);
+  }, [user, isAuthenticated]);
 
   // Auto-hide message after 5 seconds
   useEffect(() => {
@@ -62,6 +77,15 @@ export default function Page() {
       return () => clearTimeout(timer);
     }
   }, [message.text]);
+
+  // Show loading spinner while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   // Function to handle profile edit - DISABLED
   const handleEditProfile = () => {
