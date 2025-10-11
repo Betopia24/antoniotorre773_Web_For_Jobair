@@ -1,7 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCheck, FaUserEdit } from "react-icons/fa";
 import { IoDiamond } from "react-icons/io5";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "next/navigation";
+import { authApi } from "@/lib/api";
+import { Loader2 } from "lucide-react";
 
 // Mocked plan data
 const myPlan = [
@@ -23,6 +27,9 @@ const myPlan = [
 ];
 
 export default function Page() {
+  const router = useRouter();
+  const { user, accessToken, logout: storeLogout, setUser } = useAuthStore();
+
   // Local state for user info and password
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -31,29 +38,143 @@ export default function Page() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  // Function to simulate API call
-  const handleSaveProfile = () => {
-    // Simulating API call
-    console.log("Saving Profile Data:");
-    console.log({ firstName, lastName, language, hobby });
-    // Call the API here later
+  // Initialize form with user data
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setHobby(user.hobbies || "");
+      // Language preference might need to come from a different API endpoint
+      setLanguage("English"); // Default or from user data if available
+    }
+  }, [user]);
+
+  // Auto-hide message after 5 seconds
+  useEffect(() => {
+    if (message.text) {
+      const timer = setTimeout(() => {
+        setMessage({ type: "", text: "" });
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message.text]);
+
+  // Function to handle profile edit - DISABLED
+  const handleEditProfile = () => {
+    console.log("Edit profile feature is currently disabled");
+    setMessage({ type: "info", text: "Edit profile feature coming soon!" });
   };
 
-  const handleChangePassword = () => {
-    // Simulating API call
-    console.log("Changing Password:");
-    console.log({ currentPassword, newPassword });
-    // Call the API here later
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: "error", text: "New passwords do not match!" });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setMessage({
+        type: "error",
+        text: "Password must be at least 6 characters long!",
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const response = await authApi.changePassword({
+        currentPassword,
+        newPassword,
+        confirmPassword: newPassword,
+      });
+
+      if (response.success) {
+        setMessage({
+          type: "success",
+          text: "Password changed successfully! Logging out...",
+        });
+
+        // Wait 1.5 seconds to show success message, then logout and redirect to login
+        setTimeout(() => {
+          storeLogout(); // Clear Zustand store
+          router.push("/signin");
+        }, 1500);
+      } else {
+        setMessage({
+          type: "error",
+          text: response.message || "Failed to change password",
+        });
+      }
+    } catch (error: any) {
+      console.error("Password change error:", error);
+      setMessage({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "An error occurred while changing password",
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
   };
 
   const handleLogout = () => {
-    console.log("Logout Successfull.");
+    storeLogout();
+    console.log("Logout Successful.");
+    router.push("/signin");
   };
+
+  // Determine user plan status
+  const getUserPlanStatus = () => {
+    if (user?.isSubscribed) {
+      return "Premium";
+    }
+    return "Free";
+  };
+
+  const getUserPlanFeatures = () => {
+    if (user?.isSubscribed) {
+      return myPlan[0].features;
+    }
+    return [
+      "Limited lessons",
+      "Basic progress analytics",
+      "Limited reward access",
+      "Standard support",
+    ];
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="py-32 sm:pt-36 md:pt-40 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker">
       <div className="app-container flex flex-col items-center gap-8">
+        {/* Message Display */}
+        {message.text && (
+          <div
+            className={`w-full p-4 rounded-xl text-center ${
+              message.type === "success"
+                ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                : message.type === "error"
+                ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
         <div className="w-full flex flex-col items-center justify-center">
           {/* Avatar */}
           <div className="relative w-36 h-36">
@@ -62,7 +183,7 @@ export default function Page() {
               {/* Inner circle to hold the image */}
               <div className="bg-black rounded-full w-full h-full overflow-hidden">
                 <img
-                  src="/avatar.png"
+                  src={user.profilePic || "/avatar.png"}
                   alt="Avatar"
                   className="w-full h-full object-cover"
                 />
@@ -70,13 +191,17 @@ export default function Page() {
             </div>
           </div>
           <div className="mt-4 w-full flex gap-1 flex-col items-center justify-center">
-            <h1 className="text-xl sm:text-2xl font-semibold">Raju Ahamed</h1>
-            <p className="text-gray-300 text-sm sm:text-base">
-              samplemail@gmail.com
-            </p>
+            <h1 className="text-xl sm:text-2xl font-semibold">
+              {user.firstName} {user.lastName}
+            </h1>
+            <p className="text-gray-300 text-sm sm:text-base">{user.email}</p>
             <div className="bg-[#24243B] border border-gray-700 rounded-full flex items-center justify-center gap-2 px-6 py-2 mt-4 text-base sm:text-lg">
-              <IoDiamond className="w-6 h-5 text-yellow-400" />
-              <span>Premium User</span>
+              <IoDiamond
+                className={`w-6 h-5 ${
+                  user.isSubscribed ? "text-yellow-400" : "text-gray-400"
+                }`}
+              />
+              <span>{getUserPlanStatus()} User</span>
             </div>
           </div>
         </div>
@@ -88,8 +213,9 @@ export default function Page() {
               Personal Information
             </h1>
             <button
-              onClick={handleSaveProfile}
-              className="flex items-center justify-center gap-2 bg-gradient-brand text-xs sm:text-sm font-semibold tracking-wide py-2.5 px-4 rounded-xl cursor-pointer"
+              onClick={handleEditProfile}
+              disabled={true} // Permanently disabled
+              className="flex items-center justify-center gap-2 bg-gradient-brand text-xs sm:text-sm font-semibold tracking-wide py-2.5 px-4 rounded-xl cursor-not-allowed opacity-50"
             >
               <FaUserEdit className="w-5 h-5" />
               <span>Edit Profile</span>
@@ -109,7 +235,8 @@ export default function Page() {
                   placeholder="John"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  disabled={true} // All inputs disabled
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -122,7 +249,8 @@ export default function Page() {
                   placeholder="Doe"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  disabled={true} // All inputs disabled
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -138,7 +266,8 @@ export default function Page() {
                   placeholder="English"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  disabled={true} // All inputs disabled
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -151,7 +280,8 @@ export default function Page() {
                   placeholder="Photography"
                   value={hobby}
                   onChange={(e) => setHobby(e.target.value)}
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300"
+                  disabled={true} // All inputs disabled
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -165,22 +295,30 @@ export default function Page() {
               Subscription Status
             </h1>
             <p className="text-lg sm:text-xl text-gradient inline-block font-semibold">
-              {myPlan[0].title} User
+              {getUserPlanStatus()} User
             </p>
             <ul className="flex flex-col gap-3 mt-4">
-              {myPlan[0].features.map((f, i) => (
+              {getUserPlanFeatures().map((f, i) => (
                 <li key={i} className="flex items-center gap-2 text-gray-200">
                   <FaCheck className="text-green-500" /> {f}
                 </li>
               ))}
             </ul>
             <div className="mt-6 flex flex-col gap-3">
-              <button className="py-2.5 rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer">
-                Upgrade to Family Plan
+              <button
+                disabled={user.isSubscribed}
+                className="py-2.5 rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {user.isSubscribed ? "Current Plan" : "Upgrade to Premium Plan"}
               </button>
-              <button className="mt-2 relative py-2.5 rounded-xl bg-gradient-brand h-10 cursor-pointer">
+              <button
+                disabled={!user.isSubscribed}
+                className="mt-2 relative py-2.5 rounded-xl bg-gradient-brand h-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <div className="absolute inset-[1px] bg-[#0B0C23] rounded-xl p-2 flex justify-center items-center">
-                  <h1 className="text-gradient font-semibold">Cancel Plan</h1>
+                  <h1 className="text-gradient font-semibold">
+                    {user.isSubscribed ? "Cancel Plan" : "No Active Plan"}
+                  </h1>
                 </div>
               </button>
             </div>
@@ -188,7 +326,9 @@ export default function Page() {
           <div className="bg-gradient-to-br from-[#28284A] via-[#12122A] to-[#12122A] text-white p-6 rounded-2xl flex flex-col justify-between">
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold">Security</h1>
-              <p className="text-gray-300 mt-2">Change your password from here.</p>
+              <p className="text-gray-300 mt-2">
+                Change your password from here.
+              </p>
             </div>
             <div className="mt-4 flex flex-col gap-2">
               <div className="flex flex-col gap-1.5">
@@ -221,7 +361,10 @@ export default function Page() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="confirmPassword" className="text-sm text-gray-300">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-sm text-gray-300"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -235,9 +378,10 @@ export default function Page() {
               </div>
               <button
                 onClick={handleChangePassword}
-                className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
+                disabled={isChangingPassword}
+                className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Update Password
+                {isChangingPassword ? "Updating..." : "Update Password"}
               </button>
             </div>
           </div>
@@ -246,7 +390,7 @@ export default function Page() {
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full px-6 py-3 sm:py-4 border border-red-500/20 bg-red-500/10 text-red-400 text-xl font-semibold rounded-2xl"
+          className="w-full px-6 py-3 sm:py-4 border border-red-500/20 bg-red-500/10 text-red-400 text-xl font-semibold rounded-2xl hover:bg-red-500/20 transition"
         >
           Logout
         </button>
