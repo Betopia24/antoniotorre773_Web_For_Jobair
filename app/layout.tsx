@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { RouteTracker } from "@/components/shared/RouteTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,7 +52,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Move viewport to the special generateViewport export
 export const generateViewport = {
   width: "device-width",
   initialScale: 1.0,
@@ -67,6 +67,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <RouteTracker />
         {children}
       </body>
     </html>
