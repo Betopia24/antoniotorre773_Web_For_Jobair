@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "next/navigation";
 import { authApi } from "@/lib/api";
 import { Loader2 } from "lucide-react";
+import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
 
 // Mocked plan data
 const myPlan = [
@@ -26,9 +27,9 @@ const myPlan = [
   },
 ];
 
-export default function Page() {
+function ProfilePage() {
   const router = useRouter();
-  const { user, accessToken, logout: storeLogout, setUser, isAuthenticated } = useAuthStore();
+  const { user, logout: storeLogout, setUser } = useAuthStore();
 
   // Local state for user info and password
   const [firstName, setFirstName] = useState("");
@@ -40,32 +41,17 @@ export default function Page() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  // Check authentication on component mount
-  useEffect(() => {
-    const checkAuth = () => {
-      // If not authenticated, redirect to login
-      if (!isAuthenticated || !accessToken) {
-        router.push("/signin");
-        return;
-      }
-      setIsCheckingAuth(false);
-    };
-
-    checkAuth();
-  }, [isAuthenticated, accessToken, router]);
 
   // Initialize form with user data
   useEffect(() => {
-    if (user && isAuthenticated) {
+    if (user) {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setHobby(user.hobbies || "");
       // Language preference might need to come from a different API endpoint
       setLanguage("English"); // Default or from user data if available
     }
-  }, [user, isAuthenticated]);
+  }, [user]);
 
   // Auto-hide message after 5 seconds
   useEffect(() => {
@@ -77,15 +63,6 @@ export default function Page() {
       return () => clearTimeout(timer);
     }
   }, [message.text]);
-
-  // Show loading spinner while checking authentication
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
-      </div>
-    );
-  }
 
   // Function to handle profile edit - DISABLED
   const handleEditProfile = () => {
@@ -125,7 +102,7 @@ export default function Page() {
 
         // Wait 1.5 seconds to show success message, then logout and redirect to login
         setTimeout(() => {
-          storeLogout(); // Clear Zustand store
+          storeLogout();
           router.push("/signin");
         }, 1500);
       } else {
@@ -173,6 +150,7 @@ export default function Page() {
     ];
   };
 
+  // This check is now redundant since HOC handles it, but keeping it as fallback
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
@@ -422,3 +400,6 @@ export default function Page() {
     </div>
   );
 }
+
+// Component is wrapped with HOC which is Protected Route so unwanted guests can't enter this lovely little secret page.
+export default ProtectedRoute(ProfilePage);
