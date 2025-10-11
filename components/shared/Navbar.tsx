@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
+import { useAuthStore } from '@/stores/authStore'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -18,6 +19,7 @@ const navLinks = [
 const Navbar = () => {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, isAuthenticated } = useAuthStore()
 
   // Close sidebar on pressing ESC
   useEffect(() => {
@@ -56,39 +58,61 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Desktop Buttons */}
+          {/* Desktop Buttons - Show avatar if logged in, otherwise show login buttons */}
           <div className="hidden md:flex items-center gap-10">
-            <Link
-              href="/signin"
-              className="text-gray-300 text-base md:text-lg font-semibold hover:text-white"
-            >
-              Login
-            </Link>
-            <Link
-              href="/somewhere"
-              className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
-            >
-              <span className="z-10">Get Started</span>
-              <ChevronRight className="w-5 h-5 z-10" />
+            {isAuthenticated && user ? (
+              // User is logged in - Show avatar
+              <Link href="/profile" className="flex items-center">
+                <div className="relative w-12 h-12">
+                  {/* Gradient border */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to p-0.5">
+                    {/* Inner circle to hold the image */}
+                    <div className="bg-black rounded-full w-full h-full overflow-hidden">
+                      <img
+                        src={user.profilePic || "/avatar.png"}
+                        alt="User Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              // User is not logged in - Show login buttons
+              <>
+                <Link
+                  href="/signin"
+                  className="text-gray-300 text-base md:text-lg font-semibold hover:text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
+                >
+                  <span className="z-10">Get Started</span>
+                  <ChevronRight className="w-5 h-5 z-10" />
 
-              {/* Top-left triangle */}
-              <div
-                className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                style={{
-                  clipPath: 'polygon(0 0, 100% 0, 0 100%)',
-                  borderColor: '#9CA3AF',
-                }}
-              />
+                  {/* Top-left triangle */}
+                  <div
+                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                    style={{
+                      clipPath: 'polygon(0 0, 100% 0, 0 100%)',
+                      borderColor: '#9CA3AF',
+                    }}
+                  />
 
-              {/* Bottom-right triangle */}
-              <div
-                className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                style={{
-                  clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
-                  borderColor: '#4B5563',
-                }}
-              />
-            </Link>
+                  {/* Bottom-right triangle */}
+                  <div
+                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                    style={{
+                      clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
+                      borderColor: '#4B5563',
+                    }}
+                  />
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Hamburger */}
@@ -149,39 +173,73 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Buttons */}
+          {/* Buttons - Show avatar if logged in, otherwise show login buttons */}
           <div className="flex flex-col gap-4 mt-auto">
-            <Link
-              href="/signin"
-              className="text-gray-300 text-lg font-semibold hover:text-white"
-              onClick={() => setSidebarOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              href="/somewhere"
-              className="relative inline-flex items-center justify-center gap-2 px-5 py-3 text-lg font-semibold text-white bg-transparent rounded-2xl"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="z-10">Get Started</span>
-              <ChevronRight className="w-5 h-5 z-10" />
-              {/* Top-left triangle */}
-              <div
-                className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                style={{
-                  clipPath: 'polygon(0 0, 100% 0, 0 100%)',
-                  borderColor: '#9CA3AF',
-                }}
-              />
-              {/* Bottom-right triangle */}
-              <div
-                className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                style={{
-                  clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
-                  borderColor: '#4B5563',
-                }}
-              />
-            </Link>
+            {isAuthenticated && user ? (
+              // User is logged in - Show avatar and profile link
+              <Link
+                href="/profile"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <div className="relative w-10 h-10">
+                  {/* Gradient border */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to p-0.5">
+                    {/* Inner circle to hold the image */}
+                    <div className="bg-black rounded-full w-full h-full overflow-hidden">
+                      <img
+                        src={user.profilePic || "/avatar.png"}
+                        alt="User Avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold text-sm">
+                    {user.firstName} {user.lastName}
+                  </span>
+                  <span className="text-gray-300 text-xs">
+                    View Profile
+                  </span>
+                </div>
+              </Link>
+            ) : (
+              // User is not logged in - Show login buttons
+              <>
+                <Link
+                  href="/signin"
+                  className="text-gray-300 text-lg font-semibold hover:text-white text-center py-2"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="relative inline-flex items-center justify-center gap-2 px-5 py-3 text-lg font-semibold text-white bg-transparent rounded-2xl"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <span className="z-10">Get Started</span>
+                  <ChevronRight className="w-5 h-5 z-10" />
+                  {/* Top-left triangle */}
+                  <div
+                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                    style={{
+                      clipPath: 'polygon(0 0, 100% 0, 0 100%)',
+                      borderColor: '#9CA3AF',
+                    }}
+                  />
+                  {/* Bottom-right triangle */}
+                  <div
+                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                    style={{
+                      clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
+                      borderColor: '#4B5563',
+                    }}
+                  />
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
