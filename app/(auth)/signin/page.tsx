@@ -8,17 +8,20 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { authApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
+import { ProtectedAuthRoute } from "@/components/shared/ProtectedAuthRoute";
 
 // Zod schema for form validation
 const signInSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters long" }),
 });
 
-export default function SignIn() {
+function SignInPage() {
   const router = useRouter();
   const { login, setUser, setLoading: setStoreLoading } = useAuthStore();
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -54,26 +57,32 @@ export default function SignIn() {
     setStoreLoading(true);
 
     try {
-      console.log("Login Data: ", formData);
-      
+      // console.log("Login Data: ", formData);
+
       // Call login API
-      const loginResponse = await authApi.login(formData.email, formData.password);
-      
+      const loginResponse = await authApi.login(
+        formData.email,
+        formData.password
+      );
+
       if (loginResponse.success) {
         // Store the access token
         login(loginResponse.data.accessToken);
-        
+
         // Get user profile
         const profileResponse = await authApi.getProfile();
-        
+
         if (profileResponse.success) {
           setUser(profileResponse.data);
           setSuccessMessage("Successfully logged in!");
-          console.log("User Profile:", profileResponse.data);
-          
-          // Redirect to dashboard after successful login
+          // console.log("User Profile:", profileResponse.data);
+
+          // last visited route or default to profile from session storage
+          const lastRoute = sessionStorage.getItem("lastRoute") || "/profile";
+
+          // Redirect to last visited route after successful login
           setTimeout(() => {
-            router.push("/profile");
+            router.push(lastRoute);
           }, 1000);
         } else {
           setApiError("Failed to fetch user profile");
@@ -84,8 +93,8 @@ export default function SignIn() {
     } catch (error: any) {
       console.error("Login error:", error);
       setApiError(
-        error.response?.data?.message || 
-        "An error occurred. Please try again later."
+        error.response?.data?.message ||
+          "An error occurred. Please try again later."
       );
     } finally {
       setLoading(false);
@@ -137,7 +146,10 @@ export default function SignIn() {
         {/* Form */}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm text-gray-200 mb-1.5">
+            <label
+              htmlFor="email"
+              className="block text-sm text-gray-200 mb-1.5"
+            >
               Email
             </label>
             <input
@@ -149,11 +161,16 @@ export default function SignIn() {
               className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
               placeholder="you@example.com"
             />
-            {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div className="relative">
-            <label htmlFor="password" className="block text-sm text-gray-200 mb-1.5">
+            <label
+              htmlFor="password"
+              className="block text-sm text-gray-200 mb-1.5"
+            >
               Password
             </label>
             <input
@@ -165,7 +182,9 @@ export default function SignIn() {
               className="w-full px-4 py-2.5 rounded-xl bg-[#24253A] border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-[#F176B7]"
               placeholder="••••••••"
             />
-            {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+            )}
 
             <button
               type="button"
@@ -200,12 +219,19 @@ export default function SignIn() {
           </button>
         </form>
 
-        {apiError && <p className="text-red-500 text-center mt-4">{apiError}</p>}
-        {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
+        {apiError && (
+          <p className="text-red-500 text-center mt-4">{apiError}</p>
+        )}
+        {successMessage && (
+          <p className="text-green-500 text-center mt-4">{successMessage}</p>
+        )}
 
         <p className="text-center text-sm text-gray-100">
           New here?{" "}
-          <Link href="/signup" className="text-blue-300 underline decoration-blue-300 underline-offset-4 px-1 tracking-tight">
+          <Link
+            href="/signup"
+            className="text-blue-300 underline decoration-blue-300 underline-offset-4 px-1 tracking-tight"
+          >
             Create new account
           </Link>{" "}
           to get started
@@ -214,3 +240,6 @@ export default function SignIn() {
     </div>
   );
 }
+
+// component is wrapped with ProtectedAuthRoute so authenticated unnecessaryly comes to any auth page.
+export default ProtectedAuthRoute(SignInPage);
