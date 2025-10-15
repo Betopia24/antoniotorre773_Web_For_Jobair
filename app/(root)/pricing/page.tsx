@@ -79,7 +79,7 @@ export default function Page() {
                       {plan.features.map((feature, i) => (
                         <li
                           key={i}
-                          className="flex items-center gap-2 text-gray-300"
+                          className="flex items-center gap-2 text-gray-200 tracking-wider"
                         >
                           <FaCheck className="text-green-500" />
                           {feature}
@@ -90,12 +90,12 @@ export default function Page() {
 
                   {/* Buttons */}
                   {idx === 1 ? (
-                    <button className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer">
+                    <button className="mt-10 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer">
                       Start With {plan.title} Plan
                     </button>
                   ) : (
                     <>
-                      <button className="relative mt-2 py-2.5 w-full rounded-xl bg-gradient-brand h-[44px] cursor-pointer">
+                      <button className="relative mt-10 py-2.5 w-full rounded-xl bg-gradient-brand h-[44px] cursor-pointer">
                         <div className="absolute inset-[1px] bg-gradient-to-br from-[#2E2E43] via-[#2C2C41] to-[#27273B] rounded-xl p-2 flex justify-center items-center">
                           <h1 className="text-gradient font-semibold">
                             Start With {plan.title} Plan
