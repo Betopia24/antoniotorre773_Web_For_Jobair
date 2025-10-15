@@ -84,7 +84,6 @@ export const plans = [
       "Full reward library access",
       "Priority AI support",
       "Parent dashboard",
-      "Offline mode",
     ],
     buttonText: "Start With Premium Plan",
     highlight: true,
