@@ -1,34 +1,60 @@
-'use client'
+"use client";
 
-import { ChevronRight, Menu, X } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React, { useState, useEffect } from 'react'
-import clsx from 'clsx'
-import { useAuthStore } from '@/stores/authStore'
+import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import clsx from "clsx";
+import { useAuthStore } from "@/stores/authStore";
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/practice', label: 'Practice' },
-  { href: '/progress', label: 'Progress' },
-  { href: '/rewards', label: 'Rewards' },
-  { href: '/about', label: 'About' },
-  { href: '/pricing', label: 'Pricing' },
-]
+  { href: "/", label: "Home" },
+  {
+    href: "/practice",
+    label: "Practice",
+    dropdown: [
+      { href: "/practice/speaking", label: "Speaking" },
+      { href: "/practice/listening", label: "Listening" },
+      { href: "/practice/writing", label: "Writing" },
+      { href: "/practice/learn-english", label: "Learn English With Us" },
+    ],
+  },
+  { href: "/progress", label: "Progress" },
+  { href: "/rewards", label: "Rewards" },
+  { href: "/about", label: "About" },
+  { href: "/pricing", label: "Pricing" },
+];
 
 const Navbar = () => {
-  const pathname = usePathname()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { user, isAuthenticated } = useAuthStore()
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const { user, isAuthenticated } = useAuthStore();
 
-  // Close sidebar on pressing ESC
+  // Close sidebar & dropdown on ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSidebarOpen(false)
-    }
-    window.addEventListener('keydown', handleEsc)
-    return () => window.removeEventListener('keydown', handleEsc)
-  }, [])
+      if (e.key === "Escape") {
+        setSidebarOpen(false);
+        setHoveredDropdown(null);
+        setMobileDropdownOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
+
+  // Close sidebar when screen size becomes desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
@@ -43,30 +69,70 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={clsx(
-                  'text-base md:text-lg font-semibold transition-colors hover:text-white',
-                  pathname === link.href ? 'text-gradient' : 'text-gray-300'
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav className="hidden md:flex gap-8 relative">
+            {navLinks.map((link) => {
+              const isDropdown = !!link.dropdown;
+              const isActive = pathname === link.href;
+
+              return (
+                <div
+                  key={link.href}
+                  className="relative"
+                  onMouseEnter={() =>
+                    isDropdown ? setHoveredDropdown(link.href) : null
+                  }
+                  onMouseLeave={() =>
+                    isDropdown ? setHoveredDropdown(null) : null
+                  }
+                >
+                  <Link
+                    href={link.href}
+                    className={clsx(
+                      "flex items-center gap-1 text-base md:text-lg font-semibold transition-colors hover:text-white",
+                      isActive ? "text-gradient" : "text-gray-300"
+                    )}
+                  >
+                    {link.label}
+                    {isDropdown && (
+                      <ChevronDown
+                        className={clsx(
+                          "w-6 h-6 font-bold transition-transform",
+                          hoveredDropdown === link.href ? "rotate-180" : ""
+                        )}
+                      />
+                    )}
+                  </Link>
+
+                  {/* Invisible buffer to avoid flicker */}
+                  {isDropdown && hoveredDropdown === link.href && (
+                    <div className="absolute left-0 top-full w-full h-3 bg-transparent"></div>
+                  )}
+
+                  {/* Dropdown Menu */}
+                  {isDropdown && hoveredDropdown === link.href && (
+                    <div className="absolute top-[calc(100%+0.5rem)] left-0 w-56 bg-gradient-to-br from-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50">
+                      {link.dropdown.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 text-sm font-semibold tracking-wide rounded-lg"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
-          {/* Desktop Buttons - Show avatar if logged in, otherwise show login buttons */}
+          {/* Desktop Buttons */}
           <div className="hidden md:flex items-center gap-10">
             {isAuthenticated && user ? (
-              // User is logged in - Show avatar
               <Link href="/profile" className="flex items-center">
                 <div className="relative w-12 h-12">
-                  {/* Gradient border */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to p-0.5">
-                    {/* Inner circle to hold the image */}
                     <div className="bg-black rounded-full w-full h-full overflow-hidden">
                       <img
                         src={user.profilePic || "/avatar.png"}
@@ -78,7 +144,6 @@ const Navbar = () => {
                 </div>
               </Link>
             ) : (
-              // User is not logged in - Show login buttons
               <>
                 <Link
                   href="/signin"
@@ -92,22 +157,18 @@ const Navbar = () => {
                 >
                   <span className="z-10">Get Started</span>
                   <ChevronRight className="w-5 h-5 z-10" />
-
-                  {/* Top-left triangle */}
                   <div
                     className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
                     style={{
-                      clipPath: 'polygon(0 0, 100% 0, 0 100%)',
-                      borderColor: '#9CA3AF',
+                      clipPath: "polygon(0 0, 100% 0, 0 100%)",
+                      borderColor: "#9CA3AF",
                     }}
                   />
-
-                  {/* Bottom-right triangle */}
                   <div
                     className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
                     style={{
-                      clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
-                      borderColor: '#4B5563',
+                      clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
+                      borderColor: "#4B5563",
                     }}
                   />
                 </Link>
@@ -137,8 +198,8 @@ const Navbar = () => {
       {/* Mobile Sidebar Panel */}
       <div
         className={clsx(
-          'fixed top-0 right-0 h-full z-50 w-4/5 max-w-xs bg-gradient-to-br from-brand-dark to-brand-darker transform transition-transform',
-          sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+          "fixed top-0 right-0 h-full z-50 w-4/5 max-w-xs bg-gradient-to-br from-brand-dark to-brand-darker transform transition-transform duration-300",
+          sidebarOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
         <div className="flex flex-col h-full p-6">
@@ -158,34 +219,84 @@ const Navbar = () => {
 
           {/* Nav Links */}
           <nav className="flex flex-col gap-2 mb-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={clsx(
-                  'text-lg font-semibold hover:text-white',
-                  pathname === link.href ? 'text-gradient' : 'text-gray-300'
-                )}
-                onClick={() => setSidebarOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isDropdown = !!link.dropdown;
+              const isActive = pathname === link.href;
+
+              if (isDropdown) {
+                return (
+                  <div key={link.href} className="flex flex-col">
+                    <button
+                      className={clsx(
+                        "flex justify-between items-center text-lg font-semibold text-gray-300 hover:text-white py-2 transition-colors",
+                        isActive && "text-gradient"
+                      )}
+                      onClick={() => setMobileDropdownOpen((prev) => !prev)}
+                    >
+                      {link.label}
+                      <ChevronDown
+                        className={clsx(
+                          "w-5 h-5 transition-transform",
+                          mobileDropdownOpen ? "rotate-180" : ""
+                        )}
+                      />
+                    </button>
+
+                    {/* Dropdown (mobile) */}
+                    <div
+                      className={clsx(
+                        "overflow-hidden transition-all duration-300 ease-in-out",
+                        mobileDropdownOpen
+                          ? "max-h-60 opacity-100"
+                          : "max-h-0 opacity-0"
+                      )}
+                    >
+                      <div className="flex flex-col pl-4 mt-1 border-l-2 border-gray-700">
+                        {link.dropdown.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="py-2 text-gray-300 hover:text-white text-base font-semibold tracking-wide"
+                            onClick={() => {
+                              setSidebarOpen(false);
+                              setMobileDropdownOpen(false);
+                            }}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={clsx(
+                    "text-lg font-semibold hover:text-white py-2 transition-colors",
+                    pathname === link.href ? "text-gradient" : "text-gray-300"
+                  )}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Buttons - Show avatar if logged in, otherwise show login buttons */}
+          {/* Buttons */}
           <div className="flex flex-col gap-4 mt-auto">
             {isAuthenticated && user ? (
-              // User is logged in - Show avatar and profile link
               <Link
                 href="/profile"
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition"
                 onClick={() => setSidebarOpen(false)}
               >
                 <div className="relative w-10 h-10">
-                  {/* Gradient border */}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to p-0.5">
-                    {/* Inner circle to hold the image */}
                     <div className="bg-black rounded-full w-full h-full overflow-hidden">
                       <img
                         src={user.profilePic || "/avatar.png"}
@@ -199,13 +310,10 @@ const Navbar = () => {
                   <span className="text-white font-semibold text-sm">
                     {user.firstName} {user.lastName}
                   </span>
-                  <span className="text-gray-300 text-xs">
-                    View Profile
-                  </span>
+                  <span className="text-gray-300 text-xs">View Profile</span>
                 </div>
               </Link>
             ) : (
-              // User is not logged in - Show login buttons
               <>
                 <Link
                   href="/signin"
@@ -221,20 +329,18 @@ const Navbar = () => {
                 >
                   <span className="z-10">Get Started</span>
                   <ChevronRight className="w-5 h-5 z-10" />
-                  {/* Top-left triangle */}
                   <div
                     className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
                     style={{
-                      clipPath: 'polygon(0 0, 100% 0, 0 100%)',
-                      borderColor: '#9CA3AF',
+                      clipPath: "polygon(0 0, 100% 0, 0 100%)",
+                      borderColor: "#9CA3AF",
                     }}
                   />
-                  {/* Bottom-right triangle */}
                   <div
                     className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
                     style={{
-                      clipPath: 'polygon(100% 100%, 0 100%, 100% 0)',
-                      borderColor: '#4B5563',
+                      clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
+                      borderColor: "#4B5563",
                     }}
                   />
                 </Link>
@@ -244,7 +350,7 @@ const Navbar = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
