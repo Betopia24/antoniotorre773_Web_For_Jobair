@@ -4,7 +4,7 @@ import { FaCheck, FaUserEdit } from "react-icons/fa";
 import { IoDiamond } from "react-icons/io5";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "next/navigation";
-import { authApi } from "@/lib/api";
+import { authApi, usersApi } from "@/lib/api"; // Make sure usersApi is imported
 import { Loader2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
 
@@ -40,6 +40,7 @@ function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   // Initialize form with user data
@@ -48,7 +49,6 @@ function ProfilePage() {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setHobby(user.hobbies || "");
-      // Language preference might need to come from a different API endpoint
       setLanguage("English"); // Default or from user data if available
     }
   }, [user]);
@@ -64,10 +64,59 @@ function ProfilePage() {
     }
   }, [message.text]);
 
-  // Function to handle profile edit - DISABLED
-  const handleEditProfile = () => {
-    console.log("Edit profile feature is currently disabled");
-    setMessage({ type: "info", text: "Edit profile feature coming soon!" });
+  // Function to handle profile update
+  const handleUpdateProfile = async () => {
+    if (!firstName.trim() || !lastName.trim()) {
+      setMessage({
+        type: "error",
+        text: "First name and last name are required!",
+      });
+      return;
+    }
+
+    setIsUpdatingProfile(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const formData = new FormData();
+
+      // Create profile data object
+      const profileData = {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        hobbies: hobby.trim(),
+        // Note: language might need to be handled separately if your API supports it
+      };
+
+      // Append the data as JSON string
+      formData.append("data", JSON.stringify(profileData));
+
+      const result = await usersApi.updateProfile(formData);
+
+      // Update the user in the auth store
+      if (user) {
+        const updatedUser = {
+          ...user,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          hobbies: hobby.trim(),
+          profilePic: result.data?.profilePic || user.profilePic,
+        };
+        setUser(updatedUser);
+      }
+
+      setMessage({ type: "success", text: "Profile updated successfully!" });
+    } catch (error: any) {
+      console.error("Profile update error:", error);
+      setMessage({
+        type: "error",
+        text:
+          error.response?.data?.message ||
+          "Failed to update profile. Please try again.",
+      });
+    } finally {
+      setIsUpdatingProfile(false);
+    }
   };
 
   const handleChangePassword = async () => {
@@ -215,12 +264,12 @@ function ProfilePage() {
               Personal Information
             </h1>
             <button
-              onClick={handleEditProfile}
-              disabled={true} // Permanently disabled
-              className="flex items-center justify-center gap-2 bg-gradient-brand text-xs sm:text-sm font-semibold tracking-wide py-2.5 px-4 rounded-xl cursor-not-allowed opacity-50"
+              onClick={handleUpdateProfile}
+              disabled={isUpdatingProfile}
+              className="flex items-center justify-center gap-2 bg-gradient-brand text-xs sm:text-sm font-semibold tracking-wide py-2.5 px-4 rounded-xl hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FaUserEdit className="w-5 h-5" />
-              <span>Edit Profile</span>
+              <span>{isUpdatingProfile ? "Saving..." : "Save Profile"}</span>
             </button>
           </div>
 
@@ -237,8 +286,7 @@ function ProfilePage() {
                   placeholder="John"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  disabled={true} // All inputs disabled
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-white"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -251,8 +299,7 @@ function ProfilePage() {
                   placeholder="Doe"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  disabled={true} // All inputs disabled
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-white"
                 />
               </div>
             </div>
@@ -268,7 +315,7 @@ function ProfilePage() {
                   placeholder="English"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  disabled={true} // All inputs disabled
+                  disabled={true}
                   className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
                 />
               </div>
@@ -282,8 +329,7 @@ function ProfilePage() {
                   placeholder="Photography"
                   value={hobby}
                   onChange={(e) => setHobby(e.target.value)}
-                  disabled={true} // All inputs disabled
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-white"
                 />
               </div>
             </div>

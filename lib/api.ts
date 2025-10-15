@@ -92,3 +92,77 @@ export const authApi = {
         return response.data;
     },
 };
+
+// Users API calls
+export const usersApi = {
+    // Get all users
+    getAllUsers: async () => {
+        const response = await api.get('/users');
+        return response.data;
+    },
+
+    // Get single user by ID
+    getUserById: async (id: string) => {
+        const response = await api.get(`/users/${id}`);
+        return response.data;
+    },
+
+    // Delete user
+    deleteUser: async (id: string) => {
+        const response = await api.delete(`/users/${id}`);
+        return response.data;
+    },
+
+    // Get all admins (super admin only)
+    getAllAdmins: async () => {
+        const response = await api.get('/users/get-all/admin');
+        return response.data;
+    },
+
+    // Invite admin
+    inviteAdmin: async (inviteData: {
+        email: string;
+        fullName: string;
+        description: string;
+    }) => {
+        const response = await api.post('/users/invite-admin', inviteData);
+        return response.data;
+    },
+
+    // Change user role
+    changeUserRole: async (userId: string, role: string) => {
+        const response = await api.patch(`/users/chenge/role/${userId}`, { role });
+        return response.data;
+    },
+
+    // Get dashboard overview
+    getDashboardOverview: async (year: string) => {
+        const response = await api.get(`/users/dashboard/overview?year=${year}`);
+        return response.data;
+    },
+
+    // Update user profile
+    updateProfile: async (formData: FormData) => {
+        const response = await api.patch('/users/update-profile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
+        return response.data;
+    }
+};
+
+// Revenue API calls
+export const revenueApi = {
+    // Get revenue stats
+    getRevenueStats: async () => {
+        const response = await api.get('/users/get-revenue/stats');
+        return response.data;
+    },
+
+    // Get subscriptions with pagination
+    getSubscriptions: async (page: number = 1, limit: number = 10) => {
+        const response = await api.get(`/subscriptions?page=${page}&limit=${limit}`);
+        return response.data;
+    },
+};
