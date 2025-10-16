@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { RouteTracker } from "@/components/shared/RouteTracker";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,6 +70,41 @@ export default function RootLayout({
       >
         <RouteTracker />
         {children}
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              borderRadius: "10px",
+              background: "#ffffff",
+              color: "#111827",
+              border: "1px solid rgba(0,0,0,0.05)",
+              fontWeight: 500,
+            },
+            success: {
+              iconTheme: {
+                primary: "#10B981",
+                secondary: "#ffffff",
+              },
+              style: {
+                border: "1px solid #10B981",
+                background: "#ffffff",
+                color: "#065f46",
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: "#EF4444",
+                secondary: "#ffffff",
+              },
+              style: {
+                border: "1px solid #EF4444",
+                background: "#ffffff",
+                color: "#7f1d1d",
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );
