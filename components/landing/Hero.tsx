@@ -8,7 +8,11 @@ interface HeroProps {
   onVideoModalClose: () => void;
 }
 
-const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) => {
+const Hero = ({
+  onVideoEnd,
+  onVideoModalOpen,
+  onVideoModalClose,
+}: HeroProps) => {
   const [showVideoPopup, setShowVideoPopup] = useState(true);
   const [showVideoTooltip, setShowVideoTooltip] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -17,7 +21,8 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
   const handlePlayVideo = () => {
     if (videoRef.current) {
       videoRef.current.muted = false; // Enable sound
-      videoRef.current.play()
+      videoRef.current
+        .play()
         .then(() => {
           setIsVideoPlaying(true);
           setShowVideoTooltip(false);
@@ -59,13 +64,13 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
   // Disable scroll when video popup is open
   useEffect(() => {
     if (showVideoPopup) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [showVideoPopup]);
 
@@ -84,7 +89,7 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
                 <X className="w-6 h-6 text-white" />
               </button>
             </div>
-            
+
             {/* Video Container */}
             <div className="p-2 relative border border-white/20 overflow-hidden rounded-2xl">
               <video
@@ -97,22 +102,41 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
                 <source src="/intros.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-              
+
               {/* Video Tooltip Overlay */}
               {showVideoTooltip && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
-                  <div className="bg-gradient-to-br from-[#28284A] to-[#12122A] text-white rounded-lg p-6 mx-4 max-w-md text-center shadow-xl">
-                    <h3 className="text-lg font-semibold mb-3">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg px-4">
+                  <div
+                    className="bg-gradient-to-br from-[#28284A] to-[#12122A] text-white rounded-lg 
+      p-4 sm:p-6 md:p-8 
+      w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl 
+      text-center shadow-xl"
+                  >
+                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 md:mb-4">
                       Welcome to Mercury AI English Tutor
                     </h3>
-                    <p className="text-gray-300 mb-4 text-sm">
-                      Watch our introduction to discover how Mercury makes learning English fun and effective with AI-powered personalized lessons.
+
+                    <p
+                      className="text-gray-300 mb-3 sm:mb-4 md:mb-6 
+        text-xs sm:text-sm md:text-base lg:text-lg"
+                    >
+                      Watch our introduction to discover how Mercury makes
+                      learning English fun and effective with AI-powered
+                      personalized lessons.
                     </p>
+
                     <button
                       onClick={handlePlayVideo}
-                      className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-brand text-white rounded-xl font-semibold hover:opacity-90 transition-opacity mx-auto cursor-pointer"
+                      className="flex items-center justify-center gap-2 
+          px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3 
+          bg-gradient-brand text-white rounded-xl font-semibold 
+          hover:opacity-90 transition-opacity mx-auto cursor-pointer 
+          text-xs sm:text-sm md:text-base lg:text-lg"
                     >
-                      <Play className="w-4 h-4" fill="white" />
+                      <Play
+                        className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5"
+                        fill="white"
+                      />
                       Watch Introduction
                     </button>
                   </div>
@@ -124,7 +148,11 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
       )}
 
       {/* Hero Content with conditional blur */}
-      <div className={`app-container flex flex-col md:flex-row items-center gap-10 lg:gap-16 xl:gap-20 transition-all duration-300 ${showVideoPopup ? 'filter blur-md' : ''}`}>
+      <div
+        className={`app-container flex flex-col md:flex-row items-center gap-10 lg:gap-16 xl:gap-20 transition-all duration-300 ${
+          showVideoPopup ? "filter blur-md" : ""
+        }`}
+      >
         {/* Left Part (60%) */}
         <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-white">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[80px] font-bold leading-tight md:leading-tight mb-5 sm:mb-6 md:mb-6 text-center md:text-left">
@@ -149,7 +177,7 @@ const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) =>
               Free Today
             </button>
 
-            <button 
+            <button
               onClick={handleOpenVideoPopup}
               className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 gap-2 rounded-3xl border border-gray-500 text-white hover:bg-white/10 transition font-semibold text-sm sm:text-base md:text-lg xl:text-xl"
             >
