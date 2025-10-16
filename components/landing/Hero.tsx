@@ -1,11 +1,119 @@
-import { Play, Rocket, Star } from "lucide-react";
+import { Play, Rocket, Star, X } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const Hero = () => {
+interface HeroProps {
+  onVideoEnd: () => void;
+}
+
+const Hero = ({ onVideoEnd }: HeroProps) => {
+  const [showVideoPopup, setShowVideoPopup] = useState(true);
+  const [showVideoTooltip, setShowVideoTooltip] = useState(true);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handlePlayVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = false; // Enable sound
+      videoRef.current.play()
+        .then(() => {
+          setIsVideoPlaying(true);
+          setShowVideoTooltip(false);
+        })
+        .catch((error) => {
+          console.log("Video play failed:", error);
+        });
+    }
+  };
+
+  const handleVideoEnd = () => {
+    setShowVideoPopup(false);
+    setIsVideoPlaying(false);
+    onVideoEnd();
+  };
+
+  const handleCloseVideoPopup = () => {
+    setShowVideoPopup(false);
+    setIsVideoPlaying(false);
+    onVideoEnd();
+  };
+
+  const handleOpenVideoPopup = () => {
+    setShowVideoPopup(true);
+    setShowVideoTooltip(true);
+    setIsVideoPlaying(false);
+  };
+
+  // Disable scroll when video popup is open
+  useEffect(() => {
+    if (showVideoPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showVideoPopup]);
+
   return (
-    <div className="pt-32 sm:pt-36 md:pt-40 xl:pt-44 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker">
-      <div className="app-container flex flex-col md:flex-row items-center gap-10 lg:gap-16 xl:gap-20">
+    <div className="pt-32 sm:pt-36 md:pt-40 xl:pt-44 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker relative">
+      {/* Video Popup Modal with Blur Background */}
+      {showVideoPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md">
+          <div className="relative rounded-2xl mx-4 max-w-4xl w-full">
+            {/* Header with close button only */}
+            <div className="flex justify-end items-center py-4 px-0">
+              <button
+                onClick={handleCloseVideoPopup}
+                className="p-2 bg-gradient-brand-btn hover:bg-white/20 border-2 border-gray-700 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-6 h-6 text-white" />
+              </button>
+            </div>
+            
+            {/* Video Container */}
+            <div className="p-2 relative border border-white/20 overflow-hidden rounded-2xl">
+              <video
+                ref={videoRef}
+                autoPlay={false}
+                muted={true} // Start muted for autoplay policies
+                onEnded={handleVideoEnd}
+                className="w-full h-auto rounded-2xl"
+                // Remove controls since we have our own tooltip
+              >
+                <source src="/intros.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              
+              {/* Video Tooltip Overlay */}
+              {showVideoTooltip && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
+                  <div className="bg-gradient-to-br from-[#28284A] to-[#12122A] text-white rounded-lg p-6 mx-4 max-w-md text-center shadow-xl">
+                    <h3 className="text-lg font-semibold mb-3">
+                      Welcome to Mercury AI English Tutor
+                    </h3>
+                    <p className="text-gray-300 mb-4 text-sm">
+                      Watch our introduction to discover how Mercury makes learning English fun and effective with AI-powered personalized lessons.
+                    </p>
+                    <button
+                      onClick={handlePlayVideo}
+                      className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-brand text-white rounded-xl font-semibold hover:opacity-90 transition-opacity mx-auto cursor-pointer"
+                    >
+                      <Play className="w-4 h-4" fill="white" />
+                      Watch Introduction
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hero Content with conditional blur */}
+      <div className={`app-container flex flex-col md:flex-row items-center gap-10 lg:gap-16 xl:gap-20 transition-all duration-300 ${showVideoPopup ? 'filter blur-md' : ''}`}>
         {/* Left Part (60%) */}
         <div className="w-full md:w-3/5 flex flex-col items-center md:items-start text-white">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[80px] font-bold leading-tight md:leading-tight mb-5 sm:mb-6 md:mb-6 text-center md:text-left">
@@ -20,7 +128,7 @@ const Hero = () => {
 
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-2xl mb-6 sm:mb-8 text-gray-300 max-w-full md:max-w-3xl text-center md:text-left">
             Daily 10-minute practice tailored to your age & interests, guided by
-            Mercury your AI tutor with progress tracking & rewards you’ll love.
+            Mercury your AI tutor with progress tracking & rewards you'll love.
           </p>
 
           {/* Buttons */}
@@ -30,7 +138,10 @@ const Hero = () => {
               Free Today
             </button>
 
-            <button className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 gap-2 rounded-3xl border border-gray-500 text-white hover:bg-white/10 transition font-semibold text-sm sm:text-base md:text-lg xl:text-xl">
+            <button 
+              onClick={handleOpenVideoPopup}
+              className="flex items-center justify-center px-5 py-2 sm:px-6 sm:py-3 md:px-8 md:py-3.5 xl:px-10 gap-2 rounded-3xl border border-gray-500 text-white hover:bg-white/10 transition font-semibold text-sm sm:text-base md:text-lg xl:text-xl"
+            >
               <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" /> Watch
               Mercury in Action
             </button>
@@ -38,7 +149,7 @@ const Hero = () => {
 
           {/* Learners + Rating */}
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 lg:gap-8 justify-center md:justify-start">
-            {/* Overlapping Avatars (center only on small screens) */}
+            {/* Overlapping Avatars */}
             <div className="flex -space-x-3 sm:-space-x-4 self-center sm:self-auto">
               {[1, 2, 3].map((i) => (
                 <Image
@@ -77,7 +188,6 @@ const Hero = () => {
         <div className="w-full md:w-2/5 flex flex-col items-center mt-10 md:mt-0 pb-16">
           {/* Image with Blur Background */}
           <div className="flex justify-center mb-4 sm:mb-6 relative">
-            {/* Background Blur */}
             <div className="absolute w-[250px] sm:w-[300px] md:w-[350px] xl:w-[500px] h-[250px] sm:h-[300px] md:h-[350px] xl:h-[500px] rounded-full bg-gradient-to-t from-[#05061E] via-[#2C3E50] to-transparent blur-xl opacity-40"></div>
             <div className="relative w-[250px] sm:w-[300px] md:w-[350px] xl:w-[500px] h-[250px] sm:h-[300px] md:h-[350px] xl:h-[500px] rounded-full overflow-hidden">
               <Image
