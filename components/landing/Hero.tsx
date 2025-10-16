@@ -4,9 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 
 interface HeroProps {
   onVideoEnd: () => void;
+  onVideoModalOpen: () => void;
+  onVideoModalClose: () => void;
 }
 
-const Hero = ({ onVideoEnd }: HeroProps) => {
+const Hero = ({ onVideoEnd, onVideoModalOpen, onVideoModalClose }: HeroProps) => {
   const [showVideoPopup, setShowVideoPopup] = useState(true);
   const [showVideoTooltip, setShowVideoTooltip] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -29,20 +31,30 @@ const Hero = ({ onVideoEnd }: HeroProps) => {
   const handleVideoEnd = () => {
     setShowVideoPopup(false);
     setIsVideoPlaying(false);
-    onVideoEnd();
+    onVideoEnd(); // Notify parent
+    onVideoModalClose(); // Notify parent that modal is closed
   };
 
   const handleCloseVideoPopup = () => {
     setShowVideoPopup(false);
     setIsVideoPlaying(false);
-    onVideoEnd();
+    onVideoEnd(); // Notify parent
+    onVideoModalClose(); // Notify parent that modal is closed
   };
 
   const handleOpenVideoPopup = () => {
     setShowVideoPopup(true);
     setShowVideoTooltip(true);
     setIsVideoPlaying(false);
+    onVideoModalOpen(); // Notify parent that modal is opening
   };
+
+  // Notify parent when modal opens initially
+  useEffect(() => {
+    if (showVideoPopup) {
+      onVideoModalOpen();
+    }
+  }, []);
 
   // Disable scroll when video popup is open
   useEffect(() => {
@@ -78,10 +90,9 @@ const Hero = ({ onVideoEnd }: HeroProps) => {
               <video
                 ref={videoRef}
                 autoPlay={false}
-                muted={true} // Start muted for autoplay policies
+                muted={true}
                 onEnded={handleVideoEnd}
                 className="w-full h-auto rounded-2xl"
-                // Remove controls since we have our own tooltip
               >
                 <source src="/intros.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
