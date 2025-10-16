@@ -13,7 +13,7 @@ import { Volume2, VolumeOff } from "lucide-react";
 export default function Home() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showMusicPopup, setShowMusicPopup] = useState(false);
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(true); // Track if video modal is open
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const toggleMusic = () => {
@@ -83,20 +83,20 @@ export default function Home() {
         <div className="fixed bottom-4 right-4 z-50">
           {/* Music Popup */}
           {showMusicPopup && (
-            <div className="absolute bottom-16 right-0 mb-4 w-64 p-4 bg-white rounded-lg shadow-xl border border-gray-200">
-              <div className="text-sm text-gray-700 mb-2">
+            <div className="absolute bottom-16 right-0 mb-4 w-64 p-4 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] text-white rounded-lg shadow-xl border border-gray-500">
+              <div className="text-sm text-gray-100 mb-2 font-medium tracking-wide">
                 Enjoy background music while you explore?
               </div>
               {/* Curved line pointing to volume button */}
-              <div className="absolute bottom-0 right-4 transform translate-y-4">
+              <div className="absolute -bottom-10 right-8">
                 <svg
-                  width="40"
-                  height="30"
-                  viewBox="0 0 40 30"
+                  width="50"
+                  height="40"
+                  viewBox="0 0 50 40"
                   className="text-gray-400"
                 >
                   <path
-                    d="M 0,0 Q 20,20 40,30"
+                    d="M 0,0 Q 25,25 50,40"
                     stroke="currentColor"
                     strokeWidth="2"
                     fill="none"
