@@ -16,6 +16,32 @@ export default function Home() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Auto-play music when video modal closes
+  const playMusic = () => {
+    if (audioRef.current && !isMusicPlaying) {
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsMusicPlaying(true);
+          console.log("Music auto-started");
+        })
+        .catch((error) => {
+          console.log("Auto-play failed:", error);
+          // Show popup to allow user to start manually
+          setShowMusicPopup(true);
+        });
+    }
+  };
+
+  // Stop music when video modal opens
+  const stopMusic = () => {
+    if (audioRef.current && isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
+      console.log("Music stopped");
+    }
+  };
+
   const toggleMusic = () => {
     if (audioRef.current) {
       if (isMusicPlaying) {
@@ -35,27 +61,30 @@ export default function Home() {
   };
 
   const handleVideoEnd = () => {
-    console.log("Video ended, showing music popup");
+    console.log("Video ended, auto-playing music");
     setIsVideoModalOpen(false);
-    setShowMusicPopup(true);
+    // setShowMusicPopup(true);
+    playMusic();
   };
 
   const handleVideoModalOpen = () => {
     console.log("Video modal opened, stopping music");
     setIsVideoModalOpen(true);
+    stopMusic();
     // Stop music immediately when video modal opens
-    if (audioRef.current && isMusicPlaying) {
-      audioRef.current.pause();
-      setIsMusicPlaying(false);
-    }
+    // if (audioRef.current && isMusicPlaying) {
+    //   audioRef.current.pause();
+    //   setIsMusicPlaying(false);
+    // }
     // Hide music popup when video modal opens
     setShowMusicPopup(false);
   };
 
   const handleVideoModalClose = () => {
-    console.log("Video modal closed");
+    console.log("Video modal closed, auto-playing music");
     setIsVideoModalOpen(false);
-    setShowMusicPopup(true);
+    // setShowMusicPopup(true);
+    playMusic();
   };
 
   return (
