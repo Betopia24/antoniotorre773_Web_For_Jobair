@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import React from "react";
 
 export default function Loading() {
@@ -20,7 +21,7 @@ export default function Loading() {
       /> */}
 
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-2xl font-bold">
-        Loading...
+        <Loader2 className="w-12 h-12 animate-spin text-gray-300" />
       </div>
     </div>
   );
