@@ -6,25 +6,15 @@ import Features from "@/components/landing/Features";
 import Hero from "@/components/landing/Hero";
 import LearningProgress from "@/components/landing/LearningProgress";
 import Pricing from "@/components/landing/Pricing";
-import IntroVideo from "@/components/landing/IntroVideo";
 import Review from "@/components/landing/Review";
 import About from "@/components/landing/About";
 import { Volume2, VolumeOff } from "lucide-react";
 
 export default function Home() {
-  const [isVideoFinished, setIsVideoFinished] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [showAudioButton, setShowAudioButton] = useState(false);
-  const [audioInitialized, setAudioInitialized] = useState(false);
+  const [showMusicPopup, setShowMusicPopup] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const hasUserInteracted = useRef(false);
-  const volumeButtonRef = useRef<HTMLButtonElement>(null);
-
-  const handleVideoEnd = () => {
-    console.log("Video ended");
-    setIsVideoFinished(true);
-    setShowAudioButton(true); // Show the audio button once the video ends
-  };
 
   const toggleMusic = () => {
     if (audioRef.current) {
@@ -40,96 +30,90 @@ export default function Home() {
           });
       }
     }
+    // Hide music popup when user interacts with volume button
+    setShowMusicPopup(false);
   };
 
-  // Initialize audio with user interaction (after video ends)
-  const initializeAudio = () => {
-    if (!audioRef.current || audioInitialized) return;
-
-    console.log("Initializing audio...");
-
-    // Set volume to a reasonable level
-    audioRef.current.volume = 0.7;
-
-    // Try to play audio
-    audioRef.current
-      .play()
-      .then(() => {
-        console.log("Audio started successfully!");
-        setIsMusicPlaying(true);
-        setAudioInitialized(true);
-      })
-      .catch((error) => {
-        console.log("Audio play failed:", error);
-        setIsMusicPlaying(false);
-        setAudioInitialized(true);
-      });
+  const handleVideoEnd = () => {
+    console.log("Video ended, showing music popup");
+    setIsVideoModalOpen(false);
+    setShowMusicPopup(true);
   };
 
-  // Handle user interaction
-  const handleUserInteraction = (event: React.MouseEvent | MouseEvent) => {
-    // Only trigger audio if user interacts after video ends and volume button is visible
-    if (!hasUserInteracted.current && isVideoFinished && showAudioButton) {
-      console.log("User interaction detected, initializing audio...");
-
-      hasUserInteracted.current = true;
-      initializeAudio();
+  const handleVideoModalOpen = () => {
+    console.log("Video modal opened, stopping music");
+    setIsVideoModalOpen(true);
+    // Stop music immediately when video modal opens
+    if (audioRef.current && isMusicPlaying) {
+      audioRef.current.pause();
+      setIsMusicPlaying(false);
     }
+    // Hide music popup when video modal opens
+    setShowMusicPopup(false);
   };
 
-  useEffect(() => {
-    if (isVideoFinished && !audioInitialized) {
-      console.log("Waiting for user interaction after video ends");
-
-      // Add event listeners for user interaction
-      const handleClick = (e: MouseEvent) => handleUserInteraction(e);
-
-      // Listen for clicks on the document to trigger the audio if user clicks anywhere outside the volume button
-      document.addEventListener("click", handleClick);
-
-      return () => {
-        document.removeEventListener("click", handleClick);
-      };
-    }
-  }, [isVideoFinished, audioInitialized]);
+  const handleVideoModalClose = () => {
+    console.log("Video modal closed");
+    setIsVideoModalOpen(false);
+    setShowMusicPopup(true);
+  };
 
   return (
     <>
-      {/* Display the intro video initially */}
-      {!isVideoFinished && <IntroVideo onEnd={handleVideoEnd} />}
-
       {/* Hidden audio element */}
       <audio ref={audioRef} loop src="/intro.mp3" preload="auto" />
 
-      {isVideoFinished && (
-        <>
-          {/* Music toggle button - only show after video ends */}
-          {showAudioButton && (
-            <button
-              ref={volumeButtonRef}
-              onClick={toggleMusic}
-              className="fixed bottom-4 right-4 z-50 bg-gradient-brand-btn text-white p-2 border rounded-full transition-colors shadow-lg cursor-pointer"
-              title={isMusicPlaying ? "Mute music" : "Play music"}
-            >
-              {isMusicPlaying ? <Volume2 /> : <VolumeOff />}
-            </button>
+      {/* Landing page content */}
+      <div style={{ minHeight: "100vh", cursor: "default" }}>
+        <Hero
+          onVideoEnd={handleVideoEnd}
+          onVideoModalOpen={handleVideoModalOpen}
+          onVideoModalClose={handleVideoModalClose}
+        />
+        <Features />
+        <LearningProgress />
+        <About />
+        <Review />
+        <Pricing />
+        <FAQ />
+      </div>
+
+      {/* Music toggle button with popup - Only visible when video modal is closed */}
+      {!isVideoModalOpen && (
+        <div className="fixed bottom-4 right-4 z-50">
+          {/* Music Popup */}
+          {showMusicPopup && (
+            <div className="absolute bottom-16 right-0 mb-4 w-64 p-4 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] text-white rounded-lg shadow-xl border border-gray-500">
+              <div className="text-sm text-gray-100 mb-2 font-medium tracking-wide">
+                Enjoy background music while you explore?
+              </div>
+              {/* Curved line pointing to volume button */}
+              <div className="absolute -bottom-10 right-8">
+                <svg
+                  width="50"
+                  height="40"
+                  viewBox="0 0 50 40"
+                  className="text-gray-400"
+                >
+                  <path
+                    d="M 0,0 Q 25,25 50,40"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                </svg>
+              </div>
+            </div>
           )}
 
-          {/* Landing page content */}
-          <div
-            style={{ minHeight: "100vh", cursor: "default" }}
-            onClick={handleUserInteraction} // Only need to track clicks here after video ends
-            onMouseMove={handleUserInteraction} // Optional: track mousemove if you prefer
+          <button
+            onClick={toggleMusic}
+            className="bg-gradient-brand-btn text-white p-2 border rounded-full transition-colors shadow-lg cursor-pointer"
+            title={isMusicPlaying ? "Mute music" : "Play music"}
           >
-            <Hero />
-            <Features />
-            <LearningProgress />
-            <About />
-            <Review />
-            <Pricing />
-            <FAQ />
-          </div>
-        </>
+            {isMusicPlaying ? <Volume2 /> : <VolumeOff />}
+          </button>
+        </div>
       )}
     </>
   );
