@@ -90,7 +90,7 @@ export default function Home() {
   return (
     <>
       {/* Hidden audio element */}
-      <audio ref={audioRef} loop src="/intro.mp3" preload="auto" />
+      <audio ref={audioRef} loop src="/bg-music-01.mp3" preload="auto" />
 
       {/* Landing page content */}
       <div style={{ minHeight: "100vh", cursor: "default" }}>
