@@ -4,13 +4,14 @@ import { FaCheck, FaUserEdit } from "react-icons/fa";
 import { IoDiamond } from "react-icons/io5";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "next/navigation";
-import { authApi, usersApi } from "@/lib/api"; // Make sure usersApi is imported
+import { authApi, usersApi } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
+import toast from "react-hot-toast";
 
-// Mocked plan data
-const myPlan = [
-  {
+// Plan data - now we can use actual data from the user's subscription
+const planData = {
+  premium: {
     title: "Premium",
     price: "$19",
     duration: "per month",
@@ -25,13 +26,24 @@ const myPlan = [
     buttonText: "Start With Premium Plan",
     highlight: true,
   },
-];
+  free: {
+    title: "Free",
+    price: "$0",
+    duration: "forever",
+    features: [
+      "Limited lessons",
+      "Basic progress analytics",
+      "Limited reward access",
+      "Standard support",
+    ],
+    buttonText: "Upgrade to Premium",
+    highlight: false,
+  },
+};
 
 function ProfilePage() {
   const router = useRouter();
   const { user, logout: storeLogout, setUser } = useAuthStore();
-
-  // Local state for user info and password
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [language, setLanguage] = useState("");
@@ -49,7 +61,7 @@ function ProfilePage() {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setHobby(user.hobbies || "");
-      setLanguage("English"); // Default or from user data if available
+      setLanguage(user.language || "English");
     }
   }, [user]);
 
@@ -67,10 +79,11 @@ function ProfilePage() {
   // Function to handle profile update
   const handleUpdateProfile = async () => {
     if (!firstName.trim() || !lastName.trim()) {
-      setMessage({
-        type: "error",
-        text: "First name and last name are required!",
-      });
+      // setMessage({
+      //   type: "error",
+      //   text: "First name and last name are required!",
+      // });
+      toast.error("First name and last name are required!");
       return;
     }
 
@@ -85,7 +98,7 @@ function ProfilePage() {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         hobbies: hobby.trim(),
-        // Note: language might need to be handled separately if your API supports it
+        language: language.trim(),
       };
 
       // Append the data as JSON string
@@ -100,20 +113,23 @@ function ProfilePage() {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           hobbies: hobby.trim(),
+          language: language.trim(),
           profilePic: result.data?.profilePic || user.profilePic,
         };
         setUser(updatedUser);
       }
 
-      setMessage({ type: "success", text: "Profile updated successfully!" });
+      // setMessage({ type: "success", text: "Profile updated successfully!" });
+      toast.success("Profile updated successfully!");
     } catch (error: any) {
       console.error("Profile update error:", error);
-      setMessage({
-        type: "error",
-        text:
-          error.response?.data?.message ||
-          "Failed to update profile. Please try again.",
-      });
+      // setMessage({
+      //   type: "error",
+      //   text:
+      //     error.response?.data?.message ||
+      //     "Failed to update profile. Please try again.",
+      // });
+      toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -121,15 +137,17 @@ function ProfilePage() {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      setMessage({ type: "error", text: "New passwords do not match!" });
+      // setMessage({ type: "error", text: "New passwords do not match!" });
+      toast.error("New passwords do not match!")
       return;
     }
 
     if (newPassword.length < 6) {
-      setMessage({
-        type: "error",
-        text: "Password must be at least 6 characters long!",
-      });
+      // setMessage({
+      //   type: "error",
+      //   text: "Password must be at least 6 characters long!",
+      // });
+      toast.error("Password must be at least 6 characters long!");
       return;
     }
 
@@ -144,30 +162,32 @@ function ProfilePage() {
       });
 
       if (response.success) {
-        setMessage({
-          type: "success",
-          text: "Password changed successfully! Logging out...",
-        });
-
+        // setMessage({
+        //   type: "success",
+        //   text: "Password changed successfully! Logging out...",
+        // });
+        toast.success("Password changed successfully! Logging out...")
         // Wait 1.5 seconds to show success message, then logout and redirect to login
         setTimeout(() => {
           storeLogout();
           router.push("/signin");
         }, 1500);
       } else {
-        setMessage({
-          type: "error",
-          text: response.message || "Failed to change password",
-        });
+        // setMessage({
+        //   type: "error",
+        //   text: response.message || "Failed to change password",
+        // });
+        toast.error(response.message || "Failed to change password")
       }
     } catch (error: any) {
       console.error("Password change error:", error);
-      setMessage({
-        type: "error",
-        text:
-          error.response?.data?.message ||
-          "An error occurred while changing password",
-      });
+      // setMessage({
+      //   type: "error",
+      //   text:
+      //     error.response?.data?.message ||
+      //     "An error occurred while changing password",
+      // });
+      toast.error("An error occurred while changing password")
     } finally {
       setIsChangingPassword(false);
     }
@@ -179,25 +199,56 @@ function ProfilePage() {
     router.push("/signin");
   };
 
-  // Determine user plan status
+  // Determine user plan status and data
   const getUserPlanStatus = () => {
-    if (user?.isSubscribed) {
+    if (user?.isSubscribed && user?.Subscription) {
       return "Premium";
     }
     return "Free";
   };
 
-  const getUserPlanFeatures = () => {
-    if (user?.isSubscribed) {
-      return myPlan[0].features;
+  const getUserPlanData = () => {
+    if (user?.isSubscribed && user?.Subscription) {
+      return {
+        ...planData.premium,
+        // Use actual plan name from subscription if available
+        title: user.Subscription.plan?.planName || "Premium",
+        // Use actual price from subscription
+        price: `$${user.Subscription.plan?.amount || 19}`,
+        // Use actual features from subscription if available
+        features: user.Subscription.plan?.features || planData.premium.features,
+      };
     }
-    return [
-      "Limited lessons",
-      "Basic progress analytics",
-      "Limited reward access",
-      "Standard support",
-    ];
+    return planData.free;
   };
+
+  const getSubscriptionDetails = () => {
+    if (!user?.isSubscribed || !user?.Subscription) {
+      return null;
+    }
+
+    return {
+      planName: user.Subscription.plan?.planName || "Premium",
+      startDate: new Date(user.Subscription.startDate).toLocaleDateString(),
+      endDate: new Date(user.Subscription.endDate).toLocaleDateString(),
+      paymentStatus: user.Subscription.paymentStatus,
+      amount: user.Subscription.amount,
+      currency: user.Subscription.plan?.currency || "USD",
+    };
+  };
+
+  const handleUpgradePlan = () => {
+    // Redirect to subscription/pricing page
+    router.push("/pricing");
+  };
+
+  const handleManageSubscription = () => {
+    // Redirect to subscription management page
+    router.push("/subscription");
+  };
+
+  const subscriptionDetails = getSubscriptionDetails();
+  const userPlanData = getUserPlanData();
 
   // This check is now redundant since HOC handles it, but keeping it as fallback
   if (!user) {
@@ -315,8 +366,7 @@ function ProfilePage() {
                   placeholder="English"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
-                  disabled={true}
-                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-gray-300 opacity-50 cursor-not-allowed"
+                  className="p-2.5 text-sm border border-gray-600 bg-[#35364E] rounded-xl text-white"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -338,39 +388,76 @@ function ProfilePage() {
 
         {/* Subscription Status + Security */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {/* Subscription Status - Now Dynamic */}
           <div className="bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-6 rounded-2xl">
             <h1 className="text-xl mb-2 sm:text-2xl font-semibold">
               Subscription Status
             </h1>
-            <p className="text-lg sm:text-xl text-gradient inline-block font-semibold">
-              {getUserPlanStatus()} User
-            </p>
-            <ul className="flex flex-col gap-3 mt-4">
-              {getUserPlanFeatures().map((f, i) => (
-                <li key={i} className="flex items-center gap-2 text-gray-200">
-                  <FaCheck className="text-green-500" /> {f}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 flex flex-col gap-3">
-              <button
-                disabled={user.isSubscribed}
-                className="py-2.5 rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {user.isSubscribed ? "Current Plan" : "Upgrade to Premium Plan"}
-              </button>
-              <button
-                disabled={!user.isSubscribed}
-                className="mt-2 relative py-2.5 rounded-xl bg-gradient-brand h-10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <div className="absolute inset-[1px] bg-[#0B0C23] rounded-xl p-2 flex justify-center items-center">
-                  <h1 className="text-gradient font-semibold">
-                    {user.isSubscribed ? "Cancel Plan" : "No Active Plan"}
-                  </h1>
+
+            {subscriptionDetails ? (
+              // User has an active subscription
+              <>
+                <p className="text-lg sm:text-xl text-gradient inline-block font-semibold">
+                  {subscriptionDetails.planName} Plan
+                </p>
+                <ul className="flex flex-col gap-3 mt-8">
+                  {userPlanData.features.map((feature, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-2 text-gray-200"
+                    >
+                      <FaCheck className="text-green-500" /> {feature}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-10 flex flex-col gap-3">
+                  <button
+                    onClick={handleManageSubscription}
+                    className="py-2.5 rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
+                  >
+                    Upgrade Subscription
+                  </button>
+                  <button className="mt-2 relative py-2.5 rounded-xl bg-gradient-brand h-10 cursor-pointer">
+                    <div className="absolute inset-[1px] bg-[#0B0C23] rounded-xl p-2 flex justify-center items-center">
+                      <h1 className="text-gradient font-semibold">
+                        Cancel Plan
+                      </h1>
+                    </div>
+                  </button>
                 </div>
-              </button>
-            </div>
+              </>
+            ) : (
+              // User has no active subscription
+              <>
+                <p className="text-lg sm:text-xl text-gray-400 inline-block font-semibold">
+                  No Active Subscription
+                </p>
+                <p className="text-gray-400 mt-2 text-sm">
+                  You are currently on the free plan with limited features.
+                </p>
+                <ul className="flex flex-col gap-3 mt-4">
+                  {userPlanData.features.map((feature, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center gap-2 text-gray-200"
+                    >
+                      <FaCheck className="text-green-500" /> {feature}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6">
+                  <button
+                    onClick={handleUpgradePlan}
+                    className="w-full py-2.5 rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
+                  >
+                    Get Subscription
+                  </button>
+                </div>
+              </>
+            )}
           </div>
+
+          {/* Security Section */}
           <div className="bg-gradient-to-br from-[#28284A] via-[#12122A] to-[#12122A] text-white p-6 rounded-2xl flex flex-col justify-between">
             <div>
               <h1 className="text-xl sm:text-2xl font-semibold">Security</h1>
@@ -438,7 +525,7 @@ function ProfilePage() {
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full px-6 py-3 sm:py-4 border border-red-500/20 bg-red-500/10 text-red-400 text-xl font-semibold rounded-2xl hover:bg-red-500/20 transition"
+          className="w-full px-6 py-3 sm:py-4 border border-red-500/20 bg-red-500/10 text-red-400 text-xl font-semibold rounded-2xl hover:bg-red-500/20 transition cursor-pointer"
         >
           Logout
         </button>
