@@ -79,10 +79,6 @@ function ProfilePage() {
   // Function to handle profile update
   const handleUpdateProfile = async () => {
     if (!firstName.trim() || !lastName.trim()) {
-      // setMessage({
-      //   type: "error",
-      //   text: "First name and last name are required!",
-      // });
       toast.error("First name and last name are required!");
       return;
     }
@@ -119,16 +115,9 @@ function ProfilePage() {
         setUser(updatedUser);
       }
 
-      // setMessage({ type: "success", text: "Profile updated successfully!" });
       toast.success("Profile updated successfully!");
     } catch (error: any) {
       console.error("Profile update error:", error);
-      // setMessage({
-      //   type: "error",
-      //   text:
-      //     error.response?.data?.message ||
-      //     "Failed to update profile. Please try again.",
-      // });
       toast.error("Failed to update profile. Please try again.");
     } finally {
       setIsUpdatingProfile(false);
@@ -137,16 +126,11 @@ function ProfilePage() {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      // setMessage({ type: "error", text: "New passwords do not match!" });
       toast.error("New passwords do not match!")
       return;
     }
 
     if (newPassword.length < 6) {
-      // setMessage({
-      //   type: "error",
-      //   text: "Password must be at least 6 characters long!",
-      // });
       toast.error("Password must be at least 6 characters long!");
       return;
     }
@@ -162,10 +146,6 @@ function ProfilePage() {
       });
 
       if (response.success) {
-        // setMessage({
-        //   type: "success",
-        //   text: "Password changed successfully! Logging out...",
-        // });
         toast.success("Password changed successfully! Logging out...")
         // Wait 1.5 seconds to show success message, then logout and redirect to login
         setTimeout(() => {
@@ -173,20 +153,10 @@ function ProfilePage() {
           router.push("/signin");
         }, 1500);
       } else {
-        // setMessage({
-        //   type: "error",
-        //   text: response.message || "Failed to change password",
-        // });
         toast.error(response.message || "Failed to change password")
       }
     } catch (error: any) {
       console.error("Password change error:", error);
-      // setMessage({
-      //   type: "error",
-      //   text:
-      //     error.response?.data?.message ||
-      //     "An error occurred while changing password",
-      // });
       toast.error("An error occurred while changing password")
     } finally {
       setIsChangingPassword(false);
@@ -244,7 +214,7 @@ function ProfilePage() {
 
   const handleManageSubscription = () => {
     // Redirect to subscription management page
-    router.push("/subscription");
+    router.push("/pricing");
   };
 
   const subscriptionDetails = getSubscriptionDetails();
