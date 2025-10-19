@@ -24,7 +24,7 @@ export default function AudioRecorderPage() {
   const [browserSupport, setBrowserSupport] = useState({
     mediaRecorder: false,
     getUserMedia: false,
-    audioContext: false
+    audioContext: false,
   });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -36,29 +36,38 @@ export default function AudioRecorderPage() {
 
   const MAX_RECORDING_TIME = 20 * 60 * 1000; // 20 minutes in milliseconds
 
-  // Check browser compatibility
+  // Check browser compatibility as some old browser versions may not support required APIs
   useEffect(() => {
     const checkBrowserSupport = () => {
-      const supportsMediaRecorder = typeof MediaRecorder !== 'undefined' && 
-        MediaRecorder.isTypeSupported?.('audio/webm') !== false;
-      
-      const supportsGetUserMedia = !!(navigator.mediaDevices?.getUserMedia || 
-        (navigator as any).webkitGetUserMedia || 
-        (navigator as any).mozGetUserMedia || 
-        (navigator as any).msGetUserMedia);
-      
-      const supportsAudioContext = !!(window.AudioContext || (window as any).webkitAudioContext);
+      const supportsMediaRecorder =
+        typeof MediaRecorder !== "undefined" &&
+        MediaRecorder.isTypeSupported?.("audio/webm") !== false;
+
+      const supportsGetUserMedia = !!(
+        navigator.mediaDevices?.getUserMedia ||
+        (navigator as any).webkitGetUserMedia ||
+        (navigator as any).mozGetUserMedia ||
+        (navigator as any).msGetUserMedia
+      );
+
+      const supportsAudioContext = !!(
+        window.AudioContext || (window as any).webkitAudioContext
+      );
 
       setBrowserSupport({
         mediaRecorder: supportsMediaRecorder,
         getUserMedia: supportsGetUserMedia,
-        audioContext: supportsAudioContext
+        audioContext: supportsAudioContext,
       });
 
       if (!supportsGetUserMedia) {
-        setError("This browser doesn't support audio recording. Please use Chrome, Firefox, Edge, or Safari 11+.");
+        setError(
+          "This browser doesn't support audio recording. Please use Chrome, Firefox, Edge, or Safari 11+."
+        );
       } else if (!supportsMediaRecorder) {
-        setError("Audio recording format not supported. Please use Chrome, Firefox, Edge, or Safari 14.1+.");
+        setError(
+          "Audio recording format not supported. Please use Chrome, Firefox, Edge, or Safari 14.1+."
+        );
       }
     };
 
@@ -68,13 +77,13 @@ export default function AudioRecorderPage() {
   // Get supported MIME type for current browser
   const getSupportedMimeType = (): string | undefined => {
     const types = [
-      'audio/webm;codecs=opus',
-      'audio/webm',
-      'audio/mp4',
-      'audio/ogg;codecs=opus',
-      'audio/wav'
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/mp4",
+      "audio/ogg;codecs=opus",
+      "audio/wav",
     ];
-    
+
     for (let type of types) {
       if (MediaRecorder.isTypeSupported?.(type)) {
         return type;
@@ -84,38 +93,41 @@ export default function AudioRecorderPage() {
   };
 
   // Fallback audio processing without WAV conversion
-  const processAudioBlob = async (webmBlob: Blob): Promise<{blob: Blob, extension: string}> => {
+  const processAudioBlob = async (
+    webmBlob: Blob
+  ): Promise<{ blob: Blob; extension: string }> => {
     // Try WAV conversion for modern browsers
     if (browserSupport.audioContext) {
       try {
         const wavBlob = await convertToWav(webmBlob);
-        return { blob: wavBlob, extension: 'wav' };
+        return { blob: wavBlob, extension: "wav" };
       } catch (error) {
-        console.warn('WAV conversion failed, using original format:', error);
+        console.warn("WAV conversion failed, using original format:", error);
       }
     }
-    
+
     // Fallback: Use original WebM format
-    return { blob: webmBlob, extension: 'webm' };
+    return { blob: webmBlob, extension: "webm" };
   };
 
   // Convert WebM to WAV format
   const convertToWav = async (webmBlob: Blob): Promise<Blob> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContext =
+          window.AudioContext || (window as any).webkitAudioContext;
         const audioContext = new AudioContext();
-        
+
         const arrayBuffer = await webmBlob.arrayBuffer();
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        
+
         const numberOfChannels = audioBuffer.numberOfChannels;
         const sampleRate = audioBuffer.sampleRate;
         const length = audioBuffer.length;
-        
+
         const wavBuffer = encodeWAV(audioBuffer, numberOfChannels, sampleRate);
-        const wavBlob = new Blob([wavBuffer], { type: 'audio/wav' });
-        
+        const wavBlob = new Blob([wavBuffer], { type: "audio/wav" });
+
         await audioContext.close();
         resolve(wavBlob);
       } catch (error) {
@@ -125,22 +137,26 @@ export default function AudioRecorderPage() {
   };
 
   // Helper function to encode WAV file
-  const encodeWAV = (audioBuffer: AudioBuffer, numChannels: number, sampleRate: number): ArrayBuffer => {
+  const encodeWAV = (
+    audioBuffer: AudioBuffer,
+    numChannels: number,
+    sampleRate: number
+  ): ArrayBuffer => {
     const length = audioBuffer.length * numChannels * 2;
     const buffer = new ArrayBuffer(44 + length);
     const view = new DataView(buffer);
-    
+
     // WAV header
     const writeString = (offset: number, string: string) => {
       for (let i = 0; i < string.length; i++) {
         view.setUint8(offset + i, string.charCodeAt(i));
       }
     };
-    
-    writeString(0, 'RIFF');
+
+    writeString(0, "RIFF");
     view.setUint32(4, 36 + length, true);
-    writeString(8, 'WAVE');
-    writeString(12, 'fmt ');
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
     view.setUint32(16, 16, true);
     view.setUint16(20, 1, true);
     view.setUint16(22, numChannels, true);
@@ -148,22 +164,26 @@ export default function AudioRecorderPage() {
     view.setUint32(28, sampleRate * numChannels * 2, true);
     view.setUint16(32, numChannels * 2, true);
     view.setUint16(34, 16, true);
-    writeString(36, 'data');
+    writeString(36, "data");
     view.setUint32(40, length, true);
-    
+
     // Write PCM data
     const offset = 44;
     let index = offset;
-    
+
     for (let channel = 0; channel < numChannels; channel++) {
       const channelData = audioBuffer.getChannelData(channel);
       for (let i = 0; i < channelData.length; i++) {
         const sample = Math.max(-1, Math.min(1, channelData[i]));
-        view.setInt16(index, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+        view.setInt16(
+          index,
+          sample < 0 ? sample * 0x8000 : sample * 0x7fff,
+          true
+        );
         index += 2;
       }
     }
-    
+
     return buffer;
   };
 
@@ -188,7 +208,7 @@ export default function AudioRecorderPage() {
     if (!isFinite(seconds) || seconds <= 0) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Format time for recording timer (MM:SS)
@@ -196,7 +216,7 @@ export default function AudioRecorderPage() {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Initialize media recorder
@@ -215,7 +235,7 @@ export default function AudioRecorderPage() {
         streamRef.current = stream;
 
         const mimeType = getSupportedMimeType();
-        console.log('Using MIME type:', mimeType);
+        console.log("Using MIME type:", mimeType);
 
         const options = mimeType ? { mimeType } : {};
         const mediaRecorder = new MediaRecorder(stream, options);
@@ -236,22 +256,26 @@ export default function AudioRecorderPage() {
           }
 
           try {
-            const mimeType = mediaRecorder.mimeType || 'audio/webm';
-            const webmBlob = new Blob(audioChunksRef.current, { type: mimeType });
-            
+            const mimeType = mediaRecorder.mimeType || "audio/webm";
+            const webmBlob = new Blob(audioChunksRef.current, {
+              type: mimeType,
+            });
+
             const duration = await getAudioDuration(webmBlob);
             setAudioDuration(duration);
 
             console.log("Processing audio...");
-            
+
             // Process audio with fallback
-            const { blob: processedBlob, extension } = await processAudioBlob(webmBlob);
-            
+            const { blob: processedBlob, extension } = await processAudioBlob(
+              webmBlob
+            );
+
             console.log("Processing successful:", {
               originalSize: webmBlob.size,
               processedSize: processedBlob.size,
               duration: duration,
-              format: extension
+              format: extension,
             });
 
             setAudioBlob(processedBlob);
@@ -288,14 +312,14 @@ export default function AudioRecorderPage() {
         URL.revokeObjectURL(audioUrl);
       }
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, [browserSupport]);
 
   // Clear all timers
   const clearAllTimers = () => {
-    [silenceTimerRef, maxTimeTimerRef, timeIntervalRef].forEach(timerRef => {
+    [silenceTimerRef, maxTimeTimerRef, timeIntervalRef].forEach((timerRef) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
@@ -308,21 +332,24 @@ export default function AudioRecorderPage() {
     fetchAudioFiles();
   }, []);
 
-  const startRecording = () => {
+      const startRecording = () => {
     if (!browserSupport.mediaRecorder) {
       setError("Audio recording not supported in this browser.");
       return;
     }
 
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "inactive") {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state === "inactive"
+    ) {
       audioChunksRef.current = [];
       setError("");
       setAudioDuration(0);
       setRecordingTime(0);
-      
+
       mediaRecorderRef.current.start(1000);
       setIsRecording(true);
-      
+
       startSilenceDetection();
       startMaxTimeTimer();
       startTimeCounter();
@@ -330,7 +357,10 @@ export default function AudioRecorderPage() {
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state === "recording"
+    ) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       clearAllTimers();
@@ -358,13 +388,17 @@ export default function AudioRecorderPage() {
 
   const startTimeCounter = () => {
     const startTime = Date.now();
-    
+
     timeIntervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
       setRecordingTime(elapsed);
-      
+
       if (elapsed > MAX_RECORDING_TIME - 30000) {
-        setError(`Recording will stop in ${Math.ceil((MAX_RECORDING_TIME - elapsed) / 1000)} seconds`);
+        setError(
+          `Recording will stop in ${Math.ceil(
+            (MAX_RECORDING_TIME - elapsed) / 1000
+          )} seconds`
+        );
       }
     }, 1000);
   };
@@ -378,12 +412,16 @@ export default function AudioRecorderPage() {
     }
   };
 
-  const uploadAudioFile = async (audioBlob: Blob, duration: number, extension: string) => {
+  const uploadAudioFile = async (
+    audioBlob: Blob,
+    duration: number,
+    extension: string
+  ) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
       const filename = `recording-${Date.now()}.${extension}`;
-      
+
       formData.append("file", audioBlob, filename);
       formData.append("duration", Math.round(duration).toString());
 
@@ -391,7 +429,7 @@ export default function AudioRecorderPage() {
         filename,
         size: audioBlob.size,
         type: audioBlob.type,
-        duration: duration
+        duration: duration,
       });
 
       const response = await audioApi.uploadAudio(formData);
@@ -401,7 +439,7 @@ export default function AudioRecorderPage() {
       setError("");
     } catch (error: any) {
       console.error("Error uploading audio:", error);
-      
+
       let errorMessage = "Failed to upload audio file";
       if (error.response?.status === 500) {
         errorMessage = "Server error (500). Please try again.";
@@ -410,7 +448,7 @@ export default function AudioRecorderPage() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -420,7 +458,7 @@ export default function AudioRecorderPage() {
   const fetchAudioFiles = async () => {
     try {
       const response = await audioApi.getAllAudio();
-      
+
       if (Array.isArray(response)) {
         setAudioFiles(response);
       } else if (response.data && Array.isArray(response.data)) {
@@ -495,7 +533,10 @@ export default function AudioRecorderPage() {
         {/* Browser Support Info */}
         {!browserSupport.mediaRecorder && (
           <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6">
-            <p>Using basic audio recording. For best experience, use Chrome, Firefox, or Safari 14.1+.</p>
+            <p>
+              Using basic audio recording. For best experience, use Chrome,
+              Firefox, or Safari 14.1+.
+            </p>
           </div>
         )}
 
@@ -532,12 +573,16 @@ export default function AudioRecorderPage() {
             </button>
 
             <div className="text-center">
-              <p className={`text-lg font-medium ${
-                isRecording ? "text-red-600" : "text-gray-600"
-              }`}>
-                {isRecording ? "Recording... Speak now!" : "Click to start recording"}
+              <p
+                className={`text-lg font-medium ${
+                  isRecording ? "text-red-600" : "text-gray-600"
+                }`}
+              >
+                {isRecording
+                  ? "Recording... Speak now!"
+                  : "Click to start recording"}
               </p>
-              
+
               {isRecording && (
                 <div className="mt-2">
                   <p className="text-sm font-medium text-blue-600">
@@ -548,7 +593,7 @@ export default function AudioRecorderPage() {
                   </p>
                 </div>
               )}
-              
+
               {audioDuration > 0 && !isRecording && (
                 <p className="text-sm text-green-600 mt-2">
                   Recorded: {formatTime(audioDuration)}
@@ -568,7 +613,10 @@ export default function AudioRecorderPage() {
                   Preview (Duration: {formatTime(audioDuration)}):
                 </p>
                 <audio controls className="w-full">
-                  <source src={audioUrl} type={audioBlob?.type || "audio/wav"} />
+                  <source
+                    src={audioUrl}
+                    type={audioBlob?.type || "audio/wav"}
+                  />
                   Your browser does not support the audio element.
                 </audio>
               </div>
@@ -617,7 +665,10 @@ export default function AudioRecorderPage() {
 
                   <div className="flex items-center space-x-3">
                     <audio controls className="h-8">
-                      <source src={file.audioUrl || file.url} type="audio/wav" />
+                      <source
+                        src={file.audioUrl || file.url}
+                        type="audio/wav"
+                      />
                       Your browser does not support the audio element.
                     </audio>
 
