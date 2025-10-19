@@ -1,6 +1,40 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+interface SubscriptionPlan {
+  id: string;
+  planName: string;
+  amount: number;
+  currency: string;
+  interval: string;
+  intervalCount: number;
+  freeTrialDays: number | null;
+  productId: string;
+  priceId: string;
+  active: boolean;
+  description: string;
+  maxMembers: number | null;
+  features: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Subscription {
+  id: string;
+  userId: string;
+  planId: string;
+  startDate: string;
+  endDate: string;
+  amount: number;
+  stripePaymentId: string;
+  paymentStatus: string;
+  createdAt: string;
+  updatedAt: string;
+  plan: SubscriptionPlan;
+  members: any[];
+}
+
+
 interface User {
   id: string;
   firstName: string;
@@ -14,7 +48,11 @@ interface User {
   isSubscribed: boolean;
   planExpiration: string | null;
   Profile: any | null;
-  Subscription: any | null;
+  Subscription: Subscription | null;
+  language: string | null;
+  userType: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface AuthState {
@@ -37,10 +75,10 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       login: (accessToken: string) => set({ accessToken, isAuthenticated: true }),
-      logout: () => set({ 
-        user: null, 
-        accessToken: null, 
-        isAuthenticated: false 
+      logout: () => set({
+        user: null,
+        accessToken: null,
+        isAuthenticated: false
       }),
       setUser: (user: User) => set({ user }),
       setLoading: (isLoading: boolean) => set({ isLoading }),
