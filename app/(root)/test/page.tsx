@@ -526,7 +526,7 @@ export default function AudioRecorderPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker py-16 flex items-center justify-center">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+        <h1 className="text-3xl font-bold text-gray-200 mb-8 text-center">
           Audio Recorder
         </h1>
 

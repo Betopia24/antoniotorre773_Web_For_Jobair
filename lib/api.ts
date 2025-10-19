@@ -152,23 +152,8 @@ export const usersApi = {
     }
 };
 
-// Revenue API calls
-export const revenueApi = {
-    // Get revenue stats
-    getRevenueStats: async () => {
-        const response = await api.get('/users/get-revenue/stats');
-        return response.data;
-    },
 
-    // Get subscriptions with pagination
-    getSubscriptions: async (page: number = 1, limit: number = 10) => {
-        const response = await api.get(`/subscriptions?page=${page}&limit=${limit}`);
-        return response.data;
-    },
-};
-
-
-// Audio Recording API calls
+// Audio Recording API calls (For Test purpose)
 export const audioApi = {
   // Upload audio file
   uploadAudio: async (formData: FormData) => {
