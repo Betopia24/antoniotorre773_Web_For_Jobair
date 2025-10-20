@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { authApi } from "@/lib/api";
 
 // Zod schema for OTP validation
 const otpSchema = z.object({
@@ -39,8 +40,6 @@ interface RegisterStepOTPProps {
   prevStep: () => void;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-
 export default function RegisterStepOTP({ 
   data, 
   userData, 
@@ -54,7 +53,20 @@ export default function RegisterStepOTP({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+
+  // Countdown timer effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [countdown]);
 
   // Send OTP when component mounts
   useEffect(() => {
@@ -66,27 +78,18 @@ export default function RegisterStepOTP({
   const sendOTP = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${BASE_URL}/auth/register-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: userData.step2.email,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setOtpSent(true);
-        setError(null);
-      } else {
-        setError(result.message || "Failed to send OTP");
-      }
-    } catch (error) {
-      setError("Network error. Please try again.");
+      setError(null);
+      setMessage(null);
+      
+      // Send only email for OTP generation
+      await authApi.register({ email: userData.step2.email });
+      
+      setOtpSent(true);
+      setCountdown(60); // Start 60 second countdown
+      setMessage("OTP sent successfully! Please check your email.");
+    } catch (error: any) {
       console.error("Error sending OTP:", error);
+      setError(error.response?.data?.message || "Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -111,23 +114,21 @@ export default function RegisterStepOTP({
     }
   };
 
-  // Handle Backspace (when the user deletes a digit)
   const handleBackspace = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
     if (e.key === "Backspace" && otp[index] === "") {
-      // Focus the previous input if the current one is empty
       if (index > 0) {
         inputRefs.current[index - 1]?.focus();
       }
     }
   };
 
-  // Handle form submission (OTP verification)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMessage(null);
 
     // Combine OTP digits into a string
     const otpString = otp.join("");
@@ -143,10 +144,7 @@ export default function RegisterStepOTP({
     setRegisterLoading(true);
 
     try {
-      // Convert hobbies array to comma-separated string
-      const hobbiesString = userData.step4.selectedHobbies.join(", ");
-
-      // complete user data for verification
+      // verification data
       const verifyData = {
         otpCode: otpString,
         data: {
@@ -155,35 +153,37 @@ export default function RegisterStepOTP({
           email: userData.step2.email,
           password: userData.step2.password,
           age: userData.step3.selectedAgeGroup,
-          hobbies: hobbiesString, // Converted to comma-separated string
-          profilePic: userData.step5.selectedAvatar
+          hobbies: userData.step4.selectedHobbies.join(", "),
+          profilePic: userData.step5.selectedAvatar,
+          language: userData.step1.selectedLanguage
         }
       };
 
-      const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(verifyData),
-      });
+      // console.log("Sending to backend:", verifyData); // Debug log
 
-      const result = await response.json();
+      const result = await authApi.verifyOtp(verifyData);
+
+      // console.log("Backend response:", result); // Debug log
 
       if (result.success) {
         setSuccess(true);
         updateData({ otp, verified: true });
+        setMessage("Registration successful! Redirecting to login...");
         
-        // Redirect to signin page after success
+        // Only redirect on success
         setTimeout(() => {
           router.push("/signin");
         }, 2000);
       } else {
         setError(result.message || "OTP verification failed");
       }
-    } catch (error) {
-      setError("Network error. Please try again.");
+    } catch (error: any) {
       console.error("Error verifying OTP:", error);
+      // console.log("Full error object:", error);
+      // console.log("Error response:", error.response);
+      
+      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setRegisterLoading(false);
     }
@@ -214,7 +214,7 @@ export default function RegisterStepOTP({
             </p>
           </div>
         ) : (
-          <div className="space-y-2 bg-gradient-to-br from-[#2A2B4C] to-[#272945] p-8 rounded-xl">
+          <div className="space-y-2 bg-gradient-to-br from-[#2A2B4C] to-[#272945] p-6 sm:p-8 rounded-xl">
             <div className="text-center">
               <h1 className="inline-block text-3xl sm:text-4xl font-bold uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
                 Manifex
@@ -225,21 +225,28 @@ export default function RegisterStepOTP({
               <p className="text-gray-300 text-sm mt-2">
                 Enter the 6-digit code sent to {userData.step2.email}
               </p>
+              
+              {/* Success/Info Messages */}
+              {message && (
+                <p className="text-green-400 text-sm mt-2">
+                  {message}
+                </p>
+              )}
               {loading && (
                 <p className="text-blue-400 text-sm mt-2">
                   Sending OTP...
                 </p>
               )}
-              {otpSent && !loading && (
+              {otpSent && !loading && !message && (
                 <p className="text-green-400 text-sm mt-2">
-                  OTP sent successfully! Please Check your Inbox or Spam Folder.
+                  OTP sent successfully! Please check your inbox or spam folder.
                 </p>
               )}
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-14">
-              {/* OTP Input Fields */}
-              <div className="flex justify-between gap-4">
+            <form onSubmit={handleSubmit} className="mt-8 sm:mt-14">
+              {/* OTP Input Fields - Made responsive */}
+              <div className="flex justify-between gap-2 sm:gap-3 md:gap-4 px-2">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
@@ -252,23 +259,24 @@ export default function RegisterStepOTP({
                     value={digit}
                     onChange={(e) => handleInputChange(e, index)}
                     onKeyDown={(e) => handleBackspace(e, index)}
-                    className="w-12 h-12 text-center bg-[#333450] text-white rounded-xl border border-gray-500 focus:outline-none focus:border-[#3797CD]"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-center bg-[#333450] text-white rounded-lg sm:rounded-xl border border-gray-500 focus:outline-none focus:border-[#3797CD] text-lg font-medium flex-1 max-w-[50px] sm:max-w-none"
                   />
                 ))}
               </div>
 
+              {/* Error Message */}
               {error && <p className="text-red-500 text-xs mt-2 text-center">{error}</p>}
 
               <div className="flex items-center justify-center mt-6">
-                <h1 className="text-gray-300">
+                <h1 className="text-gray-300 text-sm text-center">
                   Didn't receive the code?{" "}
                   <button
                     type="button"
                     onClick={handleResend}
-                    disabled={loading}
-                    className="text-gradient font-semibold disabled:opacity-50"
+                    disabled={loading || countdown > 0}
+                    className="text-gradient font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Sending..." : "Resend"}
+                    {loading ? "Sending..." : countdown > 0 ? `Resend in ${countdown}s` : "Resend"}
                   </button>
                 </h1>
               </div>
@@ -277,18 +285,18 @@ export default function RegisterStepOTP({
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
+                  className="w-1/3 py-3 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer text-sm sm:text-base"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={registerLoading}
-                  className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer disabled:opacity-50 text-sm sm:text-base"
                 >
                   {registerLoading ? (
                     <>
-                      <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                      <Loader2 className="animate-spin mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                       Verifying...
                     </>
                   ) : (

@@ -10,7 +10,14 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between w-full gap-12">
           {/* Brand */}
           <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-            <h2 className="text-2xl font-bold mb-2 text-gradient">MANIFEX</h2>
+            <div className="flex justify-center md:justify-start gap-2 mb-2">
+              <img
+                src="/manifex-logo-02.png"
+                alt="Manifex Logo"
+                className="h-8 mx-auto"
+              />
+              <h2 className="text-2xl font-bold text-gradient">MANIFEX</h2>
+            </div>
             <p className="text-gray-300 max-w-xs">
               AI-powered English learning designed for dyslexia and global
               learners. Transform your communication skills with personalized,
@@ -24,21 +31,13 @@ const Footer = () => {
             <p className="text-gray-300">Whatsapp: +8899036154</p>
             <div className="flex gap-4 mt-2 justify-center md:justify-end">
               <a href="#">
-                <img
-                  src="/facebook.png"
-                  alt="Facebook"
-                  className="w-7 h-7"
-                />
+                <img src="/facebook.png" alt="Facebook" className="w-7 h-7" />
               </a>
               <a href="#">
                 <img src="/x.png" alt="X" className="w-6 h-6" />
               </a>
               <a href="#">
-                <img
-                  src="/instagram.png"
-                  alt="Instagram"
-                  className="w-7 h-7"
-                />
+                <img src="/instagram.png" alt="Instagram" className="w-7 h-7" />
               </a>
             </div>
           </div>

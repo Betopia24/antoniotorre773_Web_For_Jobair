@@ -51,6 +51,28 @@ api.interceptors.response.use(
 
 // Auth API calls
 export const authApi = {
+    register: async (userData: { email: string }) => {
+        const response = await api.post('/auth/register-user', { email: userData.email });
+        return response.data;
+    },
+
+    verifyOtp: async (verifyData: {
+        otpCode: string;
+        data: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            password: string;
+            age: string;
+            hobbies: string;
+            profilePic: string;
+            language: string;
+        };
+    }) => {
+        const response = await api.post('/auth/verify-otp', verifyData);
+        return response.data;
+    },
+
     login: async (email: string, password: string) => {
         const response = await api.post('/auth/login', { email, password });
         return response.data;
@@ -155,25 +177,25 @@ export const usersApi = {
 
 // Audio Recording API calls (For Test purpose)
 export const audioApi = {
-  // Upload audio file
-  uploadAudio: async (formData: FormData) => {
-    const response = await api.post('/upload-audio', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-    });
-    return response.data;
-  },
+    // Upload audio file
+    uploadAudio: async (formData: FormData) => {
+        const response = await api.post('/upload-audio', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
+        return response.data;
+    },
 
-  // Get all audio files
-  getAllAudio: async () => {
-    const response = await api.get('/upload-audio');
-    return response.data;
-  },
+    // Get all audio files
+    getAllAudio: async () => {
+        const response = await api.get('/upload-audio');
+        return response.data;
+    },
 
-  // Delete audio file by ID
-  deleteAudio: async (id: string) => {
-    const response = await api.delete(`/upload-audio/${id}`);
-    return response.data;
-  },
+    // Delete audio file by ID
+    deleteAudio: async (id: string) => {
+        const response = await api.delete(`/upload-audio/${id}`);
+        return response.data;
+    },
 };

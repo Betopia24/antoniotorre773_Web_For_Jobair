@@ -111,12 +111,12 @@ const Navbar = () => {
 
                   {/* Dropdown Menu */}
                   {isDropdown && hoveredDropdown === link.href && (
-                    <div className="absolute top-[calc(100%+0.5rem)] left-0 w-56 bg-gradient-to-br from-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50">
+                    <div className="absolute top-[calc(100%+0.5rem)] left-0 w-56 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50">
                       {link.dropdown.map((item) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 text-sm font-semibold tracking-wide rounded-lg"
+                          className="px-3 py-2 text-gray-300 hover:text-white hover:bg-white/10 text-sm font-semibold tracking-wide rounded-lg"
                         >
                           {item.label}
                         </Link>
