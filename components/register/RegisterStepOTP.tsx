@@ -54,7 +54,19 @@ export default function RegisterStepOTP({
   const [success, setSuccess] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+
+  // Countdown timer effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [countdown]);
 
   // Send OTP when component mounts
   useEffect(() => {
@@ -73,6 +85,7 @@ export default function RegisterStepOTP({
       await authApi.register({ email: userData.step2.email });
       
       setOtpSent(true);
+      setCountdown(60); // Start 60 second countdown
       setMessage("OTP sent successfully! Please check your email.");
     } catch (error: any) {
       console.error("Error sending OTP:", error);
@@ -131,7 +144,7 @@ export default function RegisterStepOTP({
     setRegisterLoading(true);
 
     try {
-      // Prepare verification data with language
+      // verification data
       const verifyData = {
         otpCode: otpString,
         data: {
@@ -146,11 +159,11 @@ export default function RegisterStepOTP({
         }
       };
 
-      console.log("Sending to backend:", verifyData); // Debug log
+      // console.log("Sending to backend:", verifyData); // Debug log
 
       const result = await authApi.verifyOtp(verifyData);
 
-      console.log("Backend response:", result); // Debug log
+      // console.log("Backend response:", result); // Debug log
 
       if (result.success) {
         setSuccess(true);
@@ -166,8 +179,8 @@ export default function RegisterStepOTP({
       }
     } catch (error: any) {
       console.error("Error verifying OTP:", error);
-      console.log("Full error object:", error);
-      console.log("Error response:", error.response);
+      // console.log("Full error object:", error);
+      // console.log("Error response:", error.response);
       
       const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
       setError(errorMessage);
@@ -201,7 +214,7 @@ export default function RegisterStepOTP({
             </p>
           </div>
         ) : (
-          <div className="space-y-2 bg-gradient-to-br from-[#2A2B4C] to-[#272945] p-8 rounded-xl">
+          <div className="space-y-2 bg-gradient-to-br from-[#2A2B4C] to-[#272945] p-6 sm:p-8 rounded-xl">
             <div className="text-center">
               <h1 className="inline-block text-3xl sm:text-4xl font-bold uppercase bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-transparent bg-clip-text">
                 Manifex
@@ -231,9 +244,9 @@ export default function RegisterStepOTP({
               )}
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-14">
-              {/* OTP Input Fields */}
-              <div className="flex justify-between gap-4">
+            <form onSubmit={handleSubmit} className="mt-8 sm:mt-14">
+              {/* OTP Input Fields - Made responsive */}
+              <div className="flex justify-between gap-2 sm:gap-3 md:gap-4 px-2">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
@@ -246,7 +259,7 @@ export default function RegisterStepOTP({
                     value={digit}
                     onChange={(e) => handleInputChange(e, index)}
                     onKeyDown={(e) => handleBackspace(e, index)}
-                    className="w-12 h-12 text-center bg-[#333450] text-white rounded-xl border border-gray-500 focus:outline-none focus:border-[#3797CD]"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-center bg-[#333450] text-white rounded-lg sm:rounded-xl border border-gray-500 focus:outline-none focus:border-[#3797CD] text-lg font-medium flex-1 max-w-[50px] sm:max-w-none"
                   />
                 ))}
               </div>
@@ -255,15 +268,15 @@ export default function RegisterStepOTP({
               {error && <p className="text-red-500 text-xs mt-2 text-center">{error}</p>}
 
               <div className="flex items-center justify-center mt-6">
-                <h1 className="text-gray-300">
+                <h1 className="text-gray-300 text-sm text-center">
                   Didn't receive the code?{" "}
                   <button
                     type="button"
                     onClick={handleResend}
-                    disabled={loading}
-                    className="text-gradient font-semibold disabled:opacity-50"
+                    disabled={loading || countdown > 0}
+                    className="text-gradient font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Sending..." : "Resend"}
+                    {loading ? "Sending..." : countdown > 0 ? `Resend in ${countdown}s` : "Resend"}
                   </button>
                 </h1>
               </div>
@@ -272,18 +285,18 @@ export default function RegisterStepOTP({
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="w-1/3 py-2 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
+                  className="w-1/3 py-3 rounded-xl bg-gray-600 text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer text-sm sm:text-base"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={registerLoading}
-                  className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer disabled:opacity-50 text-sm sm:text-base"
                 >
                   {registerLoading ? (
                     <>
-                      <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                      <Loader2 className="animate-spin mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                       Verifying...
                     </>
                   ) : (
