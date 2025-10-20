@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingViewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { RouteTracker } from "@/components/shared/RouteTracker";
@@ -53,9 +53,11 @@ export const metadata: Metadata = {
   },
 };
 
-export const generateViewport = {
-  width: "device-width",
-  initialScale: 1.0,
+export const generateViewport = () => {
+  return {
+    width: "device-width",
+    initialScale: 1.0,
+  };
 };
 
 export default function RootLayout({
