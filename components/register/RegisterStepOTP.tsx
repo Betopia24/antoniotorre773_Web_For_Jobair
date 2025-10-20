@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { authApi } from "@/lib/api";
 
 // Zod schema for OTP validation
 const otpSchema = z.object({
@@ -39,8 +40,6 @@ interface RegisterStepOTPProps {
   prevStep: () => void;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-
 export default function RegisterStepOTP({ 
   data, 
   userData, 
@@ -54,6 +53,7 @@ export default function RegisterStepOTP({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const router = useRouter();
 
   // Send OTP when component mounts
@@ -66,27 +66,17 @@ export default function RegisterStepOTP({
   const sendOTP = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${BASE_URL}/auth/register-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: userData.step2.email,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setOtpSent(true);
-        setError(null);
-      } else {
-        setError(result.message || "Failed to send OTP");
-      }
-    } catch (error) {
-      setError("Network error. Please try again.");
+      setError(null);
+      setMessage(null);
+      
+      // Send only email for OTP generation
+      await authApi.register({ email: userData.step2.email });
+      
+      setOtpSent(true);
+      setMessage("OTP sent successfully! Please check your email.");
+    } catch (error: any) {
       console.error("Error sending OTP:", error);
+      setError(error.response?.data?.message || "Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -111,23 +101,21 @@ export default function RegisterStepOTP({
     }
   };
 
-  // Handle Backspace (when the user deletes a digit)
   const handleBackspace = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
     if (e.key === "Backspace" && otp[index] === "") {
-      // Focus the previous input if the current one is empty
       if (index > 0) {
         inputRefs.current[index - 1]?.focus();
       }
     }
   };
 
-  // Handle form submission (OTP verification)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setMessage(null);
 
     // Combine OTP digits into a string
     const otpString = otp.join("");
@@ -143,10 +131,7 @@ export default function RegisterStepOTP({
     setRegisterLoading(true);
 
     try {
-      // Convert hobbies array to comma-separated string
-      const hobbiesString = userData.step4.selectedHobbies.join(", ");
-
-      // complete user data for verification
+      // Prepare verification data with language
       const verifyData = {
         otpCode: otpString,
         data: {
@@ -155,35 +140,37 @@ export default function RegisterStepOTP({
           email: userData.step2.email,
           password: userData.step2.password,
           age: userData.step3.selectedAgeGroup,
-          hobbies: hobbiesString, // Converted to comma-separated string
-          profilePic: userData.step5.selectedAvatar
+          hobbies: userData.step4.selectedHobbies.join(", "),
+          profilePic: userData.step5.selectedAvatar,
+          language: userData.step1.selectedLanguage
         }
       };
 
-      const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(verifyData),
-      });
+      console.log("Sending to backend:", verifyData); // Debug log
 
-      const result = await response.json();
+      const result = await authApi.verifyOtp(verifyData);
+
+      console.log("Backend response:", result); // Debug log
 
       if (result.success) {
         setSuccess(true);
         updateData({ otp, verified: true });
+        setMessage("Registration successful! Redirecting to login...");
         
-        // Redirect to signin page after success
+        // Only redirect on success
         setTimeout(() => {
           router.push("/signin");
         }, 2000);
       } else {
         setError(result.message || "OTP verification failed");
       }
-    } catch (error) {
-      setError("Network error. Please try again.");
+    } catch (error: any) {
       console.error("Error verifying OTP:", error);
+      console.log("Full error object:", error);
+      console.log("Error response:", error.response);
+      
+      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setRegisterLoading(false);
     }
@@ -225,14 +212,21 @@ export default function RegisterStepOTP({
               <p className="text-gray-300 text-sm mt-2">
                 Enter the 6-digit code sent to {userData.step2.email}
               </p>
+              
+              {/* Success/Info Messages */}
+              {message && (
+                <p className="text-green-400 text-sm mt-2">
+                  {message}
+                </p>
+              )}
               {loading && (
                 <p className="text-blue-400 text-sm mt-2">
                   Sending OTP...
                 </p>
               )}
-              {otpSent && !loading && (
+              {otpSent && !loading && !message && (
                 <p className="text-green-400 text-sm mt-2">
-                  OTP sent successfully! Please Check your Inbox or Spam Folder.
+                  OTP sent successfully! Please check your inbox or spam folder.
                 </p>
               )}
             </div>
@@ -257,6 +251,7 @@ export default function RegisterStepOTP({
                 ))}
               </div>
 
+              {/* Error Message */}
               {error && <p className="text-red-500 text-xs mt-2 text-center">{error}</p>}
 
               <div className="flex items-center justify-center mt-6">
