@@ -60,10 +60,11 @@ const Navbar = () => {
     <>
       {/* Desktop + Mobile Navbar */}
       <div className="fixed top-0 inset-x-0 z-50 backdrop-blur-md py-2">
-        <div className="app-container flex items-center justify-between py-4 md:py-5 xl:py-4">
+        <div className="app-container flex items-center justify-between py-4">
           {/* Branding */}
-          <Link href="/" className="text-center">
-            <h1 className="inline-block text-3xl sm:text-4xl font-bold uppercase text-gradient tracking-tight">
+          <Link href="/" className="text-center flex gap-2">
+            <img src="/manifex-logo-02.png" alt="Manifex Logo" className="h-8 mx-auto" />
+            <h1 className="inline-block text-2xl sm:text-3xl font-bold uppercase text-gradient tracking-tight">
               Manifex
             </h1>
           </Link>
