@@ -12,9 +12,9 @@ export default function GoogleTranslateWrapper({ children }: { children: React.R
   useEffect(() => {
     const userLang = localStorage.getItem("preferredLang") || "en";
 
-    // Function to completely hide Google Translate elements
+    // completely hide Google Translate elements function
     const hideGoogleElements = () => {
-      // Add CSS to hide everything
+      // CSS to hide everything
       const style = document.createElement('style');
       style.innerHTML = `
         .goog-te-banner-frame, 
@@ -42,7 +42,7 @@ export default function GoogleTranslateWrapper({ children }: { children: React.R
       `;
       document.head.appendChild(style);
 
-      // Also hide elements dynamically
+      // hide elements dynamically
       const hideElements = () => {
         const elementsToHide = [
           '.goog-te-banner-frame',

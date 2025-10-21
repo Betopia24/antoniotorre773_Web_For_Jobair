@@ -70,18 +70,18 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle language selection
+  // language selection
   const handleLanguageSelect = (languageCode: string) => {
     // Save the language preference
     localStorage.setItem("preferredLang", languageCode);
-    
+
     // Set Google Translate cookies directly
     document.cookie = `googtrans=/en/${languageCode}; path=/; max-age=31536000`;
     document.cookie = `googtrans=/en/${languageCode}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
-    
+
     // Close dropdown
     setHoveredDropdown(null);
-    
+
     // Reload the page - Google Translate will pick up the cookie and translate
     window.location.reload();
   };
@@ -89,7 +89,7 @@ const Navbar = () => {
   // Get current language name
   const getCurrentLanguage = () => {
     const currentLang = localStorage.getItem("preferredLang") || "en";
-    const language = languages.find(lang => lang.code === currentLang);
+    const language = languages.find((lang) => lang.code === currentLang);
     return language?.name || "English";
   };
 
@@ -100,8 +100,12 @@ const Navbar = () => {
         <div className="app-container flex items-center justify-between py-4">
           {/* Branding */}
           <Link href="/" className="text-center flex gap-2">
-            <img src="/manifex-logo-02.png" alt="Manifex Logo" className="h-8 mx-auto" />
-            <h1 className="inline-block text-2xl sm:text-3xl font-bold uppercase text-gradient tracking-tight">
+            <img
+              src="/manifex-logo-02.png"
+              alt="Manifex Logo"
+              className="h-8 mx-auto"
+            />
+            <h1 className="inline-block text-2xl sm:text-3xl font-bold uppercase text-gradient tracking-tight notranslate">
               Manifex
             </h1>
           </Link>
@@ -189,22 +193,22 @@ const Navbar = () => {
                 >
                   Login
                 </Link>
-                
+
                 {/* Language Switcher Dropdown */}
-                <div 
+                <div
                   className="relative"
                   onMouseEnter={() => setHoveredDropdown("language")}
                   onMouseLeave={() => setHoveredDropdown(null)}
                 >
-                  <button
-                    className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
-                  >
+                  <button className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl">
                     <Globe className="w-5 h-5 z-10" />
                     <span className="z-10">{getCurrentLanguage()}</span>
-                    <ChevronDown className={clsx(
-                      "w-5 h-5 z-10 transition-transform",
-                      hoveredDropdown === "language" ? "rotate-180" : ""
-                    )} />
+                    <ChevronDown
+                      className={clsx(
+                        "w-5 h-5 z-10 transition-transform",
+                        hoveredDropdown === "language" ? "rotate-180" : ""
+                      )}
+                    />
                     <div
                       className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
                       style={{
@@ -237,9 +241,12 @@ const Navbar = () => {
                         >
                           <div>
                             <div className="font-semibold">{language.name}</div>
-                            <div className="text-xs text-gray-400">{language.nativeName}</div>
+                            <div className="text-xs text-gray-400">
+                              {language.nativeName}
+                            </div>
                           </div>
-                          {(localStorage.getItem("preferredLang") || "en") === language.code && (
+                          {(localStorage.getItem("preferredLang") || "en") ===
+                            language.code && (
                             <div className="w-2 h-2 bg-blue-500 rounded-full" />
                           )}
                         </button>
@@ -280,9 +287,16 @@ const Navbar = () => {
         <div className="flex flex-col min-h-full p-6">
           {/* Top: Branding + Close */}
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold uppercase text-gradient tracking-tight">
-              Manifex
-            </h1>
+            <Link href="/" className="text-center flex gap-2">
+              <img
+                src="/manifex-logo-02.png"
+                alt="Manifex Logo"
+                className="h-6 mx-auto"
+              />
+              <h1 className="text-xl font-bold uppercase text-gradient tracking-tight notranslate">
+                Manifex
+              </h1>
+            </Link>
             <button
               onClick={() => setSidebarOpen(false)}
               className="text-white"
@@ -364,7 +378,9 @@ const Navbar = () => {
 
           {/* Language Switcher for Mobile */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-300 mb-3">Language</h3>
+            <h3 className="text-lg font-semibold text-gray-300 mb-3">
+              Language
+            </h3>
             <div className="grid grid-cols-2 gap-2 notranslate">
               {languages.map((language) => (
                 <button
@@ -375,13 +391,16 @@ const Navbar = () => {
                   }}
                   className={clsx(
                     "p-2 text-sm font-semibold rounded-lg border transition-colors text-left",
-                    (localStorage.getItem("preferredLang") || "en") === language.code
+                    (localStorage.getItem("preferredLang") || "en") ===
+                      language.code
                       ? "bg-white/10 text-white border-blue-500"
                       : "text-gray-300 border-gray-600 hover:bg-white/5 hover:text-white"
                   )}
                 >
                   <div className="font-semibold">{language.name}</div>
-                  <div className="text-xs text-gray-400">{language.nativeName}</div>
+                  <div className="text-xs text-gray-400">
+                    {language.nativeName}
+                  </div>
                 </button>
               ))}
             </div>
