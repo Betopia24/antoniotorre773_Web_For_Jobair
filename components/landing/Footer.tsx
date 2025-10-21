@@ -16,7 +16,7 @@ const Footer = () => {
                 alt="Manifex Logo"
                 className="h-8 mx-auto"
               />
-              <h2 className="text-2xl font-bold text-gradient">MANIFEX</h2>
+              <h2 className="text-2xl font-bold text-gradient notranslate">MANIFEX</h2>
             </div>
             <p className="text-gray-300 max-w-xs">
               AI-powered English learning designed for dyslexia and global
