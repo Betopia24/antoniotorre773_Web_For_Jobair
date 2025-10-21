@@ -41,9 +41,7 @@ export default function LanguagePopup({ isOpen, onClose, onLanguageSelect }: Lan
   };
 
   const handleConfirm = () => {
-    localStorage.setItem("preferredLang", selectedLanguage);
     onLanguageSelect(selectedLanguage);
-    onClose();
   };
 
   if (!isOpen) return null;

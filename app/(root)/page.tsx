@@ -8,6 +8,7 @@ import LearningProgress from "@/components/landing/LearningProgress";
 import Pricing from "@/components/landing/Pricing";
 import Review from "@/components/landing/Review";
 import About from "@/components/landing/About";
+import LanguagePopup from "@/components/shared/LanguagePopup";
 import { Volume2, VolumeOff } from "lucide-react";
 
 export default function Home() {
@@ -15,8 +16,18 @@ export default function Home() {
   const [showMusicPopup, setShowMusicPopup] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
   const [showIntroVideo, setShowIntroVideo] = useState(true);
+  const [showLanguagePopup, setShowLanguagePopup] = useState(false);
+  const [hasSelectedLanguage, setHasSelectedLanguage] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const introVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Check if user already has a language preference on component mount
+  useEffect(() => {
+    const preferredLang = localStorage.getItem("preferredLang");
+    if (preferredLang) {
+      setHasSelectedLanguage(true);
+    }
+  }, []);
 
   // Auto-play music when video modal closes
   const playMusic = () => {
@@ -29,7 +40,6 @@ export default function Home() {
         })
         .catch((error) => {
           console.log("Auto-play failed:", error);
-          // Show popup to allow user to start manually
           setShowMusicPopup(true);
         });
     }
@@ -58,24 +68,71 @@ export default function Home() {
           });
       }
     }
-    // Hide music popup when user interacts with volume button
     setShowMusicPopup(false);
   };
 
-  // Handle intro video end
+  // Handle intro video end - Show language popup first
   const handleIntroVideoEnd = () => {
     console.log("Intro video ended");
     setShowIntroVideo(false);
-    // After intro video ends, show the hero video modal
-    setIsVideoModalOpen(true);
+    
+    // Check if user has already selected a language
+    const preferredLang = localStorage.getItem("preferredLang");
+    if (preferredLang) {
+      // User has already selected a language, proceed to video modal
+      setHasSelectedLanguage(true);
+      setIsVideoModalOpen(true);
+    } else {
+      // Show language selection popup first
+      setShowLanguagePopup(true);
+    }
   };
 
-  // Handle intro video skip (if user clicks anywhere)
+  // Handle intro video skip
   const handleSkipIntro = () => {
     if (introVideoRef.current) {
       introVideoRef.current.pause();
     }
     setShowIntroVideo(false);
+    
+    // Check if user has already selected a language
+    const preferredLang = localStorage.getItem("preferredLang");
+    if (preferredLang) {
+      setHasSelectedLanguage(true);
+      setIsVideoModalOpen(true);
+    } else {
+      setShowLanguagePopup(true);
+    }
+  };
+
+  // SIMPLE AND RELIABLE LANGUAGE SELECTION HANDLER
+  const handleLanguageSelect = (languageCode: string) => {
+    console.log("Language selected:", languageCode);
+    
+    // Save the language preference
+    localStorage.setItem("preferredLang", languageCode);
+    
+    // Set Google Translate cookies directly
+    document.cookie = `googtrans=/en/${languageCode}; path=/; max-age=31536000`;
+    document.cookie = `googtrans=/en/${languageCode}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
+    
+    // Close the popup
+    setShowLanguagePopup(false);
+    setHasSelectedLanguage(true);
+    
+    // Reload the page - Google Translate will pick up the cookie and translate
+    window.location.reload();
+  };
+
+  // Handle language popup close (if user closes without selecting)
+  const handleLanguagePopupClose = () => {
+    setShowLanguagePopup(false);
+    // If no language was selected previously, default to English
+    const preferredLang = localStorage.getItem("preferredLang");
+    if (!preferredLang) {
+      localStorage.setItem("preferredLang", "en");
+      setHasSelectedLanguage(true);
+    }
     setIsVideoModalOpen(true);
   };
 
@@ -98,9 +155,9 @@ export default function Home() {
     playMusic();
   };
 
-  // Disable scroll when intro video is playing
+  // Disable scroll when intro video or language popup is showing
   useEffect(() => {
-    if (showIntroVideo) {
+    if (showIntroVideo || showLanguagePopup) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -109,7 +166,7 @@ export default function Home() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [showIntroVideo]);
+  }, [showIntroVideo, showLanguagePopup]);
 
   return (
     <>
@@ -120,7 +177,7 @@ export default function Home() {
       {showIntroVideo && (
         <div 
           className="fixed inset-0 z-50 bg-black flex items-center justify-center cursor-pointer"
-          onClick={handleSkipIntro} // Allow skipping by clicking anywhere
+          onClick={handleSkipIntro}
         >
           <video
             ref={introVideoRef}
@@ -143,8 +200,15 @@ export default function Home() {
         </div>
       )}
 
-      {/* Main Landing Page Content (hidden during intro video) */}
-      {!showIntroVideo && (
+      {/* Language Selection Popup */}
+      <LanguagePopup
+        isOpen={showLanguagePopup}
+        onClose={handleLanguagePopupClose}
+        onLanguageSelect={handleLanguageSelect}
+      />
+
+      {/* Main Landing Page Content (hidden during intro video and language popup) */}
+      {!showIntroVideo && !showLanguagePopup && (
         <div style={{ minHeight: "100vh", cursor: "default" }}>
           <Hero
             onVideoEnd={handleVideoEnd}
