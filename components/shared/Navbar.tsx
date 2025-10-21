@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
+import { ChevronRight, ChevronDown, Menu, X, Globe } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -23,6 +23,20 @@ const navLinks = [
   { href: "/rewards", label: "Rewards" },
   { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
+];
+
+const languages = [
+  { code: "en", name: "English", nativeName: "English" },
+  { code: "fr", name: "French", nativeName: "Français" },
+  { code: "es", name: "Spanish", nativeName: "Español" },
+  { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
+  { code: "bn", name: "Bengali", nativeName: "বাংলা" },
+  { code: "zh-CN", name: "Chinese", nativeName: "中文" },
+  { code: "ko", name: "Korean", nativeName: "한국어" },
+  { code: "ru", name: "Russian", nativeName: "Русский" },
+  { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt" },
+  { code: "it", name: "Italian", nativeName: "Italiano" },
+  { code: "de", name: "German", nativeName: "Deutsch" },
 ];
 
 const Navbar = () => {
@@ -55,6 +69,29 @@ const Navbar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Handle language selection
+  const handleLanguageSelect = (languageCode: string) => {
+    // Save the language preference
+    localStorage.setItem("preferredLang", languageCode);
+    
+    // Set Google Translate cookies directly
+    document.cookie = `googtrans=/en/${languageCode}; path=/; max-age=31536000`;
+    document.cookie = `googtrans=/en/${languageCode}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
+    
+    // Close dropdown
+    setHoveredDropdown(null);
+    
+    // Reload the page - Google Translate will pick up the cookie and translate
+    window.location.reload();
+  };
+
+  // Get current language name
+  const getCurrentLanguage = () => {
+    const currentLang = localStorage.getItem("preferredLang") || "en";
+    const language = languages.find(lang => lang.code === currentLang);
+    return language?.name || "English";
+  };
 
   return (
     <>
@@ -152,27 +189,64 @@ const Navbar = () => {
                 >
                   Login
                 </Link>
-                <Link
-                  href="/signup"
-                  className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
+                
+                {/* Language Switcher Dropdown */}
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setHoveredDropdown("language")}
+                  onMouseLeave={() => setHoveredDropdown(null)}
                 >
-                  <span className="z-10">Get Started</span>
-                  <ChevronRight className="w-5 h-5 z-10" />
-                  <div
-                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                    style={{
-                      clipPath: "polygon(0 0, 100% 0, 0 100%)",
-                      borderColor: "#9CA3AF",
-                    }}
-                  />
-                  <div
-                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                    style={{
-                      clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
-                      borderColor: "#4B5563",
-                    }}
-                  />
-                </Link>
+                  <button
+                    className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl"
+                  >
+                    <Globe className="w-5 h-5 z-10" />
+                    <span className="z-10">{getCurrentLanguage()}</span>
+                    <ChevronDown className={clsx(
+                      "w-5 h-5 z-10 transition-transform",
+                      hoveredDropdown === "language" ? "rotate-180" : ""
+                    )} />
+                    <div
+                      className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                      style={{
+                        clipPath: "polygon(0 0, 100% 0, 0 100%)",
+                        borderColor: "#9CA3AF",
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
+                      style={{
+                        clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
+                        borderColor: "#4B5563",
+                      }}
+                    />
+                  </button>
+
+                  {/* Invisible buffer to avoid flicker */}
+                  {hoveredDropdown === "language" && (
+                    <div className="absolute left-0 top-full w-full h-3 bg-transparent"></div>
+                  )}
+
+                  {/* Language Dropdown Menu */}
+                  {hoveredDropdown === "language" && (
+                    <div className="absolute top-[calc(100%+0.5rem)] right-0 w-56 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50">
+                      {languages.map((language) => (
+                        <button
+                          key={language.code}
+                          onClick={() => handleLanguageSelect(language.code)}
+                          className="flex items-center justify-between px-3 py-2 text-gray-300 hover:text-white hover:bg-white/10 text-sm font-semibold tracking-wide rounded-lg text-left"
+                        >
+                          <div>
+                            <div className="font-semibold">{language.name}</div>
+                            <div className="text-xs text-gray-400">{language.nativeName}</div>
+                          </div>
+                          {(localStorage.getItem("preferredLang") || "en") === language.code && (
+                            <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -199,11 +273,11 @@ const Navbar = () => {
       {/* Mobile Sidebar Panel */}
       <div
         className={clsx(
-          "fixed top-0 right-0 h-full z-50 w-4/5 max-w-xs bg-gradient-to-br from-brand-dark to-brand-darker transform transition-transform duration-300",
+          "fixed top-0 right-0 h-full z-50 w-4/5 max-w-xs bg-gradient-to-br from-brand-dark to-brand-darker transform transition-transform duration-300 overflow-y-auto",
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex flex-col h-full p-6">
+        <div className="flex flex-col min-h-full p-6">
           {/* Top: Branding + Close */}
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold uppercase text-gradient tracking-tight">
@@ -288,8 +362,33 @@ const Navbar = () => {
             })}
           </nav>
 
+          {/* Language Switcher for Mobile */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-300 mb-3">Language</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => {
+                    handleLanguageSelect(language.code);
+                    setSidebarOpen(false);
+                  }}
+                  className={clsx(
+                    "p-2 text-sm font-semibold rounded-lg border transition-colors text-left",
+                    (localStorage.getItem("preferredLang") || "en") === language.code
+                      ? "bg-white/10 text-white border-blue-500"
+                      : "text-gray-300 border-gray-600 hover:bg-white/5 hover:text-white"
+                  )}
+                >
+                  <div className="font-semibold">{language.name}</div>
+                  <div className="text-xs text-gray-400">{language.nativeName}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Buttons */}
-          <div className="flex flex-col gap-4 mt-auto">
+          <div className="flex flex-col gap-4 mt-auto pt-6">
             {isAuthenticated && user ? (
               <Link
                 href="/profile"
@@ -322,28 +421,6 @@ const Navbar = () => {
                   onClick={() => setSidebarOpen(false)}
                 >
                   Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="relative inline-flex items-center justify-center gap-2 px-5 py-3 text-lg font-semibold text-white bg-transparent rounded-2xl"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <span className="z-10">Get Started</span>
-                  <ChevronRight className="w-5 h-5 z-10" />
-                  <div
-                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                    style={{
-                      clipPath: "polygon(0 0, 100% 0, 0 100%)",
-                      borderColor: "#9CA3AF",
-                    }}
-                  />
-                  <div
-                    className="absolute inset-0 rounded-2xl pointer-events-none border-[2px]"
-                    style={{
-                      clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
-                      borderColor: "#4B5563",
-                    }}
-                  />
                 </Link>
               </>
             )}

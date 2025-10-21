@@ -265,7 +265,7 @@ const Hero = ({
           </div>
 
           {/* Name styled like button with dual diagonal border */}
-          <h1 className="relative inline-block mt-8 px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center">
+          <h1 className="relative inline-block mt-8 px-8 md:px-10 xl:px-20 py-2 sm:py-3 md:py-4 text-white font-semibold text-sm sm:text-base md:text-lg xl:text-xl rounded-full text-center notranslate">
             Mercury
             {/* Top-left triangle (lighter border) */}
             <div
