@@ -27,16 +27,16 @@ const navLinks = [
 
 const languages = [
   { code: "en", name: "English", nativeName: "English" },
-  { code: "fr", name: "French", nativeName: "Français" },
-  { code: "es", name: "Spanish", nativeName: "Español" },
-  { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
   { code: "bn", name: "Bengali", nativeName: "বাংলা" },
   { code: "zh-CN", name: "Chinese", nativeName: "中文" },
+  { code: "fr", name: "French", nativeName: "Français" },
+  { code: "de", name: "German", nativeName: "Deutsch" },
+  { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
+  { code: "it", name: "Italian", nativeName: "Italiano" },
   { code: "ko", name: "Korean", nativeName: "한국어" },
   { code: "ru", name: "Russian", nativeName: "Русский" },
+  { code: "es", name: "Spanish", nativeName: "Español" },
   { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt" },
-  { code: "it", name: "Italian", nativeName: "Italiano" },
-  { code: "de", name: "German", nativeName: "Deutsch" },
 ];
 
 const Navbar = () => {
@@ -228,7 +228,7 @@ const Navbar = () => {
 
                   {/* Language Dropdown Menu */}
                   {hoveredDropdown === "language" && (
-                    <div className="absolute top-[calc(100%+0.5rem)] right-0 w-56 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50">
+                    <div className="absolute top-[calc(100%+0.5rem)] right-0 w-56 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] border border-gray-700 rounded-xl shadow-lg flex flex-col py-2 px-2 z-50 notranslate">
                       {languages.map((language) => (
                         <button
                           key={language.code}
@@ -293,7 +293,7 @@ const Navbar = () => {
           </div>
 
           {/* Nav Links */}
-          <nav className="flex flex-col gap-2 mb-8">
+          <nav className="flex flex-col gap-1 mb-8">
             {navLinks.map((link) => {
               const isDropdown = !!link.dropdown;
               const isActive = pathname === link.href;
@@ -365,7 +365,7 @@ const Navbar = () => {
           {/* Language Switcher for Mobile */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-300 mb-3">Language</h3>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 notranslate">
               {languages.map((language) => (
                 <button
                   key={language.code}
