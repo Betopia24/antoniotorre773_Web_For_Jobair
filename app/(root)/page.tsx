@@ -14,7 +14,7 @@ export default function Home() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showMusicPopup, setShowMusicPopup] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
-  const [showIntroVideo, setShowIntroVideo] = useState(true); // New state for intro video
+  const [showIntroVideo, setShowIntroVideo] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const introVideoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -159,15 +159,13 @@ export default function Home() {
           <FAQ />
 
           {/* Music toggle button with popup - Only visible when video modal is closed */}
-          {!isVideoModalOpen && (
+          {/* {!isVideoModalOpen && (
             <div className="fixed bottom-4 right-4 z-50">
-              {/* Music Popup */}
               {showMusicPopup && (
                 <div className="absolute bottom-16 right-0 mb-4 w-64 p-4 bg-gradient-to-br from-[#28284A] via-[#28284A] to-[#12122A] text-white rounded-lg shadow-xl border border-gray-500">
                   <div className="text-sm text-gray-100 mb-2 font-medium tracking-wide">
                     Enjoy background music while you explore?
                   </div>
-                  {/* Curved line pointing to volume button */}
                   <div className="absolute -bottom-10 right-8">
                     <svg
                       width="50"
@@ -194,7 +192,7 @@ export default function Home() {
                 {isMusicPlaying ? <Volume2 /> : <VolumeOff />}
               </button>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </>
