@@ -91,15 +91,15 @@ const Hero = ({
             </div>
 
             {/* Video Container */}
-            <div className="p-2 relative border border-white/20 overflow-hidden rounded-2xl">
+            <div className="p-2 relative border border-white/20 bg-black/90 overflow-hidden rounded-2xl">
               <video
                 ref={videoRef}
                 autoPlay={false}
                 muted={true}
                 onEnded={handleVideoEnd}
-                className="w-full h-auto rounded-2xl"
+                className="w-full h-[500px] object-contain rounded-2xl"
               >
-                <source src="/intros.mp4" type="video/mp4" />
+                <source src="/intros/manifex-intro-english.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
 
