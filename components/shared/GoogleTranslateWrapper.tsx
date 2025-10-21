@@ -79,7 +79,7 @@ export default function GoogleTranslateWrapper({ children }: { children: React.R
       new window.google.translate.TranslateElement(
         {
           pageLanguage: "en",
-          includedLanguages: "en,fr,es,de,it,hi,zh-CN,ja,ar",
+          includedLanguages: "en,fr,es,hi,bn,zh-CN,ko,ru,vi,it,de",
           autoDisplay: false,
         },
         "google_translate_element"

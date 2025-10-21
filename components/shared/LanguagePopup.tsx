@@ -13,15 +13,21 @@ const languages = [
   { code: "en", name: "English", nativeName: "English" },
   { code: "fr", name: "French", nativeName: "Français" },
   { code: "es", name: "Spanish", nativeName: "Español" },
-  { code: "de", name: "German", nativeName: "Deutsch" },
-  { code: "it", name: "Italian", nativeName: "Italiano" },
   { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
+  { code: "bn", name: "Bengali", nativeName: "বাংলা" },
   { code: "zh-CN", name: "Chinese", nativeName: "中文" },
-  { code: "ja", name: "Japanese", nativeName: "日本語" },
-  { code: "ar", name: "Arabic", nativeName: "العربية" },
+  { code: "ko", name: "Korean", nativeName: "한국어" },
+  { code: "ru", name: "Russian", nativeName: "Русский" },
+  { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt" },
+  { code: "it", name: "Italian", nativeName: "Italiano" },
+  { code: "de", name: "German", nativeName: "Deutsch" },
 ];
 
-export default function LanguagePopup({ isOpen, onClose, onLanguageSelect }: LanguagePopupProps) {
+export default function LanguagePopup({
+  isOpen,
+  onClose,
+  onLanguageSelect,
+}: LanguagePopupProps) {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
   useEffect(() => {
@@ -56,8 +62,12 @@ export default function LanguagePopup({ isOpen, onClose, onLanguageSelect }: Lan
               <Globe className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Select Language</h2>
-              <p className="text-sm text-gray-600">Choose your preferred language</p>
+              <h2 className="text-xl font-bold text-gray-900">
+                Select Language
+              </h2>
+              <p className="text-sm text-gray-600">
+                Choose your preferred language
+              </p>
             </div>
           </div>
           <button
@@ -83,8 +93,12 @@ export default function LanguagePopup({ isOpen, onClose, onLanguageSelect }: Lan
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-semibold text-gray-900">{language.name}</div>
-                    <div className="text-sm text-gray-600">{language.nativeName}</div>
+                    <div className="font-semibold text-gray-900">
+                      {language.name}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {language.nativeName}
+                    </div>
                   </div>
                   {selectedLanguage === language.code && (
                     <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">

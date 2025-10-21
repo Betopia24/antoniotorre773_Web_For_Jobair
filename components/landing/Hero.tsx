@@ -18,6 +18,27 @@ const Hero = ({
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Function to get video source based on selected language
+  const getVideoSource = () => {
+    const selectedLang = localStorage.getItem("preferredLang") || "en";
+
+    const videoMap: { [key: string]: string } = {
+      en: "/intros/manifex-intro-english.mp4",
+      fr: "/intros/manifex-intro-french.mp4",
+      es: "/intros/manifex-intro-spanish.mp4",
+      hi: "/intros/manifex-intro-hindi.mp4",
+      bn: "/intros/manifex-intro-bangla.mp4",
+      "zh-CN": "/intros/manifex-intro-chinese.mp4",
+      ko: "/intros/manifex-intro-korean.mp4",
+      ru: "/intros/manifex-intro-russian.mp4",
+      vi: "/intros/manifex-intro-vietnamese.mp4",
+      it: "/intros/manifex-intro-italian.mp4",
+      de: "/intros/manifex-intro-german.mp4",
+    };
+
+    return videoMap[selectedLang] || "/intros/manifex-intro-english.mp4";
+  };
+
   const handlePlayVideo = () => {
     if (videoRef.current) {
       videoRef.current.muted = false; // Enable sound
@@ -74,6 +95,8 @@ const Hero = ({
     };
   }, [showVideoPopup]);
 
+  const videoSource = getVideoSource();
+
   return (
     <div className="pt-32 sm:pt-36 md:pt-40 xl:pt-44 min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker relative">
       {/* Video Popup Modal with Blur Background */}
@@ -98,8 +121,9 @@ const Hero = ({
                 muted={true}
                 onEnded={handleVideoEnd}
                 className="w-full h-[500px] object-contain rounded-2xl"
+                key={videoSource} // Important: forces video reload when source changes
               >
-                <source src="/intros/manifex-intro-english.mp4" type="video/mp4" />
+                <source src={videoSource} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
 
