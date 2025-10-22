@@ -1,6 +1,7 @@
 import { Play, Rocket, Star, X } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
+import { useLanguageStore } from "@/stores/languageStore";
 
 interface HeroProps {
   onVideoEnd: () => void;
@@ -18,10 +19,11 @@ const Hero = ({
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Use the language store
+  const { preferredLang } = useLanguageStore();
+
   // Function to get video source based on selected language
   const getVideoSource = () => {
-    const selectedLang = localStorage.getItem("preferredLang") || "en";
-
     const videoMap: { [key: string]: string } = {
       en: "/intros/manifex-intro-english.mp4",
       fr: "/intros/manifex-intro-french.mp4",
@@ -36,7 +38,7 @@ const Hero = ({
       de: "/intros/manifex-intro-german.mp4",
     };
 
-    return videoMap[selectedLang] || "/intros/manifex-intro-english.mp4";
+    return videoMap[preferredLang] || "/intros/manifex-intro-english.mp4"; // Use preferredLang from store
   };
 
   const handlePlayVideo = () => {

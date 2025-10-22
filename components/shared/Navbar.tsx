@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useAuthStore } from "@/stores/authStore";
+import { useLanguageStore, languages } from "@/stores/languageStore";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -25,26 +26,24 @@ const navLinks = [
   { href: "/pricing", label: "Pricing" },
 ];
 
-const languages = [
-  { code: "en", name: "English", nativeName: "English" },
-  { code: "bn", name: "Bengali", nativeName: "বাংলা" },
-  { code: "zh-CN", name: "Chinese", nativeName: "中文" },
-  { code: "fr", name: "French", nativeName: "Français" },
-  { code: "de", name: "German", nativeName: "Deutsch" },
-  { code: "hi", name: "Hindi", nativeName: "हिन्दी" },
-  { code: "it", name: "Italian", nativeName: "Italiano" },
-  { code: "ko", name: "Korean", nativeName: "한국어" },
-  { code: "ru", name: "Russian", nativeName: "Русский" },
-  { code: "es", name: "Spanish", nativeName: "Español" },
-  { code: "vi", name: "Vietnamese", nativeName: "Tiếng Việt" },
-];
-
 const Navbar = () => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const { user, isAuthenticated } = useAuthStore();
+  const { preferredLang, setLanguage, getCurrentLanguageName } =
+    useLanguageStore();
+
+  // State for hydration-safe language name
+  const [currentLanguageName, setCurrentLanguageName] = useState("English");
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Handle hydration
+  useEffect(() => {
+    setIsMounted(true);
+    setCurrentLanguageName(getCurrentLanguageName());
+  }, [getCurrentLanguageName]);
 
   // Close sidebar & dropdown on ESC
   useEffect(() => {
@@ -70,27 +69,10 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // language selection
+  // Language selection handler
   const handleLanguageSelect = (languageCode: string) => {
-    // Save the language preference
-    localStorage.setItem("preferredLang", languageCode);
-
-    // Set Google Translate cookies directly
-    document.cookie = `googtrans=/en/${languageCode}; path=/; max-age=31536000`;
-    document.cookie = `googtrans=/en/${languageCode}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
-
-    // Close dropdown
+    setLanguage(languageCode);
     setHoveredDropdown(null);
-
-    // Reload the page - Google Translate will pick up the cookie and translate
-    window.location.reload();
-  };
-
-  // Get current language name
-  const getCurrentLanguage = () => {
-    const currentLang = localStorage.getItem("preferredLang") || "en";
-    const language = languages.find((lang) => lang.code === currentLang);
-    return language?.name || "English";
   };
 
   return (
@@ -202,7 +184,9 @@ const Navbar = () => {
                 >
                   <button className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl">
                     <Globe className="w-5 h-5 z-10" />
-                    <span className="z-10">{getCurrentLanguage()}</span>
+                    <span className="z-10">
+                      {isMounted ? currentLanguageName : "English"}
+                    </span>
                     <ChevronDown
                       className={clsx(
                         "w-5 h-5 z-10 transition-transform",
@@ -245,8 +229,7 @@ const Navbar = () => {
                               {language.nativeName}
                             </div>
                           </div>
-                          {(localStorage.getItem("preferredLang") || "en") ===
-                            language.code && (
+                          {preferredLang === language.code && (
                             <div className="w-2 h-2 bg-blue-500 rounded-full" />
                           )}
                         </button>
@@ -391,8 +374,7 @@ const Navbar = () => {
                   }}
                   className={clsx(
                     "p-2 text-sm font-semibold rounded-lg border transition-colors text-left",
-                    (localStorage.getItem("preferredLang") || "en") ===
-                      language.code
+                    preferredLang === language.code
                       ? "bg-white/10 text-white border-blue-500"
                       : "text-gray-300 border-gray-600 hover:bg-white/5 hover:text-white"
                   )}
