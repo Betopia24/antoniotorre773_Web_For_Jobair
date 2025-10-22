@@ -174,6 +174,21 @@ export const usersApi = {
     }
 };
 
+// Plans API calls
+export const plansApi = {
+    // Get all plans
+    getAllPlans: async () => {
+        const response = await api.get('/plans');
+        return response.data;
+    },
+
+    // Get single plan by ID
+    getPlanById: async (id: string) => {
+        const response = await api.get(`/plans/${id}`);
+        return response.data
+    }
+}
+
 
 // Audio Recording API calls (For Test purpose)
 export const audioApi = {
