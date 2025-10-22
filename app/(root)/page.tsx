@@ -10,8 +10,10 @@ import Review from "@/components/landing/Review";
 import About from "@/components/landing/About";
 import LanguagePopup from "@/components/shared/LanguagePopup";
 import { Volume2, VolumeOff } from "lucide-react";
+import { useLanguageStore } from "@/stores/languageStore";
 
 export default function Home() {
+  const { setLanguage } = useLanguageStore();
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showMusicPopup, setShowMusicPopup] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
@@ -75,7 +77,7 @@ export default function Home() {
   const handleIntroVideoEnd = () => {
     console.log("Intro video ended");
     setShowIntroVideo(false);
-    
+
     // Check if user has already selected a language
     const preferredLang = localStorage.getItem("preferredLang");
     if (preferredLang) {
@@ -94,7 +96,7 @@ export default function Home() {
       introVideoRef.current.pause();
     }
     setShowIntroVideo(false);
-    
+
     // Check if user has already selected a language
     const preferredLang = localStorage.getItem("preferredLang");
     if (preferredLang) {
@@ -108,20 +110,10 @@ export default function Home() {
   // SIMPLE AND RELIABLE LANGUAGE SELECTION HANDLER
   const handleLanguageSelect = (languageCode: string) => {
     console.log("Language selected:", languageCode);
-    
-    // Save the language preference
-    localStorage.setItem("preferredLang", languageCode);
-    
-    // Set Google Translate cookies directly
-    document.cookie = `googtrans=/en/${languageCode}; path=/; max-age=31536000`;
-    document.cookie = `googtrans=/en/${languageCode}; path=/; domain=.${window.location.hostname}; max-age=31536000`;
-    
-    // Close the popup
+
+    setLanguage(languageCode);
     setShowLanguagePopup(false);
     setHasSelectedLanguage(true);
-    
-    // Reload the page - Google Translate will pick up the cookie and translate
-    window.location.reload();
   };
 
   // Handle language popup close (if user closes without selecting)
@@ -175,7 +167,7 @@ export default function Home() {
 
       {/* Full-screen Intro Video */}
       {showIntroVideo && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black flex items-center justify-center cursor-pointer"
           onClick={handleSkipIntro}
         >
@@ -189,9 +181,9 @@ export default function Home() {
             <source src="/intro-01.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          
+
           {/* Skip button */}
-          <button 
+          <button
             className="absolute top-4 right-4 bg-black/50 text-white px-4 py-2 rounded-lg hover:bg-black/70 transition-colors cursor-pointer"
             onClick={handleSkipIntro}
           >

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { useLanguageStore } from "@/stores/languageStore";
 
 declare global {
   interface Window {
@@ -9,9 +10,9 @@ declare global {
 }
 
 export default function GoogleTranslateWrapper({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    const userLang = localStorage.getItem("preferredLang") || "en";
+  const { preferredLang, initializeGoogleTranslate } = useLanguageStore();
 
+  useEffect(() => {
     // completely hide Google Translate elements function
     const hideGoogleElements = () => {
       // CSS to hide everything
@@ -85,17 +86,22 @@ export default function GoogleTranslateWrapper({ children }: { children: React.R
         "google_translate_element"
       );
 
+      // Initialize our language store with Google Translate
+      setTimeout(() => {
+        initializeGoogleTranslate();
+      }, 1000);
+
       // Hide Google elements after initialization
       setTimeout(hideGoogleElements, 100);
     };
 
-    // Apply stored language preference
-    if (userLang && userLang !== 'en') {
+    // Apply stored language preference on component mount
+    if (preferredLang && preferredLang !== 'en') {
       const applyLanguage = () => {
         const select = document.querySelector(".goog-te-combo") as HTMLSelectElement;
-        if (select && userLang) {
-          if (select.value !== userLang) {
-            select.value = userLang;
+        if (select && preferredLang) {
+          if (select.value !== preferredLang) {
+            select.value = preferredLang;
             select.dispatchEvent(new Event("change"));
           }
           return true;
@@ -117,7 +123,7 @@ export default function GoogleTranslateWrapper({ children }: { children: React.R
     // Hide elements initially
     hideGoogleElements();
 
-  }, []);
+  }, [preferredLang, initializeGoogleTranslate]);
 
   return (
     <>
