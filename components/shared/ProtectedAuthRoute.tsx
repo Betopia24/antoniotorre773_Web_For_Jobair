@@ -10,26 +10,30 @@ export function ProtectedAuthRoute<T extends object>(
 ) {
   return function AuthProtectedComponent(props: T) {
     const router = useRouter();
-    const { isAuthenticated, accessToken } = useAuthStore();
-    const [isChecking, setIsChecking] = useState(true);
+    const { isAuthenticated, accessToken, isLoading } = useAuthStore();
+    const [isMounted, setIsMounted] = useState(false);
 
+    // Wait for component to mount (client-side only)
     useEffect(() => {
-      const checkAuthentication = () => {
+      setIsMounted(true);
+    }, []);
+
+    // Handle redirect only after component is mounted
+    useEffect(() => {
+      if (isMounted && !isLoading) {
         if (isAuthenticated && accessToken) {
-          console.log('User is authenticated, redirecting to previous page...');
-          
-          // last visited route from sessionStorage or default to profile
+          console.log('User is authenticated, redirecting...');
           const lastRoute = sessionStorage.getItem('lastRoute') || '/profile';
-          router.push(lastRoute);
-          return;
+          // a small timeout to avoid DOM conflicts
+          setTimeout(() => {
+            router.replace(lastRoute);
+          }, 100);
         }
-        setIsChecking(false);
-      };
+      }
+    }, [isMounted, isAuthenticated, accessToken, isLoading, router]);
 
-      checkAuthentication();
-    }, [isAuthenticated, accessToken, router]);
-
-    if (isChecking) {
+    // Show loading until we're sure about the auth state
+    if (!isMounted || isLoading) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
           <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
@@ -37,7 +41,16 @@ export function ProtectedAuthRoute<T extends object>(
       );
     }
 
-    // If not authenticated, render the wrapped component
+    // If authenticated, show redirect message
+    if (isAuthenticated && accessToken) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
+          <div className="text-white">Redirecting to your profile...</div>
+        </div>
+      );
+    }
+
+    // Only render the signin form if not authenticated
     return <WrappedComponent {...props} />;
   };
 }

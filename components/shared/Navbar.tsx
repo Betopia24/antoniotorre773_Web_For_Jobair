@@ -35,6 +35,16 @@ const Navbar = () => {
   const { preferredLang, setLanguage, getCurrentLanguageName } =
     useLanguageStore();
 
+  // State for hydration-safe language name
+  const [currentLanguageName, setCurrentLanguageName] = useState("English");
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Handle hydration
+  useEffect(() => {
+    setIsMounted(true);
+    setCurrentLanguageName(getCurrentLanguageName());
+  }, [getCurrentLanguageName]);
+
   // Close sidebar & dropdown on ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -174,7 +184,9 @@ const Navbar = () => {
                 >
                   <button className="relative inline-flex items-center gap-2 px-5 py-3 text-base md:text-lg font-semibold text-white bg-transparent rounded-2xl">
                     <Globe className="w-5 h-5 z-10" />
-                    <span className="z-10">{getCurrentLanguageName()}</span>
+                    <span className="z-10">
+                      {isMounted ? currentLanguageName : "English"}
+                    </span>
                     <ChevronDown
                       className={clsx(
                         "w-5 h-5 z-10 transition-transform",
