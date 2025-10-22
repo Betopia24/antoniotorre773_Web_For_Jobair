@@ -13,23 +13,14 @@ import { Volume2, VolumeOff } from "lucide-react";
 import { useLanguageStore } from "@/stores/languageStore";
 
 export default function Home() {
-  const { setLanguage } = useLanguageStore();
+  const { preferredLang, hasSelectedLanguage, setLanguage } = useLanguageStore();
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showMusicPopup, setShowMusicPopup] = useState(false);
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(true);
-  const [showIntroVideo, setShowIntroVideo] = useState(true);
-  const [showLanguagePopup, setShowLanguagePopup] = useState(false);
-  const [hasSelectedLanguage, setHasSelectedLanguage] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Start as false
+  const [showIntroVideo, setShowIntroVideo] = useState(true); // Start with intro video
+  const [showLanguagePopup, setShowLanguagePopup] = useState(false); // Start as false
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const introVideoRef = useRef<HTMLVideoElement | null>(null);
-
-  // Check if user already has a language preference on component mount
-  useEffect(() => {
-    const preferredLang = localStorage.getItem("preferredLang");
-    if (preferredLang) {
-      setHasSelectedLanguage(true);
-    }
-  }, []);
 
   // Auto-play music when video modal closes
   const playMusic = () => {
@@ -73,20 +64,17 @@ export default function Home() {
     setShowMusicPopup(false);
   };
 
-  // Handle intro video end - Show language popup first
+  // Handle intro video end - Show language popup
   const handleIntroVideoEnd = () => {
     console.log("Intro video ended");
     setShowIntroVideo(false);
 
-    // Check if user has already selected a language
-    const preferredLang = localStorage.getItem("preferredLang");
-    if (preferredLang) {
-      // User has already selected a language, proceed to video modal
-      setHasSelectedLanguage(true);
-      setIsVideoModalOpen(true);
-    } else {
-      // Show language selection popup first
+    // Show language popup only if no language selected yet
+    if (!hasSelectedLanguage) {
       setShowLanguagePopup(true);
+    } else {
+      // If language already selected, go directly to hero section
+      setIsVideoModalOpen(true);
     }
   };
 
@@ -97,59 +85,58 @@ export default function Home() {
     }
     setShowIntroVideo(false);
 
-    // Check if user has already selected a language
-    const preferredLang = localStorage.getItem("preferredLang");
-    if (preferredLang) {
-      setHasSelectedLanguage(true);
-      setIsVideoModalOpen(true);
-    } else {
+    // Show language popup only if no language selected yet
+    if (!hasSelectedLanguage) {
       setShowLanguagePopup(true);
+    } else {
+      // If language already selected, go directly to hero section
+      setIsVideoModalOpen(true);
     }
   };
 
-  // SIMPLE AND RELIABLE LANGUAGE SELECTION HANDLER
+  // Language selection handler
   const handleLanguageSelect = (languageCode: string) => {
     console.log("Language selected:", languageCode);
-
     setLanguage(languageCode);
     setShowLanguagePopup(false);
-    setHasSelectedLanguage(true);
+    
+    // After language selection, show the hero section video
+    setIsVideoModalOpen(true);
   };
 
-  // Handle language popup close (if user closes without selecting)
+  // Handle language popup close
   const handleLanguagePopupClose = () => {
     setShowLanguagePopup(false);
-    // If no language was selected previously, default to English
-    const preferredLang = localStorage.getItem("preferredLang");
-    if (!preferredLang) {
-      localStorage.setItem("preferredLang", "en");
-      setHasSelectedLanguage(true);
+    // If user closes without selecting, default to English
+    if (!hasSelectedLanguage) {
+      setLanguage("en");
     }
+    // After language popup closes, show the hero section video
     setIsVideoModalOpen(true);
   };
 
   const handleVideoEnd = () => {
-    console.log("Video ended, auto-playing music");
+    console.log("Hero video ended, auto-playing music");
     setIsVideoModalOpen(false);
     playMusic();
   };
 
   const handleVideoModalOpen = () => {
-    console.log("Video modal opened, stopping music");
+    console.log("Hero video modal opened, stopping music");
     setIsVideoModalOpen(true);
     stopMusic();
     setShowMusicPopup(false);
   };
 
   const handleVideoModalClose = () => {
-    console.log("Video modal closed, auto-playing music");
+    console.log("Hero video modal closed, auto-playing music");
     setIsVideoModalOpen(false);
     playMusic();
   };
 
   // Disable scroll when intro video or language popup is showing
   useEffect(() => {
-    if (showIntroVideo || showLanguagePopup) {
+    if (showIntroVideo || showLanguagePopup || isVideoModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -158,14 +145,14 @@ export default function Home() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [showIntroVideo, showLanguagePopup]);
+  }, [showIntroVideo, showLanguagePopup, isVideoModalOpen]);
 
   return (
     <>
       {/* Hidden audio element */}
       <audio ref={audioRef} loop src="/bg-music-01.mp3" preload="auto" />
 
-      {/* Full-screen Intro Video */}
+      {/* 1. Full-screen Intro Video - Shows FIRST */}
       {showIntroVideo && (
         <div
           className="fixed inset-0 z-50 bg-black flex items-center justify-center cursor-pointer"
@@ -192,14 +179,16 @@ export default function Home() {
         </div>
       )}
 
-      {/* Language Selection Popup */}
-      <LanguagePopup
-        isOpen={showLanguagePopup}
-        onClose={handleLanguagePopupClose}
-        onLanguageSelect={handleLanguageSelect}
-      />
+      {/* 2. Language Selection Popup - Shows AFTER intro video */}
+      {showLanguagePopup && (
+        <LanguagePopup
+          isOpen={showLanguagePopup}
+          onClose={handleLanguagePopupClose}
+          onLanguageSelect={handleLanguageSelect}
+        />
+      )}
 
-      {/* Main Landing Page Content (hidden during intro video and language popup) */}
+      {/* 3. Main Landing Page Content - Shows AFTER language selection */}
       {!showIntroVideo && !showLanguagePopup && (
         <div style={{ minHeight: "100vh", cursor: "default" }}>
           <Hero
@@ -214,7 +203,7 @@ export default function Home() {
           <Pricing />
           <FAQ />
 
-          {/* Music toggle button with popup - Only visible when video modal is closed */}
+          {/* Music toggle button - Only visible when video modal is closed */}
           {!isVideoModalOpen && (
             <div className="fixed bottom-4 right-4 z-50">
               {showMusicPopup && (
