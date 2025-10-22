@@ -174,6 +174,58 @@ export const usersApi = {
     }
 };
 
+// Plans API calls
+export const plansApi = {
+    // Get all plans
+    getAllPlans: async () => {
+        const response = await api.get('/plans');
+        return response.data;
+    },
+
+    // Get single plan by ID
+    getPlanById: async (id: string) => {
+        const response = await api.get(`/plans/${id}`);
+        return response.data
+    }
+}
+
+export const subscriptionApi = {
+    // Create subscription intent
+    createSubscription: async (planId: string) => {
+        const response = await api.post('/subscriptions/create-subscription', { planId });
+        return response.data;
+    },
+
+    // Get user's current subscription
+    getMySubscription: async () => {
+        const response = await api.get('/subscriptions/my-subscription');
+        return response.data;
+    },
+
+    // Get family members (for family plans)
+    getFamilyMembers: async (subscriptionId: string) => {
+        const response = await api.get(`/subscriptions/family-members/${subscriptionId}`);
+        return response.data;
+    },
+
+    // Add family member
+    addFamilyMember: async (subscriptionId: string, memberEmail: string) => {
+        const response = await api.post('/subscriptions/add-member', {
+            subscriptionId,
+            memberEmail
+        });
+        return response.data;
+    },
+
+    // Remove family member
+    removeFamilyMember: async (subscriptionId: string, memberId: string) => {
+        const response = await api.post(`/subscriptions/remove-member/${memberId}`, {
+            subscriptionId
+        });
+        return response.data;
+    }
+};
+
 
 // Audio Recording API calls (For Test purpose)
 export const audioApi = {
