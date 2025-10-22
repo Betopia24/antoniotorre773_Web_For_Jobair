@@ -16,9 +16,9 @@ export default function Home() {
   const { preferredLang, hasSelectedLanguage, setLanguage } = useLanguageStore();
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [showMusicPopup, setShowMusicPopup] = useState(false);
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false); // Start as false
-  const [showIntroVideo, setShowIntroVideo] = useState(true); // Start with intro video
-  const [showLanguagePopup, setShowLanguagePopup] = useState(false); // Start as false
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [showIntroVideo, setShowIntroVideo] = useState(true);
+  const [showLanguagePopup, setShowLanguagePopup] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const introVideoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -152,7 +152,7 @@ export default function Home() {
       {/* Hidden audio element */}
       <audio ref={audioRef} loop src="/bg-music-01.mp3" preload="auto" />
 
-      {/* 1. Full-screen Intro Video - Shows FIRST */}
+      {/* Full-screen Intro Video -> Shows FIRST */}
       {showIntroVideo && (
         <div
           className="fixed inset-0 z-50 bg-black flex items-center justify-center cursor-pointer"
@@ -179,7 +179,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 2. Language Selection Popup - Shows AFTER intro video */}
+      {/* Language Selection Popup -> Shows AFTER intro video */}
       {showLanguagePopup && (
         <LanguagePopup
           isOpen={showLanguagePopup}
@@ -188,7 +188,7 @@ export default function Home() {
         />
       )}
 
-      {/* 3. Main Landing Page Content - Shows AFTER language selection */}
+      {/* Main Landing Page Content -> Shows AFTER language selection */}
       {!showIntroVideo && !showLanguagePopup && (
         <div style={{ minHeight: "100vh", cursor: "default" }}>
           <Hero

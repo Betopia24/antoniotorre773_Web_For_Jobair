@@ -1,7 +1,7 @@
 import { Play, Rocket, Star, X } from "lucide-react";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { useLanguageStore } from "@/stores/languageStore"; // Add this import
+import { useLanguageStore } from "@/stores/languageStore";
 
 interface HeroProps {
   onVideoEnd: () => void;
