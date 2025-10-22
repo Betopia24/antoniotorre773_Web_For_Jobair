@@ -88,6 +88,8 @@ const Navbar = () => {
 
   // Get current language name
   const getCurrentLanguage = () => {
+    if (typeof window === "undefined") return "English";
+
     const currentLang = localStorage.getItem("preferredLang") || "en";
     const language = languages.find((lang) => lang.code === currentLang);
     return language?.name || "English";
@@ -391,8 +393,9 @@ const Navbar = () => {
                   }}
                   className={clsx(
                     "p-2 text-sm font-semibold rounded-lg border transition-colors text-left",
-                    (localStorage.getItem("preferredLang") || "en") ===
-                      language.code
+                    ((typeof window !== "undefined" &&
+                      localStorage.getItem("preferredLang")) ||
+                      "en") === language.code
                       ? "bg-white/10 text-white border-blue-500"
                       : "text-gray-300 border-gray-600 hover:bg-white/5 hover:text-white"
                   )}
