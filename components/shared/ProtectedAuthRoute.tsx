@@ -12,28 +12,27 @@ export function ProtectedAuthRoute<T extends object>(
     const router = useRouter();
     const { isAuthenticated, accessToken, isLoading } = useAuthStore();
     const [isMounted, setIsMounted] = useState(false);
+    const [hasChecked, setHasChecked] = useState(false);
 
     // Wait for component to mount (client-side only)
     useEffect(() => {
       setIsMounted(true);
     }, []);
 
-    // Handle redirect only after component is mounted
+    // Only check authentication once on initial mount
     useEffect(() => {
-      if (isMounted && !isLoading) {
+      if (isMounted && !isLoading && !hasChecked) {
         if (isAuthenticated && accessToken) {
-          console.log('User is authenticated, redirecting...');
+          console.log('User is authenticated, redirecting from auth page...');
           const lastRoute = sessionStorage.getItem('lastRoute') || '/profile';
-          // a small timeout to avoid DOM conflicts
-          setTimeout(() => {
-            router.replace(lastRoute);
-          }, 100);
+          router.replace(lastRoute);
         }
+        setHasChecked(true);
       }
-    }, [isMounted, isAuthenticated, accessToken, isLoading, router]);
+    }, [isMounted, isAuthenticated, accessToken, isLoading, hasChecked, router]);
 
     // Show loading until we're sure about the auth state
-    if (!isMounted || isLoading) {
+    if (!isMounted || (isLoading && !hasChecked)) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
           <Loader2 className="w-10 h-10 animate-spin text-gray-500" />
@@ -41,16 +40,7 @@ export function ProtectedAuthRoute<T extends object>(
       );
     }
 
-    // If authenticated, show redirect message
-    if (isAuthenticated && accessToken) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-brand-dark to-brand-darker flex items-center justify-center">
-          <div className="text-white">Redirecting to your profile...</div>
-        </div>
-      );
-    }
-
-    // Only render the signin form if not authenticated
+    // Render the signin form regardless (errors will now show properly)
     return <WrappedComponent {...props} />;
   };
 }
