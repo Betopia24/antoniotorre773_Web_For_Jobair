@@ -46,6 +46,7 @@ interface User {
   role: string;
   isVerified: boolean;
   isSubscribed: boolean;
+  isSubscriptionFree: boolean;
   planExpiration: string | null;
   Profile: any | null;
   Subscription: Subscription | null;
