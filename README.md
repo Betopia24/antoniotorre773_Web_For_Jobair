@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MANIFEX - AI-Powered English Learning Platform (Client Website)
 
-## Getting Started
+Welcome to the **MANIFEX Client Web Application**, the public-facing interface of the MANIFEX ecosystem.  
+This platform empowers users to **learn English effectively** through AI-driven exercises, personalized tasks, and real-time progress tracking — all within a modern, multilingual experience.
 
-First, run the development server:
+This repository contains the **client-side web app** that users interact with, including both:
+- The **public website** (landing pages, pricing, about, contact, etc.).
+- The **authenticated learning platform** (for registered and subscribed users).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌍 Key Highlights
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. **AI-Powered Learning**
+- Personalized English learning experiences driven by AI.
+- Interactive exercises, quizzes, and conversations tailored to each user’s level.
+- Real-time feedback and performance insights.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. **Multi-Language Interface**
+- Built-in translation system to support users from different linguistic backgrounds.
+- Dynamic text translation across all pages and content.
+- Users can easily switch between languages from the interface.
 
-## Learn More
+### 3. **Public Pages**
+- **Home Page** – Overview of MANIFEX’s features and benefits.  
+- **Pricing Page** – Displays available subscription plans and payment options.  
+- **About Page** – Information about the platform’s mission, vision, and team.  
+- **Contact Page** – Form and details for reaching out to support or inquiries.  
+- **FAQ Page** – Common questions about the learning process, billing, and platform usage.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. **User Dashboard (Authenticated Area)**
+- Personalized dashboard showing progress, rewards, and recommended lessons.
+- Interactive AI tasks such as grammar correction, vocabulary games, and pronunciation exercises.
+- Access to premium content for subscribed users.
+- Real-time notifications about tasks, achievements, and subscription updates.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 5. **Subscription & Payments**
+- Secure subscription management integrated with Stripe.
+- Automatic handling of trials, renewals, and plan upgrades.
+- Visual indication of active plans and expiry dates.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 6. **Rewards System**
+- Earn points or rewards for completing daily learning tasks.
+- Redeem rewards for access to premium content or exclusive videos.
 
-## Deploy on Vercel
+### 7. **User Profile & Settings**
+- Manage personal information, profile picture, and preferences.
+- Update password, language, and notification settings.
+- View and manage subscription details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- **Frontend:** Next.js / React  
+- **State Management:** Zustand  
+- **Styling:** Tailwind CSS + Shadcn UI  
+- **Language Support:** i18next (or similar multi-language framework)  
+- **Authentication:** JWT-based with persisted session handling  
+- **Payments:** Stripe integration  
+- **AI Integration:** OpenAI / Custom NLP APIs for interactive English learning  
+
+---
+
+## 🔒 Authentication Flow
+
+1. **Public Users** can browse the website, explore features, and view pricing.  
+2. **Registered Users** can sign in to access learning modules and track progress.  
+3. **Subscribed Users** gain full access to premium content and AI-powered features.  
+
+User authentication state is managed using **Zustand** with persistent local storage.
+
+---
+
+## 🌐 Multi-Language Support
+
+The MANIFEX client provides dynamic translation across all major pages and UI elements.  
+Languages are automatically loaded based on user preference or browser locale, ensuring a smooth, localized experience.
+
+---
+
+## 📧 Support
+
+If you encounter any issues, please contact our support team at:  
+**support@manifex.ai**
+
+---
+
+## 🧠 About MANIFEX
+
+MANIFEX is an AI-driven platform that blends technology and linguistics to create an engaging and personalized English learning journey.  
+Whether you’re a beginner or an advanced learner, MANIFEX adapts to your goals and helps you progress effectively.
