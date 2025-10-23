@@ -25,16 +25,9 @@ interface ConfirmStepProps {
   onNext: () => void;
   onBack: () => void;
   isAuthenticated: boolean;
-  hasActiveSubscription: boolean;
 }
 
-export default function ConfirmStep({ 
-  selectedPlan, 
-  onNext, 
-  onBack, 
-  isAuthenticated, 
-  hasActiveSubscription 
-}: ConfirmStepProps) {
+export default function ConfirmStep({ selectedPlan, onNext, onBack, isAuthenticated }: ConfirmStepProps) {
   const formatPrice = (plan: Plan) => {
     if (plan.amount === 0) return "Free";
     
@@ -63,11 +56,6 @@ export default function ConfirmStep({
       alert("Please login to continue with subscription");
       return;
     }
-    
-    if (hasActiveSubscription) {
-      return; // Toast will show from hook
-    }
-    
     onNext();
   };
 
@@ -159,16 +147,10 @@ export default function ConfirmStep({
 
           {/* Buttons */}
           <button
-            className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-4 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer"
             onClick={handleNextClick}
-            disabled={hasActiveSubscription}
           >
-            {hasActiveSubscription 
-              ? "Active Subscription Exists" 
-              : isAuthenticated 
-                ? "Proceed to Payment" 
-                : "Login to Continue"
-            }
+            {isAuthenticated ? "Proceed to Payment" : "Login to Continue"}
             <FaArrowRightLong className="w-5 h-5" />
           </button>
           <button

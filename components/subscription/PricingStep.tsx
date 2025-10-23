@@ -1,7 +1,7 @@
 // components/subscription/PricingStep.tsx
 "use client";
 import Heading from "@/components/shared/Heading";
-import { FaCheck, FaExclamationTriangle } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 
 interface Plan {
   id: string;
@@ -24,10 +24,9 @@ interface Plan {
 interface PricingStepProps {
   plans: Plan[];
   onSelectPlan: (plan: Plan) => void;
-  hasActiveSubscription: boolean;
 }
 
-export default function PricingStep({ plans, onSelectPlan, hasActiveSubscription }: PricingStepProps) {
+export default function PricingStep({ plans, onSelectPlan }: PricingStepProps) {
   // Format price for display
   const formatPrice = (plan: Plan) => {
     if (plan.amount === 0) return "Free";
@@ -52,13 +51,6 @@ export default function PricingStep({ plans, onSelectPlan, hasActiveSubscription
     return `Billed every ${intervalCount} ${intervalText}${plan.intervalCount > 1 ? 's' : ''}`;
   };
 
-  const handlePlanClick = (plan: Plan) => {
-    if (hasActiveSubscription) {
-      return; // Prevent selection - toast will show from hook
-    }
-    onSelectPlan(plan);
-  };
-
   return (
     <>
       <Heading
@@ -67,38 +59,16 @@ export default function PricingStep({ plans, onSelectPlan, hasActiveSubscription
         specialText="Learning Path"
         align="center"
       />
-      
-      {/* Active Subscription Warning */}
-      {hasActiveSubscription && (
-        <div className="w-full max-w-4xl mx-auto mb-6 p-4 bg-yellow-500/20 border border-yellow-500 rounded-xl">
-          <div className="flex items-center gap-3">
-            <FaExclamationTriangle className="text-yellow-500 text-xl" />
-            <div>
-              <p className="text-yellow-200 font-semibold">
-                You have an active subscription
-              </p>
-              <p className="text-yellow-300 text-sm mt-1">
-                Please cancel your current subscription before purchasing a new plan.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="mt-2 flex flex-col md:flex-row gap-6 w-full justify-center">
         {plans.map((plan, idx) => (
           <div
             key={plan.id}
-            className={`flex-1 p-8 rounded-2xl flex flex-col justify-between ${
-              hasActiveSubscription 
-                ? 'opacity-60 cursor-not-allowed' 
-                : 'cursor-pointer'
-            } ${
+            className={`flex-1 p-8 rounded-2xl flex flex-col justify-between cursor-pointer ${
               idx === 1 // Always highlight the second plan
                 ? "relative z-0"
                 : "bg-gradient-to-br from-[#2B2E4E] to-[#12132F] border border-gray-700"
             }`}
-            onClick={() => handlePlanClick(plan)}
+            onClick={() => onSelectPlan(plan)}
           >
             {idx === 1 && (
               <div className="absolute inset-0 rounded-2xl p-[2px] bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to z-[-1]">
@@ -129,33 +99,15 @@ export default function PricingStep({ plans, onSelectPlan, hasActiveSubscription
 
             {/* Buttons */}
             {idx === 1 ? (
-              <button 
-                className={`mt-10 py-2.5 w-full rounded-xl flex items-center justify-center gap-2 font-semibold transition ${
-                  hasActiveSubscription
-                    ? 'bg-gray-600 cursor-not-allowed'
-                    : 'bg-gradient-brand hover:opacity-90 cursor-pointer'
-                }`}
-                disabled={hasActiveSubscription}
-              >
-                {hasActiveSubscription ? 'Active Subscription' : `Start With ${plan.planName} Plan`}
+              <button className="mt-10 py-2.5 w-full rounded-xl bg-gradient-brand flex items-center justify-center gap-2 font-semibold hover:opacity-90 transition cursor-pointer">
+                Start With {plan.planName} Plan
               </button>
             ) : (
               <>
-                <button 
-                  className={`relative mt-10 py-2.5 w-full rounded-xl h-[44px] ${
-                    hasActiveSubscription ? 'cursor-not-allowed' : 'cursor-pointer'
-                  }`}
-                  disabled={hasActiveSubscription}
-                >
-                  <div className={`absolute inset-[1px] rounded-xl p-2 flex justify-center items-center ${
-                    hasActiveSubscription
-                      ? 'bg-gray-700'
-                      : 'bg-gradient-to-br from-[#2E2E43] via-[#2C2C41] to-[#27273B]'
-                  }`}>
-                    <h1 className={`font-semibold ${
-                      hasActiveSubscription ? 'text-gray-400' : 'text-gradient'
-                    }`}>
-                      {hasActiveSubscription ? 'Active Subscription' : `Start With ${plan.planName} Plan`}
+                <button className="relative mt-10 py-2.5 w-full rounded-xl bg-gradient-brand h-[44px] cursor-pointer">
+                  <div className="absolute inset-[1px] bg-gradient-to-br from-[#2E2E43] via-[#2C2C41] to-[#27273B] rounded-xl p-2 flex justify-center items-center">
+                    <h1 className="text-gradient font-semibold">
+                      Start With {plan.planName} Plan
                     </h1>
                   </div>
                 </button>

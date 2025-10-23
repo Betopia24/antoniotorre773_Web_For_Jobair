@@ -1,4 +1,3 @@
-// app/subscription/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -7,6 +6,7 @@ import { plansApi } from "@/lib/api";
 import { useSubscription } from "@/hooks/useSubscription";
 import PricingStep from "@/components/subscription/PricingStep";
 import ConfirmStep from "@/components/subscription/ConfirmStep";
+// import BillingStep from "@/components/subscription/BillingStep";
 import SuccessStep from "@/components/subscription/SuccessStep";
 import BillingWrapper from "@/components/subscription/BillingWrapper";
 import { Plan } from "@/lib/types";
@@ -14,7 +14,7 @@ import { Plan } from "@/lib/types";
 export default function SubscriptionPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const { createSubscription, refreshUserSubscription, checkExistingSubscription } = useSubscription();
+  const { createSubscription, refreshUserSubscription } = useSubscription();
 
   const [step, setStep] = useState<
     "pricing" | "confirm" | "billing" | "success"
@@ -23,34 +23,23 @@ export default function SubscriptionPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentIntent, setPaymentIntent] = useState<any>(null);
-  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
-  // Fetch plans from API and check existing subscription
+  // Fetch plans from API
   useEffect(() => {
-    const initializePage = async () => {
+    const fetchPlans = async () => {
       try {
         setLoading(true);
-        
-        // Fetch plans
-        const plansResponse = await plansApi.getAllPlans();
-        setPlans(plansResponse.data);
-        
-        // Check if user has active subscription
-        if (isAuthenticated) {
-          const existingSub = await checkExistingSubscription();
-          if (existingSub?.paymentStatus === "COMPLETED") {
-            setHasActiveSubscription(true);
-          }
-        }
+        const response = await plansApi.getAllPlans();
+        setPlans(response.data);
       } catch (error) {
-        console.error("Failed to initialize:", error);
+        console.error("Failed to fetch plans:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    initializePage();
-  }, [isAuthenticated]);
+    fetchPlans();
+  }, []);
 
   // Check authentication when moving to billing step
   useEffect(() => {
@@ -60,10 +49,6 @@ export default function SubscriptionPage() {
   }, [step, isAuthenticated, router]);
 
   const handleSelectPlan = (plan: Plan) => {
-    // Prevent selection if user has active subscription
-    if (hasActiveSubscription) {
-      return; // The toast will be shown from the hook
-    }
     setSelectedPlan(plan);
     setStep("confirm");
   };
@@ -73,20 +58,16 @@ export default function SubscriptionPage() {
       router.push("/signin");
       return;
     }
-    
+
     if (!selectedPlan) return;
 
     try {
-      // Create subscription intent (hook will check for active subscription)
+      // Create subscription intent
       const result = await createSubscription(selectedPlan.id);
       setPaymentIntent(result.data);
       setStep("billing");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to create subscription:", error);
-      // If it's because of active subscription, stay on confirm step
-      if (error.message === "Active subscription exists") {
-        setStep("confirm");
-      }
     }
   };
 
@@ -94,7 +75,6 @@ export default function SubscriptionPage() {
     // Refresh user data to update subscription status
     await refreshUserSubscription();
     setStep("success");
-    setHasActiveSubscription(true); // Update local state
   };
 
   const handleBack = () => {
@@ -121,11 +101,7 @@ export default function SubscriptionPage() {
       <div className="app-container flex flex-col items-center gap-12">
         {/* Step 1: Pricing */}
         {step === "pricing" && (
-          <PricingStep 
-            plans={plans}
-            onSelectPlan={handleSelectPlan}
-            hasActiveSubscription={hasActiveSubscription}
-          />
+          <PricingStep plans={plans} onSelectPlan={handleSelectPlan} />
         )}
 
         {/* Step 2: Confirm Plan */}
@@ -135,7 +111,6 @@ export default function SubscriptionPage() {
             onNext={handleNextConfirm}
             onBack={handleBack}
             isAuthenticated={isAuthenticated}
-            hasActiveSubscription={hasActiveSubscription}
           />
         )}
 
