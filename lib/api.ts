@@ -38,8 +38,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
-            // Token expired or invalid
+        // Don't intercept login errors
+        const isLoginRequest = error.config?.url?.includes('/auth/login');
+        const isTokenExpired = error.response?.data?.message?.includes('token');
+
+        if (error.response?.status === 401 && !isLoginRequest && isTokenExpired) {
             useAuthStore.getState().logout();
             if (typeof window !== 'undefined') {
                 window.location.href = '/signin';
