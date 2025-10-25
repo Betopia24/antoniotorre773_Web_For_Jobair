@@ -1,11 +1,11 @@
 "use client";
+import React, { useState } from "react";
 import RegisterStepFirst from "@/components/register/RegisterStepFirst";
 import RegisterStepSecond from "@/components/register/RegisterStepSecond";
 import RegisterStepThree from "@/components/register/RegisterStepThree";
 import RegisterStepFour from "@/components/register/RegisterStepFour";
 import RegisterStepFive from "@/components/register/RegisterStepFive";
 import RegisterStepOTP from "@/components/register/RegisterStepOTP";
-import React, { useState } from "react";
 import { ProtectedAuthRoute } from "@/components/shared/ProtectedAuthRoute";
 
 // Define the complete data structure for all steps
@@ -57,7 +57,7 @@ function SignUp() {
     },
     step5: {
       selectedAvatarIndex: 0,
-      selectedAvatar: "/avatar.png",
+      selectedAvatar: "/avatar-01.png",
     },
     stepOTP: {
       otp: ["", "", "", "", "", ""],
