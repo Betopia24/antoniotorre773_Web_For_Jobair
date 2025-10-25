@@ -17,6 +17,7 @@ const navLinks = [
       { href: "/practice/speaking", label: "Speaking" },
       { href: "/practice/listening", label: "Listening" },
       { href: "/practice/writing", label: "Writing" },
+      { href: "/practice/presentation", label: "Presentation" },
       { href: "/practice/learn-english", label: "Learn English With Us" },
     ],
   },
