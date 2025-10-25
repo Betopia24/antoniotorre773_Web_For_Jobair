@@ -159,11 +159,11 @@ export default function RegisterStepOTP({
         }
       };
 
-      // console.log("Sending to backend:", verifyData); // Debug log
+      console.log("Sending to backend:", verifyData); // Debug log
 
       const result = await authApi.verifyOtp(verifyData);
 
-      // console.log("Backend response:", result); // Debug log
+      console.log("Backend response:", result); // Debug log
 
       if (result.success) {
         setSuccess(true);
@@ -194,7 +194,7 @@ export default function RegisterStepOTP({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4 notranslate">
       <div className="w-full max-w-md space-y-8">
         {success ? (
           <div className="space-y-2 bg-gradient-to-br from-[#2A2B4C] to-[#272945] p-8 rounded-xl text-center">

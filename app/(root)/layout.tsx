@@ -9,11 +9,11 @@ export default function Layout({
 }>) {
   return (
     <>
-      {/* <GoogleTranslateWrapper> */}
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
-      {/* </GoogleTranslateWrapper> */}
+      <GoogleTranslateWrapper>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </GoogleTranslateWrapper>
     </>
   );
 }

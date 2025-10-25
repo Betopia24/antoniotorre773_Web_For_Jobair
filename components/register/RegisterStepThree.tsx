@@ -36,7 +36,7 @@ const RegisterStepThree: React.FC<RegisterStepThreeProps> = ({
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4 notranslate">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2">
           <div className="text-center">

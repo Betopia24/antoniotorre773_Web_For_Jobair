@@ -71,7 +71,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GoogleTranslateWrapper>
+        {/* <GoogleTranslateWrapper> */}
           <RouteTracker />
           {children}
           <Toaster
@@ -109,7 +109,7 @@ export default function RootLayout({
               },
             }}
           />
-        </GoogleTranslateWrapper>
+        {/* </GoogleTranslateWrapper> */}
       </body>
     </html>
   );

@@ -7,18 +7,20 @@ import { z } from "zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 // Zod schema for form validation
-const signUpSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  email: z.string().email({ message: "Please enter a valid email" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+const signUpSchema = z
+  .object({
+    firstName: z.string().min(1, { message: "First name is required" }),
+    lastName: z.string().min(1, { message: "Last name is required" }),
+    email: z.string().email({ message: "Please enter a valid email" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 interface RegisterStepSecondProps {
   data: {
@@ -33,7 +35,12 @@ interface RegisterStepSecondProps {
   prevStep: () => void;
 }
 
-export default function RegisterStepSecond({ data, updateData, nextStep, prevStep }: RegisterStepSecondProps) {
+export default function RegisterStepSecond({
+  data,
+  updateData,
+  nextStep,
+  prevStep,
+}: RegisterStepSecondProps) {
   const [formData, setFormData] = useState({
     firstName: data.firstName || "",
     lastName: data.lastName || "",
@@ -55,7 +62,13 @@ export default function RegisterStepSecond({ data, updateData, nextStep, prevSte
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setErrors({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "" });
+    setErrors({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
 
     const validationResult = signUpSchema.safeParse(formData);
 
@@ -94,7 +107,7 @@ export default function RegisterStepSecond({ data, updateData, nextStep, prevSte
   };
 
   return (
-    <div className="w-full min-h-screen py-20 bg-[#05061E] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen py-20 bg-[#05061E] flex items-center justify-center px-4 notranslate">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2">
           <div className="text-center">
@@ -237,14 +250,18 @@ export default function RegisterStepSecond({ data, updateData, nextStep, prevSte
               placeholder="••••••••"
             />
             {errors.confirmPassword && (
-              <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
+              <p className="text-red-400 text-sm mt-1">
+                {errors.confirmPassword}
+              </p>
             )}
 
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-[38px] text-gray-400 hover:text-gray-200 transition"
-              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              aria-label={
+                showConfirmPassword ? "Hide password" : "Show password"
+              }
             >
               {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
@@ -263,7 +280,11 @@ export default function RegisterStepSecond({ data, updateData, nextStep, prevSte
               disabled={loading}
               className="flex-1 mt-4 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : "Next"}
+              {loading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                "Next"
+              )}
             </button>
           </div>
         </form>

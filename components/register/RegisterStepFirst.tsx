@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
+import { useLanguageStore, languages } from "@/stores/languageStore";
 
 interface RegisterStepFirstProps {
   data: {
@@ -12,19 +13,32 @@ interface RegisterStepFirstProps {
 
 const RegisterStepFirst = ({ data, updateData, nextStep }: RegisterStepFirstProps) => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>(data.selectedLanguage);
+  const { preferredLang, setLanguage, getCurrentLanguageName } = useLanguageStore();
+  const [isMounted, setIsMounted] = useState(false);
 
-  const languages: string[] = [
-    "English",
-    "Spanish",
-    "French",
-    "German",
-    "Italian",
-  ];
+  // Handle hydration - run only once on mount
+  useEffect(() => {
+    setIsMounted(true);
+    
+    // Only initialize if we don't have a selected language yet
+    if (!data.selectedLanguage || data.selectedLanguage === "English") {
+      const currentLangName = getCurrentLanguageName();
+      setSelectedLanguage(currentLangName);
+      updateData({ selectedLanguage: currentLangName });
+    }
+  }, []); // Empty dependency array - run only once on mount
 
   const handleLanguageChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    const newLanguage = e.target.value;
-    setSelectedLanguage(newLanguage);
-    updateData({ selectedLanguage: newLanguage });
+    const selectedLanguageName = e.target.value;
+    setSelectedLanguage(selectedLanguageName);
+    updateData({ selectedLanguage: selectedLanguageName });
+    
+    // Find the language code and update the language store
+    const selectedLang = languages.find(lang => lang.name === selectedLanguageName);
+    if (selectedLang) {
+      setLanguage(selectedLang.code);
+      // No need to call updateData again here - setLanguage will trigger page reload
+    }
   };
 
   const handleNext = () => {
@@ -33,8 +47,11 @@ const RegisterStepFirst = ({ data, updateData, nextStep }: RegisterStepFirstProp
     }
   };
 
+  // Get current language name for display (hydration-safe)
+  const currentLanguageName = isMounted ? getCurrentLanguageName() : "English";
+
   return (
-    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4">
+    <div className="w-full min-h-screen bg-[#05061E] flex items-center justify-center px-4 notranslate">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2">
           <div className="text-center">
@@ -70,23 +87,28 @@ const RegisterStepFirst = ({ data, updateData, nextStep }: RegisterStepFirstProp
           <div className="w-full flex items-center justify-center flex-col gap-2">
             <h1 className="text-white text-xl font-semibold">Please select your language</h1>
 
-            {/* Language Selector */}
+            {/* Language Selector - Now using the actual language store languages */}
             <div>
               <select
                 value={selectedLanguage}
                 onChange={handleLanguageChange}
-                className="w-full bg-[#24263A] border border-gray-500 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#F176B7] mt-2"
+                className="w-full bg-[#24263A] border border-gray-500 text-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#F176B7] mt-2 notranslate"
               >
                 <option value="" disabled>
                   Select a language
                 </option>
-                {languages.map((language, index) => (
-                  <option key={index} value={language}>
-                    {language}
+                {languages.map((language) => (
+                  <option key={language.code} value={language.name}>
+                    {language.name} ({language.nativeName})
                   </option>
                 ))}
               </select>
             </div>
+            
+            {/* Show current selected language for confirmation */}
+            <p className="text-gray-400 text-sm mt-2">
+              Current: {currentLanguageName}
+            </p>
           </div>
         </div>
 
