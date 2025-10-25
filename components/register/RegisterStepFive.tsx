@@ -22,10 +22,10 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
   prevStep,
   onSubmit,
 }) => {
-  // Only one avatar available
+  // Only one avatar
   const avatars: string[] = [
     "/avatar-01.png",
-    // "/about-01.png", // Commented out unnecessary avatars
+    // "/about-01.png",
     // "/avatar.png",
     // "/avatar.png",
   ];
@@ -34,7 +34,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
     data.selectedAvatarIndex
   );
 
-  // Comment out navigation functions since we only have one avatar
+  // Commented out navigation functions, as client only have one avatar
   /*
   const goToNextAvatar = () => {
     const newIndex = (selectedAvatarIndex + 1) % avatars.length;
@@ -89,7 +89,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
             <ChevronLeft className="w-6 h-6" />
           </button> */}
 
-          {/* Avatar Image - Updated to show full image without cropping */}
+          {/* Avatar Image */}
           <div className="w-[400px] h-[400px] relative flex items-center justify-center">
             <Image
               src={avatars[selectedAvatarIndex]}

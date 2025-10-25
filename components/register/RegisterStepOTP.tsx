@@ -159,11 +159,11 @@ export default function RegisterStepOTP({
         }
       };
 
-      console.log("Sending to backend:", verifyData); // Debug log
+      // console.log("Sending to backend:", verifyData); // Debug log
 
       const result = await authApi.verifyOtp(verifyData);
 
-      console.log("Backend response:", result); // Debug log
+      // console.log("Backend response:", result); // Debug log
 
       if (result.success) {
         setSuccess(true);
@@ -245,7 +245,7 @@ export default function RegisterStepOTP({
             </div>
 
             <form onSubmit={handleSubmit} className="mt-8 sm:mt-14">
-              {/* OTP Input Fields - Made responsive */}
+              {/* OTP Input Fields*/}
               <div className="flex justify-between gap-2 sm:gap-3 md:gap-4 px-2">
                 {otp.map((digit, index) => (
                   <input
