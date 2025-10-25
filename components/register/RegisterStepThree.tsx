@@ -11,21 +11,17 @@ interface RegisterStepThreeProps {
   prevStep: () => void;
 }
 
-const RegisterStepThree: React.FC<RegisterStepThreeProps> = ({ 
-  data, 
-  updateData, 
-  nextStep, 
-  prevStep 
+const RegisterStepThree: React.FC<RegisterStepThreeProps> = ({
+  data,
+  updateData,
+  nextStep,
+  prevStep,
 }) => {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(data.selectedAgeGroup);
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>(
+    data.selectedAgeGroup
+  );
 
-  const ageGroups: string[] = [
-    "Under 18",
-    "18-24",
-    "25-34",
-    "35-44",
-    "45+",
-  ];
+  const ageGroups: string[] = ["6-9", "10-13", "14-17", "18 or Older"];
 
   const handleAgeGroupChange = (e: ChangeEvent<HTMLSelectElement>): void => {
     const newAgeGroup = e.target.value;
@@ -74,7 +70,9 @@ const RegisterStepThree: React.FC<RegisterStepThreeProps> = ({
           </div>
 
           <div className="w-full flex items-center justify-center flex-col gap-2">
-            <h1 className="text-white text-xl font-semibold">Select your age group</h1>
+            <h1 className="text-white text-xl font-semibold">
+              Select your age group
+            </h1>
 
             {/* Age Group Selector */}
             <div>

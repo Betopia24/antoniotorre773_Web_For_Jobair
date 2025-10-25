@@ -11,31 +11,33 @@ interface RegisterStepFourProps {
   prevStep: () => void;
 }
 
-const RegisterStepFour: React.FC<RegisterStepFourProps> = ({ 
-  data, 
-  updateData, 
-  nextStep, 
-  prevStep 
+const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
+  data,
+  updateData,
+  nextStep,
+  prevStep,
 }) => {
-  const [selectedHobbies, setSelectedHobbies] = useState<string[]>(data.selectedHobbies);
+  const [selectedHobbies, setSelectedHobbies] = useState<string[]>(
+    data.selectedHobbies
+  );
 
   const hobbies: string[] = [
-    "Reading",
-    "Traveling",
-    "Gaming",
-    "Cooking",
     "Sports",
+    "Dance",
+    "Gaming",
+    "Art",
     "Music",
-    "Technology",
-    "Photography",
-    "Fitness",
+    "Science",
+    "Cooking",
+    "Meditation",
+    "Animals",
   ];
 
   const handleHobbySelect = (hobby: string): void => {
     const newHobbies = selectedHobbies.includes(hobby)
       ? selectedHobbies.filter((item) => item !== hobby)
       : [...selectedHobbies, hobby];
-    
+
     setSelectedHobbies(newHobbies);
     updateData({ selectedHobbies: newHobbies });
   };
@@ -80,7 +82,9 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
           </div>
 
           <div className="w-full flex items-center justify-center flex-col gap-2">
-            <h1 className="text-white text-xl mb-2 font-semibold">Select Hobbies & Interests</h1>
+            <h1 className="text-white text-xl mb-2 font-semibold">
+              Select Hobbies & Interests
+            </h1>
 
             {/* Word Selection */}
             <div className="flex flex-wrap gap-2 justify-center">
@@ -100,7 +104,8 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
               ))}
             </div>
             <p className="text-gray-400 text-sm mt-2">
-              Selected: {selectedHobbies.length} {selectedHobbies.length === 1 ? 'hobby' : 'hobbies'}
+              Selected: {selectedHobbies.length}{" "}
+              {selectedHobbies.length === 1 ? "hobby" : "hobbies"}
             </p>
           </div>
         </div>
