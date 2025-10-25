@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface RegisterStepFourProps {
   data: {
@@ -9,6 +9,7 @@ interface RegisterStepFourProps {
   updateData: (data: { selectedHobbies: string[] }) => void;
   nextStep: () => void;
   prevStep: () => void;
+  ageGroup?: string;
 }
 
 const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
@@ -16,12 +17,16 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
   updateData,
   nextStep,
   prevStep,
+  ageGroup = "6-9",
 }) => {
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>(
     data.selectedHobbies
   );
+  const [availableHobbies, setAvailableHobbies] = useState<string[]>([]);
+  const [error, setError] = useState<string>("");
 
-  const hobbies: string[] = [
+  // All possible hobbies
+  const allHobbies: string[] = [
     "Sports",
     "Dance",
     "Gaming",
@@ -33,17 +38,79 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
     "Animals",
   ];
 
+  // Filter hobbies based on age group
+  useEffect(() => {
+    let filteredHobbies: string[] = [];
+
+    switch (ageGroup) {
+      case "6-9":
+        filteredHobbies = ["Sports", "Dance", "Gaming"];
+        break;
+      case "10-13":
+        filteredHobbies = ["Sports", "Dance", "Gaming", "Art"];
+        break;
+      case "14-17":
+        filteredHobbies = [
+          "Sports",
+          "Dance",
+          "Gaming",
+          "Art",
+          "Music",
+          "Science",
+        ];
+        break;
+      case "18 or Older":
+        filteredHobbies = allHobbies;
+        break;
+      default:
+        filteredHobbies = allHobbies;
+    }
+
+    setAvailableHobbies(filteredHobbies);
+
+    // Remove any previously selected hobbies that are no longer available
+    const validSelectedHobbies = selectedHobbies.filter((hobby) =>
+      filteredHobbies.includes(hobby)
+    );
+
+    if (validSelectedHobbies.length !== selectedHobbies.length) {
+      setSelectedHobbies(validSelectedHobbies);
+      updateData({ selectedHobbies: validSelectedHobbies });
+    }
+  }, [ageGroup]);
+
   const handleHobbySelect = (hobby: string): void => {
-    const newHobbies = selectedHobbies.includes(hobby)
-      ? selectedHobbies.filter((item) => item !== hobby)
-      : [...selectedHobbies, hobby];
+    setError("");
+    let newHobbies: string[];
+
+    if (selectedHobbies.includes(hobby)) {
+      // Deselect the hobby
+      newHobbies = selectedHobbies.filter((item) => item !== hobby);
+    } else {
+      // Select the hobby (max 2 allowed)
+      if (selectedHobbies.length >= 2) {
+        setError("You can select maximum 2 hobbies");
+        return;
+      }
+      newHobbies = [...selectedHobbies, hobby];
+    }
 
     setSelectedHobbies(newHobbies);
     updateData({ selectedHobbies: newHobbies });
   };
 
   const handleNext = () => {
-    // You can add validation here if needed, e.g., minimum number of hobbies
+    if (selectedHobbies.length === 0) {
+      setError("Please select at least 1 hobby");
+      return;
+    }
+
+    if (selectedHobbies.length > 2) {
+      setError("You can select maximum 2 hobbies");
+      return;
+    }
+
+    setError("");
     nextStep();
   };
 
@@ -59,6 +126,9 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
 
           <p className="text-center text-lg text-gray-300">
             Select your hobbies and interests to personalize your reward videos.
+          </p>
+          <p className="text-center text-sm text-gray-400">
+            Age group: {ageGroup} • Select 1-2 hobbies
           </p>
         </div>
 
@@ -86,9 +156,14 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
               Select Hobbies & Interests
             </h1>
 
+            {/* Error Message */}
+            {error && (
+              <p className="text-red-400 text-sm mb-2 text-center">{error}</p>
+            )}
+
             {/* Word Selection */}
             <div className="flex flex-wrap gap-2 justify-center">
-              {hobbies.map((hobby, idx) => (
+              {availableHobbies.map((hobby, idx) => (
                 <button
                   key={idx}
                   type="button"
@@ -104,7 +179,7 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
               ))}
             </div>
             <p className="text-gray-400 text-sm mt-2">
-              Selected: {selectedHobbies.length}{" "}
+              Selected: {selectedHobbies.length}/2{" "}
               {selectedHobbies.length === 1 ? "hobby" : "hobbies"}
             </p>
           </div>
@@ -119,7 +194,8 @@ const RegisterStepFour: React.FC<RegisterStepFourProps> = ({
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer"
+            disabled={selectedHobbies.length === 0}
+            className="flex-1 py-2 rounded-xl bg-gradient-to-r from-[#FFBC6F] via-[#F176B7] to-[#3797CD] text-white font-semibold hover:opacity-90 transition flex justify-center items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>

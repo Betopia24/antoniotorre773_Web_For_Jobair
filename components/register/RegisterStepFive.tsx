@@ -23,7 +23,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
   onSubmit,
 }) => {
   const avatars: string[] = [
-    "/avatar.png",
+    "/avatar-01.png",
     "/about-01.png",
     "/avatar.png",
     "/avatar.png",

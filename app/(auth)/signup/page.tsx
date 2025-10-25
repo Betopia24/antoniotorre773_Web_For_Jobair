@@ -50,7 +50,7 @@ function SignUp() {
       confirmPassword: "",
     },
     step3: {
-      selectedAgeGroup: "18-24",
+      selectedAgeGroup: "6-9",
     },
     step4: {
       selectedHobbies: [],
@@ -121,6 +121,7 @@ function SignUp() {
             updateData={(data) => updateFormData("step4", data)}
             nextStep={nextStep}
             prevStep={prevStep}
+            ageGroup={formData.step3.selectedAgeGroup}
           />
         );
       case 5:
