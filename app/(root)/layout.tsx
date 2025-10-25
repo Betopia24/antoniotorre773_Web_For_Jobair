@@ -8,10 +8,12 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <GoogleTranslateWrapper>
-      <Navbar/>
+    <>
+      {/* <GoogleTranslateWrapper> */}
+      <Navbar />
       <main>{children}</main>
-      <Footer/>
-    </GoogleTranslateWrapper>
+      <Footer />
+      {/* </GoogleTranslateWrapper> */}
+    </>
   );
 }
