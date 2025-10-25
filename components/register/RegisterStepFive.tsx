@@ -22,17 +22,20 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
   prevStep,
   onSubmit,
 }) => {
+  // Only one avatar available
   const avatars: string[] = [
     "/avatar-01.png",
-    "/about-01.png",
-    "/avatar.png",
-    "/avatar.png",
+    // "/about-01.png", // Commented out unnecessary avatars
+    // "/avatar.png",
+    // "/avatar.png",
   ];
 
   const [selectedAvatarIndex, setSelectedAvatarIndex] = useState<number>(
     data.selectedAvatarIndex
   );
 
+  // Comment out navigation functions since we only have one avatar
+  /*
   const goToNextAvatar = () => {
     const newIndex = (selectedAvatarIndex + 1) % avatars.length;
     setSelectedAvatarIndex(newIndex);
@@ -51,6 +54,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
       selectedAvatar: avatars[newIndex],
     });
   };
+  */
 
   const handleSubmit = () => {
     // Final update before submission
@@ -77,36 +81,37 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
         </div>
 
         <div className="relative flex items-center justify-center">
-          {/* Left Button */}
-          <button
+          {/* Left Button - Commented out but keeping structure */}
+          {/* <button
             onClick={goToPreviousAvatar}
             className="absolute left-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10 cursor-pointer"
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+          </button> */}
 
-          {/* Avatar Image */}
-          <div className="w-[350px] h-[350px] relative overflow-hidden rounded-lg">
+          {/* Avatar Image - Updated to show full image without cropping */}
+          <div className="w-[400px] h-[400px] relative flex items-center justify-center">
             <Image
               src={avatars[selectedAvatarIndex]}
               alt={`Avatar ${selectedAvatarIndex + 1}`}
-              fill
-              className="object-cover w-full h-full"
+              width={380}
+              height={380}
+              className="object-contain w-full h-full"
               priority
             />
           </div>
 
-          {/* Right Button */}
-          <button
+          {/* Right Button - Commented out but keeping structure */}
+          {/* <button
             onClick={goToNextAvatar}
             className="absolute right-0 p-2 border border-gray-600 bg-[#232438] bg-opacity-50 text-white rounded-xl hover:bg-opacity-70 transition z-10 cursor-pointer"
           >
             <ChevronRight className="w-6 h-6" />
-          </button>
+          </button> */}
         </div>
 
-        {/* Avatar Selection Indicator */}
-        <div className="mt-4 flex justify-center gap-2">
+        {/* Avatar Selection Indicator - Commented out since only one avatar */}
+        {/* <div className="mt-4 flex justify-center gap-2">
           {avatars.map((_, index) => (
             <div
               key={index}
@@ -115,7 +120,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
               }`}
             ></div>
           ))}
-        </div>
+        </div> */}
 
         <div className="flex gap-3">
           <button
