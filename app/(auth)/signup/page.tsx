@@ -81,7 +81,7 @@ function SignUp() {
   };
 
   const handleSubmit = () => {
-    console.log("Final form data:", formData);
+    // console.log("Final form data:", formData);
     // Move to OTP verification step
     nextStep();
   };
