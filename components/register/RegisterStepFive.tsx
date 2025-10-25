@@ -76,7 +76,7 @@ const RegisterStepFive: React.FC<RegisterStepFiveProps> = ({
           </div>
 
           <p className="text-center text-lg text-gray-300">
-            Choose your avatar appearance. You can change it anytime.
+            Meet Your Avatar: Mercury
           </p>
         </div>
 

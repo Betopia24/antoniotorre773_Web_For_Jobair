@@ -16,7 +16,9 @@ const Footer = () => {
                 alt="Manifex Logo"
                 className="h-8 mx-auto"
               />
-              <h2 className="text-2xl font-bold text-gradient notranslate">MANIFEX</h2>
+              <h2 className="text-2xl font-bold text-gradient notranslate">
+                MANIFEX
+              </h2>
             </div>
             <p className="text-gray-300 max-w-xs">
               AI-powered English learning designed for dyslexia and global
@@ -34,7 +36,7 @@ const Footer = () => {
                 <img src="/facebook.png" alt="Facebook" className="w-7 h-7" />
               </a>
               <a href="#">
-                <img src="/x.png" alt="X" className="w-6 h-6" />
+                <img src="/x.png" alt="X" className="w-6 h-6 mt-0.5" />
               </a>
               <a href="#">
                 <img src="/instagram.png" alt="Instagram" className="w-7 h-7" />
@@ -45,7 +47,7 @@ const Footer = () => {
 
         {/* Bottom Navbar Row */}
         <div className="w-full border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm gap-4">
-          <p>© 2025 - All rights Reserved</p>
+          <p>© {new Date().getFullYear()} - All rights Reserved</p>
           <div className="flex gap-6">
             <a href="/terms" className="hover:underline">
               Terms of Use
