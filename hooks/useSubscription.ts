@@ -12,7 +12,7 @@ export const useSubscription = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const result = await subscriptionApi.createSubscription(planId);
       return result;
     } catch (err: any) {
@@ -32,6 +32,7 @@ export const useSubscription = () => {
         setUser({
           ...user,
           isSubscribed: true,
+          isSubscriptionFree: false,
           Subscription: subscriptionData.data
         });
       }
