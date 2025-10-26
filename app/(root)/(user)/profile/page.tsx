@@ -84,7 +84,6 @@ function ProfilePage() {
     try {
       const formData = new FormData();
 
-      // Append all fields individually
       formData.append("firstName", firstName.trim());
       formData.append("lastName", lastName.trim());
       formData.append("hobbies", hobby.trim());
@@ -354,7 +353,7 @@ function ProfilePage() {
 
         {/* Subscription Status + Security */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {/* Subscription Status - Dynamic */}
+          {/* Subscription Status */}
           <div className="bg-gradient-to-br from-[#28284A] to-[#12122A] text-white p-6 rounded-2xl">
             <h1 className="text-xl mb-2 sm:text-2xl font-semibold">
               Subscription Status

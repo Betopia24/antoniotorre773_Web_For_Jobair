@@ -1,7 +1,6 @@
-// hooks/useSubscription.ts
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { plansApi, subscriptionApi } from '@/lib/api';
+import { subscriptionApi } from '@/lib/api';
 
 export const useSubscription = () => {
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,8 @@ export const useSubscription = () => {
         setUser({
           ...user,
           isSubscribed: true,
-          isSubscriptionFree: false,
+          isSubscriptionFree: subscriptionData.data.plan.amount === 0,
+          planExpiration: subscriptionData.data.endDate,
           Subscription: subscriptionData.data
         });
       }
