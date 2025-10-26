@@ -4,12 +4,12 @@ import { Home, Rocket } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-dark via-brand-darker to-brand-darker text-white">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-dark via-brand-darker to-brand-darker text-white">
       {/* Main Content */}
       <div className="pt-32 sm:pt-36 pb-20 app-container flex flex-col items-center justify-center text-center">
         {/* 404 Number with Gradient */}
         <div className="relative mb-8">
-          <h1 className="text-[120px] sm:text-[150px] md:text-[200px] font-bold bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to bg-clip-text text-transparent">
+          <h1 className="text-[120px] sm:text-[150px] md:text-[180px] font-bold bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to bg-clip-text text-transparent">
             404
           </h1>
           <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-gradient-from/20 via-gradient-via/20 to-gradient-to/20 blur-2xl rounded-full"></div>
@@ -33,7 +33,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-4 mb-16">
           <Link
             href="/"
-            className="flex items-center justify-center gap-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-semibold text-white hover:opacity-90 transition-all duration-300 shadow-lg"
+            className="flex items-center justify-center gap-3 px-8 py-3 rounded-2xl bg-gradient-to-r from-gradient-from via-gradient-via to-gradient-to font-semibold text-white hover:opacity-90 transition-all duration-300 shadow-lg"
           >
             <Home className="w-5 h-5" />
             Back to Home
@@ -41,7 +41,7 @@ export default function NotFound() {
 
           <Link
             href="/pricing"
-            className="flex items-center justify-center gap-3 px-8 py-3.5 rounded-2xl border border-gray-500 text-white hover:bg-white/10 transition-all duration-300 font-semibold"
+            className="flex items-center justify-center gap-3 px-8 py-3 rounded-2xl border border-gray-500 text-white hover:bg-white/10 transition-all duration-300 font-semibold"
           >
             <Rocket className="w-5 h-5" />
             Start Learning
