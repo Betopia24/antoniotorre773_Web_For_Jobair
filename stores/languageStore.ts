@@ -9,6 +9,7 @@ interface LanguageState {
     hasSelectedLanguage: boolean;
 }
 
+// Supported languages
 export const languages = [
     { code: "en", name: "English", nativeName: "English" },
     { code: "bn", name: "Bengali", nativeName: "বাংলা" },

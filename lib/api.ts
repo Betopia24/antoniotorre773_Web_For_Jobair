@@ -192,6 +192,7 @@ export const plansApi = {
     }
 }
 
+// Subscription API calls
 export const subscriptionApi = {
     // Create subscription intent
     createSubscription: async (planId: string) => {
