@@ -9,6 +9,7 @@ interface LanguagePopupProps {
   onLanguageSelect: (languageCode: string) => void;
 }
 
+// Supported languages
 const languages = [
   { code: "en", name: "English", nativeName: "English" },
   { code: "fr", name: "French", nativeName: "Français" },
